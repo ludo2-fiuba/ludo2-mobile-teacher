@@ -1,1 +1,2 @@
-export CommissionsList from './list.tsx';
+export { default as CommissionsList } from './list.tsx';
+
