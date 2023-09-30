@@ -1,48 +1,51 @@
-import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Alert} from 'react-native';
-import {roundedButton as style} from '../styles';
+import React, { FC } from 'react';
+import { View, Text, TouchableOpacity, Alert, StyleProp, ViewStyle, TextStyle } from 'react-native';
+import { roundedButton as style } from '../styles';
 
-export interface RoundedButtonProps {
+interface RoundedButtonProps {
   text?: string;
   enabled?: boolean;
   onPress?: () => void;
-  style?: object;
-}
-
-export default class RoundedButton extends Component<RoundedButtonProps> {
-  public static defaultProps = {
-    text: 'Button',
-    enabled: true,
-    onPress: () => Alert.alert('Pre-registro'),
-    style: style.DefaultPropStyle,
+  style?: {
+    MainContainer?: StyleProp<ViewStyle>;
+    TextStyle?: StyleProp<TextStyle>;
+    tintColor?: string;
+    fontSize?: number;
+    fontFamily?: string;
+    fontWeight?: "normal" | "bold" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900";
   };
-
-  render() {
-    return (
-      <View style={[style.MainContainer, this.props.style]}>
-        <TouchableOpacity
-          style={
-            this.props.enabled
-              ? style.EnabledSubmitButtonStyle
-              : style.DisabledSubmitButtonStyle
-          }
-          activeOpacity={style.DisabledSubmitButtonStyle.opacity}
-          disabled={!this.props.enabled}
-          onPress={this.props.onPress}>
-          <Text
-            style={[
-              style.TextStyle,
-              {
-                color: this.props.style.tintColor,
-                fontSize: this.props.style.fontSize,
-                fontFamily: this.props.style.fontFamily,
-                fontWeight: this.props.style.fontWeight,
-              },
-            ]}>
-            {this.props.text}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
 }
+
+const RoundedButton: FC<RoundedButtonProps> = ({
+  text = 'Button',
+  enabled = true,
+  onPress = () => Alert.alert('Pre-registro'),
+  style: customStyle,
+}) => {
+  return (
+    <View style={[style.MainContainer, customStyle?.MainContainer]}>
+      <TouchableOpacity
+        style={enabled ? style.EnabledSubmitButtonStyle : style.DisabledSubmitButtonStyle}
+        activeOpacity={style.DisabledSubmitButtonStyle.opacity}
+        disabled={!enabled}
+        onPress={onPress}
+      >
+        <Text
+          style={[
+            style.TextStyle,
+            {
+              color: customStyle?.tintColor,
+              fontSize: customStyle?.fontSize,
+              fontFamily: customStyle?.fontFamily,
+              fontWeight: customStyle?.fontWeight,
+            },
+          ]}
+        >
+          {text}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default RoundedButton;
