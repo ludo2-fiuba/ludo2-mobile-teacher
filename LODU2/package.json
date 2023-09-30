@@ -38,6 +38,7 @@
     "react-native-svg": "^13.13.0",
     "react-native-swipeout": "^2.3.6",
     "react-native-vector-icons": "^8.1.0",
+    "react-native-vision-camera": "^3.2.2",
     "typescript": "^3.9.9",
     "validate.js": "^0.13.1"
   },

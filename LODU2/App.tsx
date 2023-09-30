@@ -13,6 +13,7 @@ import 'moment/locale/es';
 import React, { Component } from 'react';
 import 'react-native-gesture-handler';
 import {
+  CameraTest,
   FinalDateTimePickerScreen,
   FinalExamsListScreen,
   FinalsListScreen,
@@ -38,6 +39,12 @@ export default class App extends Component {
               <Stack.Screen
                 name="Splash"
                 component={SplashScreen}
+                options={{headerShown: false}}
+              />
+              
+              <Stack.Screen
+                name="CameraTest"
+                component={CameraTest}
                 options={{headerShown: false}}
               />
 

@@ -1,3 +1,4 @@
+export { default as CameraTest } from './camera_test';
 export { default as FinalExamsListScreen } from './finalExams';
 export { default as FinalDateTimePickerScreen } from './finals/finalDateTimePicker.tsx';
 export { default as FinalsListScreen } from './finals/list.tsx';
@@ -8,4 +9,5 @@ export { default as PreRegisterScreen } from './preregister';
 export { default as PreRegisterLastInstructionsScreen } from './preregister/done';
 export { default as QRGeneratorScreen } from './qr_generator';
 export { default as SplashScreen } from './splash';
+
 
