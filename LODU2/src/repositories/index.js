@@ -1,6 +1,7 @@
-export authenticationRepository from './authentication.ts';
-export {MustLoginAgain} from './authenticatedRepository.ts';
-export commissionRepository from './commissions.ts';
-export finalRepository from './finals.ts';
-export finalExamRepository from './finalExams.ts';
-export usersRepository from './users.ts';
+export { default as MustLoginAgain } from './authenticatedRepository.ts';
+export { default as authenticationRepository } from './authentication.ts';
+export { default as commissionRepository } from './commissions.ts';
+export { default as finalExamRepository } from './finalExams.ts';
+export { default as finalRepository } from './finals.ts';
+export { default as usersRepository } from './users.ts';
+

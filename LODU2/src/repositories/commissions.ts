@@ -1,5 +1,5 @@
-import {Commission, Subject} from '../models';
-import {get} from './authenticatedRepository.ts';
+import { Commission, Subject } from '../models';
+import { get } from './authenticatedRepository.ts';
 
 const domainUrl = 'api/comissions';
 
@@ -8,7 +8,7 @@ export function fetchAll(): Promise<Commission[]> {
     Promise.resolve(
       json
         ? json.map(
-            (data, index) =>
+            (data, index: number) =>
               new Commission(
                 data.id,
                 data.name,

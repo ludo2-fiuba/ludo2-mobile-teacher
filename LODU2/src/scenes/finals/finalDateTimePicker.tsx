@@ -1,11 +1,11 @@
-import React from 'react';
-import AuthenticatedComponent from '../authenticatedComponent';
-import {View, Text, Alert} from 'react-native';
-import {DateTimePicker, RoundedButton, Loading} from '../../components';
-import {getStyleSheet as style} from '../../styles';
-import {finalRepository} from '../../repositories';
-import {FinalStatus, Final, Subject} from '../../models';
 import moment from 'moment';
+import React from 'react';
+import { Alert, Text, View } from 'react-native';
+import { DateTimePicker, Loading, RoundedButton } from '../../components';
+import { Subject } from '../../models';
+import { finalRepository } from '../../repositories';
+import { getStyleSheet as style } from '../../styles';
+import AuthenticatedComponent from '../authenticatedComponent';
 
 export default class FinalDateTimePicker extends AuthenticatedComponent {
   constructor(props) {

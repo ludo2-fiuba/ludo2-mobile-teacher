@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
-import AuthenticatedComponent from '../authenticatedComponent';
-import {Platform, PermissionsAndroid, View, Alert} from 'react-native';
-import CameraRoll from '@react-native-community/cameraroll';
-import QRCode from 'react-native-qrcode-svg';
+import React from 'react';
+import { Alert, PermissionsAndroid, Platform, View } from 'react-native';
 import RNFS from 'react-native-fs';
-import {Loading, RoundedButton} from '../../components';
-import {getStyleSheet as style} from '../../styles';
-import {finalRepository} from '../../repositories';
-import {Final, FinalStatus} from '../../models';
+import QRCode from 'react-native-qrcode-svg';
+import { Loading, RoundedButton } from '../../components';
+import { Final, FinalStatus } from '../../models';
+import { finalRepository } from '../../repositories';
+import { getStyleSheet as style } from '../../styles';
+import AuthenticatedComponent from '../authenticatedComponent';
 
 export default class QRGenerator extends AuthenticatedComponent {
   constructor(props) {

@@ -13,11 +13,14 @@ import 'moment/locale/es';
 import React, { Component } from 'react';
 import 'react-native-gesture-handler';
 import {
+  FinalDateTimePickerScreen,
+  FinalExamsListScreen,
   FinalsListScreen,
   HomeScreen,
   LandingScreen,
   PreRegisterLastInstructionsScreen,
   PreRegisterScreen,
+  QRGeneratorScreen,
   SplashScreen,
   TakePictureStepScreen
 } from './src/scenes';
@@ -76,7 +79,7 @@ export default class App extends Component {
                   title: route.params.subject.name,
                 })}
               />
-              {/* <Stack.Screen
+              <Stack.Screen
                 name="FinalDateTimePicker"
                 component={FinalDateTimePickerScreen}
                 options={({route}) => ({
@@ -103,7 +106,7 @@ export default class App extends Component {
                     'DD/MM/YYYY HH:mm',
                   ),
                 })} 
-              />*/}
+              />
             </Stack.Navigator>
           </NavigationContainer>
         </ActionSheetProvider>
