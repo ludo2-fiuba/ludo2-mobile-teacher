@@ -84,12 +84,17 @@ export default class PreRegister extends Component {
               onPress={() => {
                 const dni = this.firstTextInput.state.value;
                 const email = this.secondTextInput.state.value;
+                configuration = new FacePictureConfiguration(
+                  ['Tomate una foto de frente'],
+                  dni,
+                  email,
+                );
+
+                console.log("Configuration pre-register");
+                console.log(configuration);
+
                 navigation.navigate('TakePicture', {
-                  configuration: new FacePictureConfiguration(
-                    ['Tomate una foto de frente'],
-                    dni,
-                    email,
-                  ).toObject(),
+                  configuration: configuration.toObject(),
                   title: 'Pre-registro',
                 });
               }}

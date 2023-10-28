@@ -105,17 +105,21 @@ const FinalsList: React.FC<FinalsListProps> = () => {
                 return;
               }
               if (item.currentStatus() == FinalStatus.Future) {
+                console.log('Final status: Future');
                 Alert.alert('Bajá esa ansiedad, todavía falta.');
               } else if (item.currentStatus() == FinalStatus.Closed) {
+                console.log('Final status: Closed');
                 navigation.navigate('FinalExamsList', {
                   final: item.toObject(),
                   editable: false,
                 });
               } else if (item.currentStatus() == FinalStatus.Grading) {
+                console.log('Final status: Grading');
                 navigation.navigate('FinalExamsList', {
                   final: item.toObject(),
                 });
               } else {
+                console.log('QR');
                 navigation.navigate('QR', {
                   final: item.toObject(),
                 });
