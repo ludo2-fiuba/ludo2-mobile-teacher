@@ -66,7 +66,7 @@ export default class FacePictureConfiguration extends TakePictureStepConfigurati
   }
 
   toObject() {
-    return super.toObject(this, Type.RegisterFace, {
+    return super.toObject(Type.RegisterFace, {
       descriptions: JSON.stringify(this.descriptions),
       dni: this.dni,
       mail: this.mail,
