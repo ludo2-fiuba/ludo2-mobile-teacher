@@ -1,8 +1,8 @@
+import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer, Route } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { DrawerContentComponentProps, DrawerContentOptions, DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from '@react-navigation/drawer';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
-import 'react-native-gesture-handler';
 import {
   CameraTest,
   FinalDateTimePickerScreen,
@@ -17,6 +17,8 @@ import {
   TakePictureStepScreen
 } from './src/scenes';
 import moment from 'moment';
+import { SessionManager } from './src/managers';
+import { ProfileOverview } from './src/components';
 
 interface TakePictureParams {
   title: string;
@@ -30,54 +32,91 @@ interface FinalParams {
   final: { date: Date };
 }
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
+
+const DRAWER_MENU_SHOWN_SCREENS = [
+  "Home",
+  "InCourseSubjects",
+  "PendingSubjects",
+  "ApprovedSubjects",
+  "DeliverFinalExam",
+  "VerifyIdentity"
+]
+
+const FilteredDrawerContent = (props: DrawerContentComponentProps<DrawerContentOptions>) => {
+  const { state, ...rest } = props;
+  const newState = {
+    ...state, routes: state.routes.filter((route: any) => {
+      return DRAWER_MENU_SHOWN_SCREENS.includes(route.name);
+    })
+  };
+
+  return (
+    <DrawerContentScrollView {...props}>
+      <ProfileOverview />
+      <DrawerItemList {...rest} state={newState} />
+      <DrawerItem label="Cerrar Sesión" onPress={async () => {
+        await SessionManager.getInstance()?.clearCredentials();
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: 'Landing' }],
+        })
+      }} />
+    </DrawerContentScrollView>
+  );
+}
 
 const App: React.FC = () => {
   return (
     <ActionSheetProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Splash" screenOptions={{ gestureEnabled: false }}>
-          <Stack.Screen
+        <Drawer.Navigator
+          initialRouteName="Landing"
+          // screenOptions={{ headerTintColor: colors.mainContrastColor }}
+          drawerContent={props => <FilteredDrawerContent {...props} />}
+        >
+          <Drawer.Screen
             name="Splash"
             component={SplashScreen}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
+          <Drawer.Screen
             name="Landing"
             component={LandingScreen}
             options={{ headerShown: false, title: 'Inicio' }}
           />
 
-          <Stack.Screen
+          <Drawer.Screen
             name="Home"
             component={HomeScreen}
             options={{ headerShown: true }}
           />
 
-          <Stack.Screen
+          <Drawer.Screen
             name="CameraTest"
             component={CameraTest}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
+          <Drawer.Screen
             name="PreRegister"
             component={PreRegisterScreen}
             options={{ headerShown: true, title: 'Pre-registro' }}
           />
 
-          <Stack.Screen
+          <Drawer.Screen
             name="PreRegisterDone"
             component={PreRegisterLastInstructionsScreen}
             options={{ headerShown: false }}
           />
 
-          <Stack.Screen
+          <Drawer.Screen
             name="TakePicture"
             component={TakePictureStepScreen}
-            options={({ route }) => ({ title: 'Tomar foto'})}
+            options={({ route }) => ({ title: 'Tomar foto' })}
           />
 
-          <Stack.Screen
+          <Drawer.Screen
             name="FinalsList"
             component={FinalsListScreen}
             options={({ route }) => ({
@@ -85,7 +124,7 @@ const App: React.FC = () => {
               title: (route.params as SubjectParams)?.subject.name,
             })}
           />
-          <Stack.Screen
+          <Drawer.Screen
             name="FinalDateTimePicker"
             component={FinalDateTimePickerScreen}
             options={({ route }) => ({
@@ -93,7 +132,7 @@ const App: React.FC = () => {
               title: (route.params as SubjectParams)?.subject.name,
             })}
           />
-          <Stack.Screen
+          <Drawer.Screen
             name="QR"
             component={QRGeneratorScreen}
             options={({ route }) => ({
@@ -103,7 +142,7 @@ const App: React.FC = () => {
               ),
             })}
           />
-          <Stack.Screen
+          <Drawer.Screen
             name="FinalExamsList"
             component={FinalExamsListScreen}
             options={({ route }) => ({
@@ -114,7 +153,7 @@ const App: React.FC = () => {
             })}
           />
 
-        </Stack.Navigator>
+        </Drawer.Navigator>
       </NavigationContainer>
     </ActionSheetProvider>
   );

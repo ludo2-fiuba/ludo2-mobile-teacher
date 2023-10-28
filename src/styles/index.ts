@@ -12,4 +12,4 @@ export { default as preregister } from './preregister/preregister';
 export { default as qrGenerator } from './qrGenerator';
 export { default as roundedButton } from './roundedButton';
 export { default as splash } from './splash';
-
+export { default as profileOverview } from './profileOverview';
