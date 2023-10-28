@@ -115,8 +115,11 @@ const FinalsList: React.FC<FinalsListProps> = () => {
                 });
               } else if (item.currentStatus() == FinalStatus.Grading) {
                 console.log('Final status: Grading');
+                const finalToBeSent = item.toObject();
+                console.log("Final to be sent", finalToBeSent);
+                                
                 navigation.navigate('FinalExamsList', {
-                  final: item.toObject(),
+                  final: finalToBeSent,
                 });
               } else {
                 console.log('QR');

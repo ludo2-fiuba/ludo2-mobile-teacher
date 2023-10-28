@@ -28,7 +28,7 @@ const FinalExamsList: React.FC<Props> = ({ route, final: propFinal, editable: pr
   const [showSave, setShowSave] = useState<{ show: boolean, enabled: boolean }>({ show: false, enabled: false });
   const [showNotify, setShowNotify] = useState<{ show: boolean, enabled: boolean }>({ show: false, enabled: false });
   const [deletionsInProgress, setDeletionsInProgress] = useState<number>(0);
-  const [final, setFinal] = useState<Final>(propFinal || {} as Final);
+  const [final, setFinal] = useState<Final>(route?.params?.final || {} as Final);
 
   useEffect(() => {
     fetchData();
