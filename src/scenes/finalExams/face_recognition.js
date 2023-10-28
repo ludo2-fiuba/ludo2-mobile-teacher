@@ -2,6 +2,7 @@ import {Alert} from 'react-native';
 import TakePictureStepConfiguration from '../image_recognition/takePictureStepConfiguration';
 import Type from '../image_recognition/takePictureStepConfigurationType';
 import {finalRepository} from '../../repositories';
+import { makeRequest } from '../../networking/makeRequest';
 
 export default class FacePictureConfiguration extends TakePictureStepConfiguration {
   constructor(finalId) {
@@ -10,11 +11,12 @@ export default class FacePictureConfiguration extends TakePictureStepConfigurati
   }
 
   async onDataObtained(image, navigation, disableLoading) {
-    makeRequest(() => finalRepository.sendAct(this.finalId, image))
+    makeRequest(() => finalRepository.sendAct(this.finalId, image), navigation)
       .then(() => {
         navigation.pop(2);
       })
       .catch(error => {
+        console.error(error)
         if (error instanceof finalRepository.IdentityFail) {
           Alert.alert(
             '¡No sos quien decís ser!',
