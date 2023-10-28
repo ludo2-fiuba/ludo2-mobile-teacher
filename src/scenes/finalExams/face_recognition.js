@@ -32,7 +32,7 @@ export default class FacePictureConfiguration extends TakePictureStepConfigurati
   }
 
   toObject() {
-    return super.toObject(this, Type.ActClosing, {
+    return super.toObject(Type.ActClosing, {
       finalId: this.finalId,
     });
   }
