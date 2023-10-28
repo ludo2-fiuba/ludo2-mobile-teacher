@@ -1,24 +1,47 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Alert,
-  PermissionsAndroid,
   Platform,
   View,
   LayoutChangeEvent,
 } from 'react-native';
 import RNFS from 'react-native-fs';
 // Check if CameraRoll is necessary and add it to the package.jsojn
-// import CameraRoll from '@react-native-community/cameraroll';
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+import Permissions, {PERMISSIONS} from 'react-native-permissions';
 import { Loading, RoundedButton } from '../../components';
 import { Final, FinalStatus } from '../../models';
 import { finalRepository } from '../../repositories';
 import { getStyleSheet as style } from '../../styles';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-// TODO: Check if this is necessary or use another library
-// import QRCode from 'react-native-qrcode-svg';
+import QRCode from 'react-native-qrcode-svg';
 import { StackActions } from '@react-navigation/native';
 
 type QRGeneratorRouteProp = RouteProp<{ params: { final: Final } }, 'params'>;
+
+// Aux function to format the filename
+function addDateToSubjectName(dateParam: Date | string, originalFilename: string): string {
+  // Parse the date
+  const date = new Date(dateParam);
+  
+  // Format the date as "dd-mm-yy"
+  const formattedDate = [
+    ('0' + date.getUTCDate()).slice(-2),         // day
+    ('0' + (date.getUTCMonth() + 1)).slice(-2),  // month
+    date.getUTCFullYear().toString().slice(-2),  // year
+  ].join('-');
+  
+  // Combine the formatted date and original filename
+  return `${formattedDate}-${originalFilename}`;
+}
+
+function replaceTildes(str: string) : string {
+  const accents: { [key: string]: string } = {
+    'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+    'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
+  };
+  return str.replace(/[áéíóúÁÉÍÓÚ]/g, match => accents[match]);
+}
 
 interface QRGeneratorProps {
   final?: Final;
@@ -54,6 +77,12 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
   }, [loading, final, navigation]);
 
   useEffect(() => {
+    if (final) {
+      fetchData();
+    }
+  }, [final]);
+
+  useEffect(() => {
     if (route.params?.final) {
       const routerParams: any = route.params
       const final: Final = Final.fromObject(routerParams.final);
@@ -63,17 +92,14 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
     }
   }, [route.params, propFinal]);
 
-  useEffect(() => {
-    if (final) {
-      fetchData();
-    }
-  }, [final, fetchData]);
-
   const hasAndroidPermission = async () => {
-    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
-    const hasPermission = await PermissionsAndroid.check(permission);
+    const permission = PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE;
+    const hasPermission = await Permissions.check(permission);
+    console.log("Has permission:", hasPermission);
     if (hasPermission) return true;
-    const status = await PermissionsAndroid.request(permission);
+    
+    console.log("Requesting permission");
+    const status = await Permissions.request(permission);
     return status === 'granted';
   };
 
@@ -82,20 +108,21 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
     setQrSize(Math.min(width, height));
   };
 
-  const svgRef = React.createRef();  // Assume the correct type for your SVG component
+
+
+  const [svgRef, setSvgRef] = useState(React.createRef());  // Assume the correct type for your SVG component
 
   return (
     <View style={style().view} onLayout={handleLayout}>
       {loading && <Loading />}
-      {/* Assuming you have imported QRCode */}
-      {/* {qrId && (
+      {qrId && (
         <QRCode
           value={qrId}
           size={qrSize}
-          getRef={svgRef}
+          getRef={(c) => (setSvgRef(c))}
           quietZone={20}
         />
-      )} */}
+      )}
       {!loading && (
         <View style={style().containerView}>
           <RoundedButton
@@ -106,10 +133,14 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
               if (downloading) return;
               setDownloading(true);
               // Update the below code according to your project's structure and libraries
-              await (svgRef.current as any).toDataURL(async (data: string) => {
+              await (svgRef as any).toDataURL(async (data: string) => {
                 try {
+                  const subjectName = replaceTildes(final!.subjectName.replaceAll(' ', '-').toLowerCase());
+                  const subjectNameWithDate = addDateToSubjectName(final!.date, subjectName)
+                  const path = (RNFS.CachesDirectoryPath + '/' + subjectNameWithDate + '.png')
+                  
                   await RNFS.writeFile(
-                    RNFS.CachesDirectoryPath + '/some-name.png',
+                    path,
                     data,
                     'base64'
                   );
@@ -118,11 +149,10 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
                     throw new MessageError('Necesitamos permisos para guardar el QR en tu teléfono');
                   }
                   
-                  // TODO: Fix camera roll error
-                  // await CameraRoll.save(
-                  //   RNFS.CachesDirectoryPath + '/some-name.png',
-                  //   'photo'
-                  // );
+                  await CameraRoll.save(
+                    path,
+                    {type: 'photo', album: '/QrExams'}
+                  );
               
                   setDownloading(false);
                   Alert.alert('QR guardado en la galería.');
@@ -154,7 +184,7 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
               try {
                 await finalRepository.close(finalInstance!.id, '');
                 finalInstance!.finalize();
-                
+              
 
                 navigation.dispatch(
                   StackActions.replace('FinalExamsList', {
@@ -165,6 +195,8 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
                 setClosing(false);
               } catch (error) {
                 setClosing(false);
+                console.log("error", error);
+                
                 Alert.alert(
                   '¿Qué pasó?',
                   'No sabemos pero no pudimos cerrar el examen. ' +

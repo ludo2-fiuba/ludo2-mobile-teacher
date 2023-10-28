@@ -98,7 +98,7 @@ export function deleteExam(
 }
 
 export function addStudent(
-  finalId: integer,
+  finalId: number,
   studentId: integer,
 ): Promise<boolean> {
   return post(`${domainUrl}/${finalId}/final_exams`, {
@@ -122,13 +122,13 @@ export function addStudent(
   );
 }
 
-export function close(finalId: integer, image: string): Promise<boolean> {
+export function close(finalId: number, image: string): Promise<boolean> {
   return post(`${domainUrl}/${finalId}/close`, '').then(json =>
     Promise.resolve(true),
   );
 }
 
-export function sendAct(finalId: integer, image: string): Promise<boolean> {
+export function sendAct(finalId: number, image: string): Promise<boolean> {
   return post(`${domainUrl}/${finalId}/send_act`, {
     image: `'${image}'`,
   })
