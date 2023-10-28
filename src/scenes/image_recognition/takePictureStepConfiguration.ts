@@ -1,9 +1,25 @@
 import { Alert } from 'react-native';
 
+interface TakePictureStepConfigurationParams {
+  // Define your own types here
+  [key: string]: any; // Replace with specific types as needed
+}
+
+interface TakePictureStepConfigurationObject {
+  description: string;
+  cameraType: any;
+  searchForQRCode: boolean;
+  type?: number;
+}
+
 export default class TakePictureStepConfiguration {
+  description: string;
+  cameraType: any;
+  searchForQRCode: boolean;
+
   constructor(
     description = '',
-    cameraType = "RNCamera.Constants.Type.front",
+    cameraType = "front",
     searchForQRCode = false,
   ) {
     this.description = description;
@@ -12,22 +28,12 @@ export default class TakePictureStepConfiguration {
   }
 
   // onDataObtained property will receive the base64 image string or the barcode string raw data
-  async onDataObtained(data, navigation, disableLoading) {
+  async onDataObtained(data: string, navigation: any, disableLoading: () => void): Promise<void> { // Replace 'any' with the type you need
     Alert.alert(`Data received ${data}`);
     disableLoading();
   }
 
-  static toObject(configuration, type, params) {
-    return {
-      description: configuration.description,
-      cameraType: configuration.cameraType,
-      searchForQRCode: configuration.searchForQRCode,
-      type: type,
-      ...params,
-    };
-  }
-
-  toObject(type, params) {
+  toObject(type: number, params: TakePictureStepConfigurationParams): TakePictureStepConfigurationObject {
     return {
       description: this.description,
       cameraType: this.cameraType,
@@ -37,7 +43,7 @@ export default class TakePictureStepConfiguration {
     };
   }
 
-  static fromObject(object) {
+  static fromObject(object: any): TakePictureStepConfiguration {
     return new TakePictureStepConfiguration(
       object.description,
       object.cameraType,

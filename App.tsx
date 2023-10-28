@@ -74,7 +74,7 @@ const App: React.FC = () => {
           <Stack.Screen
             name="TakePicture"
             component={TakePictureStepScreen}
-            options={({ route }) => ({ title: (route.params as TakePictureParams)?.title })}
+            options={({ route }) => ({ title: 'Tomar foto'})}
           />
 
           <Stack.Screen

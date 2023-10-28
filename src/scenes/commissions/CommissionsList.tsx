@@ -24,6 +24,7 @@ const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
     setHasDoneFirstLoad(true);
 
     try {
+      console.log("Making request for comissions");
       const commissionsData = await makeRequest(() => commissionRepository.fetchAll(), navigation);
       isRefreshing ? setRefreshing(false) : setLoading(false);
       setCommissions(commissionsData);

@@ -1,7 +1,9 @@
 import {StyleSheet} from 'react-native';
 import basic from '../basic';
+import { darkModeColors } from '../colorPalette';
 
 export default function getStyleSheet() {
+  // TODO: make both dark/light schemes versions
   return sharedStyle;
 }
 
@@ -10,13 +12,13 @@ const sharedStyle = StyleSheet.create({
   view: {
     ...basic().view,
     justifyContent: 'space-around',
-    padding: 10
+    padding: 5,
   },
   text: {
     ...basic().text,
     flex: 0,
     fontSize: 25,
-    marginBottom: 10,
+    marginBottom: 8
   },
   preview: {
     flex: 1,
@@ -48,10 +50,10 @@ const sharedStyle = StyleSheet.create({
     backgroundColor: '#00000088',
     borderRadius: 10,
   },
-  capture: {
-    fontSize: 50,
-    color: '#fff',
+  captureContainer: {
     padding: 15,
     paddingHorizontal: 20,
+    backgroundColor: darkModeColors.mainColor,
+    borderRadius: 35,
   },
 });

@@ -4,8 +4,16 @@ import TakePictureStepConfiguration from './takePictureStepConfiguration';
 
 import Type from './takePictureStepConfigurationType';
 
+interface TakePictureStepConfigurationObject {
+  type: number;
+  description?: string;
+  cameraType?: any;  
+  searchForQRCode?: boolean;
+}
+
+
 export default class TakePictureStepConfigurationFactory {
-  static fromObject(object) {
+  static fromObject(object: TakePictureStepConfigurationObject) {
     if (object.type === Type.RegisterFace) {
       return RegisterFacePictureConfiguration.fromObject(object);
     } else if (object.type === Type.ActClosing) {
