@@ -52,7 +52,7 @@ export default class FacePictureConfiguration extends TakePictureStepConfigurati
           }
         });
     } else {
-      navigation.navigate('TakePicture', {
+      navigation.push('TakePicture', {
         configuration: new FacePictureConfiguration(
           this.descriptions,
           this.dni,

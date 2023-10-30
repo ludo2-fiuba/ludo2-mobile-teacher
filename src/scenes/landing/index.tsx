@@ -43,7 +43,7 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
         setLoginInProgress(false);
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Home' }],
+          routes: [{ name: 'RootDrawer' }],
         });
       }
 

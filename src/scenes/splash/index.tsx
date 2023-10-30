@@ -13,7 +13,7 @@ const Splash = ({ navigation }: Props) => {
       if (sessionInstance) {
         sessionInstance.getCredentials();
         const loggedIn = sessionInstance.isLoggedIn();
-        navigation.reset(loggedIn ? 'Home' : 'Landing');
+        navigation.replace(loggedIn ? 'RootDrawer' : 'Landing');
       }
     };
 
