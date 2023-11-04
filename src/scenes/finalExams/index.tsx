@@ -35,7 +35,8 @@ const FinalExamsList: React.FC<Props> = ({ route, final: propFinal, editable: pr
     setNavOptions();
     if (route?.params?.final) {
       const routeParams: any = route.params
-      setFinal(Final.fromObject(routeParams.final));
+      const finalFromObject = Final.fromObject(routeParams.final);
+      setFinal(finalFromObject);
     } else {
       setFinal(propFinal || {} as Final);
     }
@@ -45,12 +46,20 @@ const FinalExamsList: React.FC<Props> = ({ route, final: propFinal, editable: pr
   useEffect(() => {
     let finalValue;
     if (route && route.params && route.params.final) {
+      console.log("If");
+      
       const routeParams: any = route.params
       finalValue = Final.fromObject(routeParams.final);
     } else {
+      console.log("else");
       finalValue = propFinal || {} as Final;
     }
+    
+    console.log("Final value", finalValue);
+    console.log("Final from object | 2", finalValue);
+    
     setFinal(finalValue);
+
   }, [route, propFinal]);
 
   const isEditable = (): boolean => {
@@ -152,7 +161,8 @@ const FinalExamsList: React.FC<Props> = ({ route, final: propFinal, editable: pr
   };
 
   const addNotify = (enabled: boolean) => {
-    if (final?.currentStatus() !== FinalStatus.Closed) {
+    const finalClass = new Final(final.id, final.subjectName, final.date, final.status, final.qrId, final.act)
+    if (finalClass?.currentStatus() !== FinalStatus.Closed) {
       setShowNotify({ show: true, enabled });
       setNavOptions();
     }
