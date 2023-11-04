@@ -46,18 +46,11 @@ const FinalExamsList: React.FC<Props> = ({ route, final: propFinal, editable: pr
   useEffect(() => {
     let finalValue;
     if (route && route.params && route.params.final) {
-      console.log("If");
-      
       const routeParams: any = route.params
       finalValue = Final.fromObject(routeParams.final);
     } else {
-      console.log("else");
       finalValue = propFinal || {} as Final;
     }
-    
-    console.log("Final value", finalValue);
-    console.log("Final from object | 2", finalValue);
-    
     setFinal(finalValue);
 
   }, [route, propFinal]);
