@@ -13,14 +13,13 @@ import {
   PreRegisterScreen,
   QRGeneratorScreen,
   RootDrawer,
+  SemesterCard,
+  SemesterList,
   SplashScreen,
   TakePictureStepScreen
 } from './src/scenes';
 import moment from 'moment';
 
-interface TakePictureParams {
-  title: string;
-}
 
 interface SubjectParams {
   subject: { name: string };
@@ -80,6 +79,20 @@ const App: React.FC = () => {
             component={TakePictureStepScreen}
             options={({ route }) => ({ title: 'Tomar foto' })}
           />
+
+          {/* 
+          <Stack.Screen
+            name='SubjectsList'
+            component={SemesterList}
+            options={({ route }) => ({ title: 'Materias' })}
+          /> */}
+
+          <Stack.Screen
+            name='SemesterCard'
+            component={SemesterCard}
+            options={({ route }) => ({ title: 'Semestre Actual' })}
+          />
+
 
           <Stack.Screen
             name="FinalsList"

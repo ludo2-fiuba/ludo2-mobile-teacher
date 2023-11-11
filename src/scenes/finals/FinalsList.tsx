@@ -28,7 +28,7 @@ const FinalsList: React.FC<FinalsListProps> = () => {
     React.useCallback(() => {
       fetchData(hasDoneFirstLoad);
       return () => {}; // Return a cleanup function if necessary
-    }, [hasDoneFirstLoad])
+    }, [])
   );
 
   const fetchData = (refreshing: boolean = false) => {

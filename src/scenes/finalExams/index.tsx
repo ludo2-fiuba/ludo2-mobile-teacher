@@ -55,6 +55,11 @@ const FinalExamsList: React.FC<Props> = ({ route, final: propFinal, editable: pr
 
   }, [route, propFinal]);
 
+  useEffect(() => {
+    setNavOptions()
+  }, [showSave, showNotify])
+  
+
   const isEditable = (): boolean => {
     if (route?.params?.editable != null) {
       return route.params.editable;
@@ -145,27 +150,23 @@ const FinalExamsList: React.FC<Props> = ({ route, final: propFinal, editable: pr
   
   const addSave = (enabled: boolean) => {
     setShowSave({ show: true, enabled });
-    setNavOptions();
   };
   
   const removeSave = () => {
     setShowSave({ show: false, enabled: false });
-    setNavOptions();
   };
 
   const addNotify = (enabled: boolean) => {
     const finalClass = new Final(final.id, final.subjectName, final.date, final.status, final.qrId, final.act)
     if (finalClass?.currentStatus() !== FinalStatus.Closed) {
       setShowNotify({ show: true, enabled });
-      setNavOptions();
     }
   };
   
   const removeNotify = () => {
     setShowNotify({ show: false, enabled: false });
-    setNavOptions();
   };
-  
+
   const setNavOptions = () => {
     const navOptions = {
       headerRight: () => (
@@ -191,7 +192,7 @@ const FinalExamsList: React.FC<Props> = ({ route, final: propFinal, editable: pr
     return result;
   }
 
-  const saveChanges = (onSuccess: any) => {
+  const saveChanges = (onSuccess?: any) => {
     setGradeLoading(true);
     addSave(false);
     const finalExamsMap: FinalExam[] = finalExams.map((examAndInitialGrade: any) => {
@@ -207,12 +208,15 @@ const FinalExamsList: React.FC<Props> = ({ route, final: propFinal, editable: pr
         setFinalExams(exams);
         gradeChanges.clear();
         removeSave();
+        Alert.alert('Notas guardadas con éxito');
         if (onSuccess) {
           await onSuccess();
         }
       })
       .catch((error: string) => {
         setGradeLoading(false)
+        console.log("Error", error);
+        
         Alert.alert(
           '¿Qué pasó?',
           'No sabemos pero no pudimos guardar tus cambios. ' +

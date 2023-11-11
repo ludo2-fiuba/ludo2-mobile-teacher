@@ -16,20 +16,25 @@ const sharedStyle = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 10,
     padding: 15,
+    borderRadius: 10
   },
-  name: {
+  subjectName: {
     ...basic().text,
-    fontSize: 25,
+    fontSize: 30,
+    color: 'white'
   },
-  status: {
+  catedraName: {
     ...basic().text,
-    fontSize: 20,
-    paddingVertical: 5,
+    color: 'white', 
+    fontSize: 18,
+    marginTop: 3
   },
-  date: {
+  teacherName: {
     ...basic().text,
-    fontSize: 13,
-  },
+    fontSize: 12,
+    color: 'white',
+    marginTop: 5
+  }
 });
 
 const lightMode = StyleSheet.create({

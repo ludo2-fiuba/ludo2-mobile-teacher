@@ -10,5 +10,7 @@ export { default as PreRegisterLastInstructionsScreen } from './preregister/done
 export { default as QRGeneratorScreen } from './qr_generator/index';
 export { default as SplashScreen } from './splash/index';
 export { default as RootDrawer } from './root_drawer/index';
+export { default as SemesterList } from './semesters/SemesterList';
+export { SemesterCard } from './semesters/SemesterCard';
 
 

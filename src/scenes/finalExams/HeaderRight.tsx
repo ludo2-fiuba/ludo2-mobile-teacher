@@ -12,7 +12,7 @@ interface Props {
     enabled: boolean;
   };
   notifyGrades: () => void;
-  saveChanges: (onSuccess: any) => void;
+  saveChanges: (onSuccess?: any) => void;
 }
 
 export function HeaderRight({ showNotify, showSave, ...handlers }: Props) {
@@ -40,7 +40,7 @@ export function HeaderRight({ showNotify, showSave, ...handlers }: Props) {
         <TouchableOpacity
           style={saveOpacityStyle}
           disabled={!showSave.enabled}
-          onPress={handlers.saveChanges}>
+          onPress={() => handlers.saveChanges()}>
           <Icon style={style().navButtonIcon} name="save" />
         </TouchableOpacity>
       )}

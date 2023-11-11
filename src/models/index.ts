@@ -1,4 +1,4 @@
-export { default as Commission } from './Commission.ts';
+export type { Commission, ChiefTeacher } from './Commission.ts';
 export { default as Final, FinalStatus } from './Final.ts';
 export { default as FinalExam } from './FinalExam.ts';
 export { default as Student } from './Student.ts';

@@ -4,6 +4,8 @@ import { CommissionCard, Loading } from '../../components';
 import { commissions as style } from '../../styles';
 import { commissionRepository } from '../../repositories';
 import { makeRequest } from '../../networking/makeRequest';
+import { Commission } from '../../models';
+import { CommissionFromBackend } from '../../models/Commission';
 
 interface CommissionsListProps {
   navigation: any;  // Specify a more accurate type if possible
@@ -13,8 +15,7 @@ const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
   const [hasDoneFirstLoad, setHasDoneFirstLoad] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  // TODO alvaro: Type Commission using backend received data
-  const [commissions, setCommissions] = useState<any[]>([]);
+  const [commissions, setCommissions] = useState<Commission[]>([]);
 
   const fetchData = useCallback(async (isRefreshing: boolean = false) => {
     if (loading || refreshing) {
@@ -24,12 +25,13 @@ const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
     setHasDoneFirstLoad(true);
 
     try {
-      console.log("Making request for comissions");
-      const commissionsData = await makeRequest(() => commissionRepository.fetchAll(), navigation);
+      const commissionsData: Commission[] = await makeRequest(() => commissionRepository.fetchAll(), navigation);
+      setCommissions(commissionsData)
       isRefreshing ? setRefreshing(false) : setLoading(false);
-      setCommissions(commissionsData);
     } catch (error) {
       isRefreshing ? setRefreshing(false) : setLoading(false);
+      console.log("Error", error);
+      
       Alert.alert(
         '¿Qué pasó?',
         'No sabemos pero no pudimos buscar tus comisiones. ' +
@@ -59,12 +61,11 @@ const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
           data={commissions}
           onRefresh={() => fetchData(true)}
           refreshing={refreshing}
-          keyExtractor={(commission) => commission.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('FinalsList', {
-                  subject: item.subject.toObject(),
+                navigation.navigate('SemesterCard', {
+                  commissionId: item.id,
                 });
               }}>
               <CommissionCard commission={item} />
