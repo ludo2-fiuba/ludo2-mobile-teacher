@@ -1,22 +1,11 @@
-// isOpen(): boolean {
-//   // TODO: Check real state with properties or have it come from backend
-//   return this.term.getFullYear() == new Date().getFullYear();
-// }
+import { ChiefTeacher, ChiefTeacherFromBackend, parseChiefTeacherFromBackend } from "./ChiefTeacher";
+
 export interface Commission {
   id: number;
   subjectSiuId: number;
   subjectName:   string;
   chiefTeacher:  ChiefTeacher;
 }
-
-export interface ChiefTeacher {
-  firstName: string;
-  lastName:  string;
-  dni:        string;
-  email:      string;
-  legajo:     string;
-}
-
 export interface CommissionFromBackend {
   id: number;
   subject_siu_id: number;
@@ -24,12 +13,11 @@ export interface CommissionFromBackend {
   chief_teacher:  ChiefTeacherFromBackend;
 }
 
-export interface ChiefTeacherFromBackend {
-  first_name: string;
-  last_name:  string;
-  dni:        string;
-  email:      string;
-  legajo:     string;
+export function parseComissionFromBackend(commission: CommissionFromBackend): Commission {
+  return {
+    id: commission.id,
+    subjectSiuId: commission.subject_siu_id,
+    subjectName: commission.subject_name,
+    chiefTeacher: parseChiefTeacherFromBackend(commission.chief_teacher),
+  };
 }
-
-

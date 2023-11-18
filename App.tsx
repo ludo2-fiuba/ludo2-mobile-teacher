@@ -19,6 +19,8 @@ import {
   TakePictureStepScreen
 } from './src/scenes';
 import moment from 'moment';
+import Evaluations from './src/scenes/evaluations/Evaluations';
+import TeachersScreen from './src/scenes/teachers/Teachers';
 
 
 interface SubjectParams {
@@ -93,6 +95,14 @@ const App: React.FC = () => {
             options={({ route }) => ({ title: 'Semestre Actual' })}
           />
 
+          <Stack.Screen
+            name="Evaluations"
+            component={Evaluations}
+            options={({ route }) => ({
+              headerShown: true,
+              title: "Evaluaciones",
+            })}
+          />
 
           <Stack.Screen
             name="FinalsList"
@@ -130,6 +140,15 @@ const App: React.FC = () => {
               ),
             })}
           />
+
+          <Stack.Screen
+            name="Teachers"
+            component={TeachersScreen}
+            options={({ route }) => ({ title: 'Docentes' })}
+          />
+
+
+
 
         </Stack.Navigator>
       </NavigationContainer>

@@ -5,6 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { semesterRepository } from '../../repositories';
 import { semesterCard as style } from '../../styles';
 import BasicList from '../../components/basicList';
+import { parseEvaluationFromBackend } from '../../models/Evaluation';
 
 interface Props {
   route: any;
@@ -17,8 +18,16 @@ export function SemesterCard({ route }: Props) {
   const navigation = useNavigation();
 
   const listItems = [
-    { name: "Ver Instancias de Examen", onPress: () => { } },
-    { name: "Cuerpo Docente", onPress: () => { } },
+    { name: "Ver Instancias de Examen", onPress: () => { 
+      navigation.navigate('Evaluations', {
+        evaluations: semester?.evaluations,
+      });
+    } },
+    { name: "Cuerpo Docente", onPress: () => { 
+      navigation.navigate('Teachers', {
+        teachers: { chiefTeacher: semester?.comission.chiefTeacher, staffTeachers: [] },
+      });
+    } },
     // {
     //   name: "Ver Correlativas", onPress: () => {
     //     navigation.navigate('CorrelativeSubjects', {
@@ -34,6 +43,7 @@ export function SemesterCard({ route }: Props) {
 
     try {
       const semesterData: Semester = await semesterRepository.fetchPresentSemesterFromComissionId(commissionId);
+
       setSemester(semesterData);
       setIsLoading(false);
     } catch (error) {
@@ -73,6 +83,7 @@ export function SemesterCard({ route }: Props) {
               {semester.comission.chiefTeacher.firstName} {semester.comission.chiefTeacher.lastName}
             </Text>
           </View>
+
           <View style={{ marginTop: 25 }}>
             <BasicList items={listItems} />
           </View>

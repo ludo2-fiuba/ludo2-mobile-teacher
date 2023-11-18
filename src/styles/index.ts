@@ -16,3 +16,5 @@ export { default as profileOverview } from './profileOverview';
 export { default as semesters } from './semesters';
 export { default as semesterCard} from './semesterCard';
 export { default as basicList } from './basicList';
+export { default as evaluationCard } from './evaluationCard'
+export { default as evaluations } from './evaluations'

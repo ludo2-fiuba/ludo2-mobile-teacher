@@ -27,6 +27,10 @@ const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
     try {
       const commissionsData: Commission[] = await makeRequest(() => commissionRepository.fetchAll(), navigation);
       setCommissions(commissionsData)
+      console.log("Comissions data: ", commissionsData);
+      
+      console.log(commissionsData);
+      
       isRefreshing ? setRefreshing(false) : setLoading(false);
     } catch (error) {
       isRefreshing ? setRefreshing(false) : setLoading(false);
@@ -60,6 +64,7 @@ const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
           contentContainerStyle={style().listView}
           data={commissions}
           onRefresh={() => fetchData(true)}
+          keyExtractor={commission => commission.id.toString()}
           refreshing={refreshing}
           renderItem={({ item }) => (
             <TouchableOpacity
