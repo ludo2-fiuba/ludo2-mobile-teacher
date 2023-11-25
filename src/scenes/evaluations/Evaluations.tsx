@@ -5,11 +5,13 @@ import { evaluations as style } from '../../styles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import EvaluationCard from './EvaluationCard';
 import { Evaluation } from '../../models/Evaluation';
+import { Semester } from '../../models/Semester';
 
 interface FinalsListProps {
 }
 
 interface EvaluationsRouteParams {
+  semester: Semester;
   evaluations: Evaluation[];
 }
 
@@ -18,6 +20,7 @@ const Evaluations: React.FC<FinalsListProps> = () => {
   console.log("Route params");
   console.log(route.params);
   
+  const semester: Semester = (route.params as EvaluationsRouteParams).semester
   const evaluations: Evaluation[] = (route.params as EvaluationsRouteParams).evaluations
   const navigation = useNavigation();
 
@@ -31,8 +34,8 @@ const Evaluations: React.FC<FinalsListProps> = () => {
           text="Agregar evaluacion"
           style={{ ...style().button, ...style().listHeaderFooter }}
           onPress={() => {
-            navigation.navigate('FinalDateTimePicker', {
-              subject: evaluations,
+            navigation.navigate('AddEvaluation', {
+              semesterToBeAddedAnEvaluation: semester,
             });
           }}
         />

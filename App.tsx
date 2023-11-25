@@ -5,7 +5,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import {
   CameraTest,
-  FinalDateTimePickerScreen,
   FinalExamsListScreen,
   FinalsListScreen,
   LandingScreen,
@@ -21,6 +20,7 @@ import {
 import moment from 'moment';
 import Evaluations from './src/scenes/evaluations/Evaluations';
 import TeachersScreen from './src/scenes/teachers/Teachers';
+import { AddEvaluation } from './src/scenes/finals';
 
 
 interface SubjectParams {
@@ -113,11 +113,11 @@ const App: React.FC = () => {
             })}
           />
           <Stack.Screen
-            name="FinalDateTimePicker"
-            component={FinalDateTimePickerScreen}
+            name="AddEvaluation"
+            component={AddEvaluation}
             options={({ route }) => ({
               headerShown: true,
-              title: (route.params as SubjectParams)?.subject.name,
+              title: "Agregar instancia de evaluación",
             })}
           />
           <Stack.Screen

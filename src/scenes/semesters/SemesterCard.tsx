@@ -20,6 +20,7 @@ export function SemesterCard({ route }: Props) {
   const listItems = [
     { name: "Ver Instancias de Examen", onPress: () => { 
       navigation.navigate('Evaluations', {
+        semester: semester,
         evaluations: semester?.evaluations,
       });
     } },

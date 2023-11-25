@@ -67,7 +67,7 @@ const FinalsList: React.FC<FinalsListProps> = () => {
             text="Agregar final"
             style={style().button}
             onPress={() => {
-              navigation.navigate('FinalDateTimePicker', {
+              navigation.navigate('AddEvaluation', {
                 subject: subject,
               });
             }}
@@ -89,7 +89,7 @@ const FinalsList: React.FC<FinalsListProps> = () => {
               text="Agregar final"
               style={{ ...style().button, ...style().listHeaderFooter }}
               onPress={() => {
-                navigation.navigate('FinalDateTimePicker', {
+                navigation.navigate('AddEvaluation', {
                   subject: subject,
                 });
               }}

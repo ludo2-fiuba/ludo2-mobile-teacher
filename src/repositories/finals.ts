@@ -11,7 +11,7 @@ export class IdentityFail extends Error {
   }
 }
 
-export function fetchFromSubject(subjectId: integer): Promise<Final[]> {
+export function fetchFromSubject(subjectId: number): Promise<Final[]> {
   return get(`${domainUrl}`, [
     {key: 'subject_siu_id', value: subjectId},
   ]).then(json =>
@@ -33,7 +33,7 @@ export function fetchFromSubject(subjectId: integer): Promise<Final[]> {
   );
 }
 
-export function getDetail(finalId: integer): Promise<Final> {
+export function getDetail(finalId: number): Promise<Final> {
   return get(`${domainUrl}/${finalId}`).then(json =>
     Promise.resolve(
       new Final(
@@ -48,7 +48,7 @@ export function getDetail(finalId: integer): Promise<Final> {
   );
 }
 
-export function getFinalExamsFor(finalId: integer): Promise<FinalExam> {
+export function getFinalExamsFor(finalId: number): Promise<FinalExam> {
   return get(`${domainUrl}/${finalId}`).then(json =>
     Promise.resolve(
       json.final_exams
@@ -74,7 +74,7 @@ export function getFinalExamsFor(finalId: integer): Promise<FinalExam> {
 }
 
 export function grade(
-  finalId: integer,
+  finalId: number,
   finalExams: FinalExam[],
 ): Promise<boolean> {
   var body = {};
@@ -89,7 +89,7 @@ export function grade(
 }
 
 export function deleteExam(
-  finalId: integer,
+  finalId: number,
   finalExam: FinalExam,
 ): Promise<boolean> {
   return deleteMethod(
@@ -99,7 +99,7 @@ export function deleteExam(
 
 export function addStudent(
   finalId: number,
-  studentId: integer,
+  studentId: number,
 ): Promise<boolean> {
   return post(`${domainUrl}/${finalId}/final_exams`, {
     padron: studentId,
@@ -163,7 +163,7 @@ export function create(subject: Subject, date: Date): Promise<Final> {
   );
 }
 
-export function notifyGrades(finalId: integer): Promise<boolean> {
+export function notifyGrades(finalId: number): Promise<boolean> {
   return post(`${domainUrl}/${finalId}/notify_grades`, '').then(json =>
     Promise.resolve(true),
   );

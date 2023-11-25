@@ -1,6 +1,5 @@
 export { default as CameraTest } from './camera_test/index';
 export { default as FinalExamsListScreen } from './finalExams/index';
-export { default as FinalDateTimePickerScreen } from './finals/FinalDateTimePicker';
 export { default as FinalsListScreen } from './finals/FinalsList';
 export { default as HomeScreen } from './home/index'
 export { default as TakePictureStepScreen } from './image_recognition/takePictureStep';
