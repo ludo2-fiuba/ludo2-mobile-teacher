@@ -2,6 +2,7 @@ import { useRoute } from '@react-navigation/native';
 import React from 'react';
 import { SafeAreaView, View, Text, TextInput, FlatList, Image, StyleSheet } from 'react-native';
 import { ChiefTeacher } from '../../models/ChiefTeacher';
+import { lightModeColors } from '../../styles/colorPalette';
 const UserIcon = require('./img/usericon.jpg');
 
 // Mock data for the teachers
@@ -60,7 +61,6 @@ const TeachersScreen = () => {
   // const teachersWithoutChief = (route.params as any).teachers.staffTeachers;
   const teachersWithoutChief = teachersData.filter(teacher => !teacher.isChief);
   
-
   return (
     <SafeAreaView style={styles.container}>
       {leader && <ChiefCard {...leader} />}
@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: 'bold',
     fontSize: 20,
-    marginBottom: 2
+    marginBottom: 2,
+    color: lightModeColors.institutional
   },
   role: {
     color: 'gray',
@@ -163,6 +164,7 @@ const styles = StyleSheet.create({
   leaderName: {
     fontWeight: 'bold',
     fontSize: 24,
+    color: lightModeColors.institutional
   },
   leaderRole: {
     color: 'gray',
