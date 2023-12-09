@@ -15,7 +15,7 @@ interface Props {
   evaluation: Evaluation;
 }
 
-const EvaluationCard = ({ evaluation }: Props) => {
+const EvaluationsListElement = ({ evaluation }: Props) => {
   return (
     <View style={style().view}>
       <Text style={style().evaluationName}>
@@ -31,6 +31,6 @@ const EvaluationCard = ({ evaluation }: Props) => {
   )
 }
 
-export default EvaluationCard
+export default EvaluationsListElement
 
 const styles = StyleSheet.create({})

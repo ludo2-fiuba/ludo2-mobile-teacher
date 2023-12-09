@@ -1,18 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Alert, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, Alert, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { Semester } from '../../models/Semester';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { semesterRepository } from '../../repositories';
-import { semesterCard as style } from '../../styles';
+// import { semesterCard as style } from '../../styles';
 import BasicList from '../../components/basicList';
 import { parseEvaluationFromBackend } from '../../models/Evaluation';
+import { lightModeColors } from '../../styles/colorPalette';
 
 interface Props {
   route: any;
 }
 
 export function SemesterCard({ route }: Props) {
-  const { commissionId } = route.params;
+  const { commission } = route.params;
+  console.log('From route params', commission);
+  
   const [isLoading, setIsLoading] = useState(false);
   const [semester, setSemester] = useState<Semester | null>(null);
   const navigation = useNavigation();
@@ -26,7 +29,8 @@ export function SemesterCard({ route }: Props) {
     } },
     { name: "Cuerpo Docente", onPress: () => { 
       navigation.navigate('Teachers', {
-        teachers: { chiefTeacher: semester?.comission.chiefTeacher, staffTeachers: [] },
+        commissionId: commission.id, // Used to get the staff teachers
+        chiefTeacher: semester?.commission.chiefTeacher, // pass the chief teacher from the semester
       });
     } },
     // {
@@ -43,7 +47,7 @@ export function SemesterCard({ route }: Props) {
     setIsLoading(true);
 
     try {
-      const semesterData: Semester = await semesterRepository.fetchPresentSemesterFromComissionId(commissionId);
+      const semesterData: Semester = await semesterRepository.fetchPresentSemesterFromCommissionId(commission.id);
 
       setSemester(semesterData);
       setIsLoading(false);
@@ -56,7 +60,7 @@ export function SemesterCard({ route }: Props) {
       );
       setIsLoading(false);
     }
-  }, [isLoading, commissionId]);
+  }, [isLoading, commission.id]);
 
   useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
@@ -75,21 +79,58 @@ export function SemesterCard({ route }: Props) {
 
 
   return (
-    <SafeAreaView style={style().view}>
-      <ScrollView>
-        <View style={style().mainView}>
-          <View style={{ margin: 25 }}>
-            <Text style={style().centeredHeader1}>{semester.comission.subjectName}</Text>
-            <Text style={style().centeredText}>
-              {semester.comission.chiefTeacher.firstName} {semester.comission.chiefTeacher.lastName}
-            </Text>
-          </View>
-
-          <View style={{ marginTop: 25 }}>
-            <BasicList items={listItems} />
-          </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>{commission.subject_name}</Text>
+      <Text style={styles.header2}>{commission.chiefTeacher.firstName} {commission.chiefTeacher.lastName}</Text>
+      <View style={styles.card}>
+        <View style={styles.cardItem}>
+          <BasicList items={listItems} />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </SafeAreaView >
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  header2: {
+    fontSize: 20,
+    marginBottom: 18,
+  },
+  card: {
+    flexDirection: 'column',
+    marginBottom: 20,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    elevation: 3,
+    gap: 18
+  },
+  cardItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 2,
+  },
+  cardText: {
+    color: 'gray',
+  },
+  passingGradeText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: lightModeColors.institutional,
+  },
+  passingGradeLabel: {
+    fontSize: 14,
+    color: 'gray',
+  },
+});

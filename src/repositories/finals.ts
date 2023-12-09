@@ -99,10 +99,10 @@ export function deleteExam(
 
 export function addStudent(
   finalId: number,
-  studentId: number,
+  padron: number,
 ): Promise<boolean> {
   return post(`${domainUrl}/${finalId}/final_exams`, {
-    padron: studentId,
+    padron: padron,
   }).then(data =>
     Promise.resolve(
       new FinalExam(

@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, Alert } from 'react-native';
 import { RoundedButton } from '../../components';
-import { finalExams as style } from '../../styles';
+import { evaluationGradesList as style } from '../../styles';
 import prompt from 'react-native-prompt-android';
 import { makeRequest } from '../../networking/makeRequest';
 import { useNavigation } from '@react-navigation/native';
-import { finalRepository } from '../../repositories';
+import { evaluationsRepository } from '../../repositories';
 import { StatusCodeError } from '../../networking';
 
 interface ListFooterProps {
@@ -45,7 +45,9 @@ const ListFooter: React.FC<ListFooterProps> = ({
   if (!isEditable) return null;
   
   const studentAdded = async (padron: string) => {
-    await makeRequest(() => finalRepository.addStudent(getFinal().id, padron), navigation)
+    console.log("Adding Student");
+    
+    await makeRequest(() => evaluationsRepository.addStudent(getFinal().id, padron), navigation)
       .then(async (finalExam: any) => {
         setFinalExams((prev: any[]) => [...prev, [finalExam, finalExam.grade]])
         if (finalExams.length === 1) {
@@ -87,7 +89,6 @@ const ListFooter: React.FC<ListFooterProps> = ({
               {
                 text: 'Agregar',
                 onPress: async padron => {
-                  // Assume studentAdded is a function you've defined
                   studentAdded(padron);
                 },
               },

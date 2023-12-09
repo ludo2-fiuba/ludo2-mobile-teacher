@@ -1,6 +1,7 @@
 import { View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { finalExams as style } from '../../styles';
+import { evaluationGradesList as style } from '../../styles';
+import React from 'react';
 
 interface Props {
   showNotify: {
@@ -15,7 +16,7 @@ interface Props {
   saveChanges: (onSuccess?: any) => void;
 }
 
-export function HeaderRight({ showNotify, showSave, ...handlers }: Props) {
+export function EvaluationGradesListHeaderRight({ showNotify, showSave, ...handlers }: Props) {
   const saveOpacityStyle = {
     ...style().navButton,
     opacity: showSave.enabled ? 1 : 0.5,

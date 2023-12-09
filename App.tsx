@@ -21,10 +21,15 @@ import moment from 'moment';
 import Evaluations from './src/scenes/evaluations/Evaluations';
 import TeachersScreen from './src/scenes/teachers/Teachers';
 import { AddEvaluation } from './src/scenes/finals';
+import EvaluationGradesList from './src/scenes/evaluation/EvaluationGradesList';
 
 
 interface SubjectParams {
   subject: { name: string };
+}
+
+interface EvaluationParams {
+  evaluation: { evaluationName: string };
 }
 
 interface FinalParams {
@@ -59,11 +64,7 @@ const App: React.FC = () => {
             options={{ headerShown: false }}
           />
 
-          <Stack.Screen
-            name="CameraTest"
-            component={CameraTest}
-            options={{ headerShown: false }}
-          />
+          {/** PRE-REGISTER */}
           <Stack.Screen
             name="PreRegister"
             component={PreRegisterScreen}
@@ -76,11 +77,7 @@ const App: React.FC = () => {
             options={{ headerShown: false }}
           />
 
-          <Stack.Screen
-            name="TakePicture"
-            component={TakePictureStepScreen}
-            options={({ route }) => ({ title: 'Tomar foto' })}
-          />
+          {/* SEMESTERS */}
 
           {/* 
           <Stack.Screen
@@ -95,21 +92,13 @@ const App: React.FC = () => {
             options={({ route }) => ({ title: 'Semestre Actual' })}
           />
 
+          {/* EVALUATIONS */}
           <Stack.Screen
             name="Evaluations"
             component={Evaluations}
             options={({ route }) => ({
               headerShown: true,
               title: "Evaluaciones",
-            })}
-          />
-
-          <Stack.Screen
-            name="FinalsList"
-            component={FinalsListScreen}
-            options={({ route }) => ({
-              headerShown: true,
-              title: (route.params as SubjectParams)?.subject.name,
             })}
           />
           <Stack.Screen
@@ -120,16 +109,16 @@ const App: React.FC = () => {
               title: "Agregar instancia de evaluación",
             })}
           />
+
           <Stack.Screen
-            name="QR"
-            component={QRGeneratorScreen}
+            name="EvaluationsGradesList"
+            component={EvaluationGradesList}
             options={({ route }) => ({
               headerShown: true,
-              title: moment((route.params as FinalParams)?.final.date).format(
-                'dd/MM/YYYY HH:mm',
-              ),
+              title: (route.params as EvaluationParams).evaluation.evaluationName,
             })}
           />
+
           <Stack.Screen
             name="FinalExamsList"
             component={FinalExamsListScreen}
@@ -141,14 +130,31 @@ const App: React.FC = () => {
             })}
           />
 
+          {/* TEACHERS */}
           <Stack.Screen
             name="Teachers"
             component={TeachersScreen}
             options={({ route }) => ({ title: 'Docentes' })}
           />
 
+          {/* CAMERA */}
+          <Stack.Screen
+            name="QR"
+            component={QRGeneratorScreen}
+            options={({ route }) => ({
+              headerShown: true,
+              title: moment((route.params as FinalParams)?.final.date).format(
+                'dd/MM/YYYY HH:mm',
+              ),
+            })}
+          />
 
 
+          <Stack.Screen
+            name="TakePicture"
+            component={TakePictureStepScreen}
+            options={({ route }) => ({ title: 'Tomar foto' })}
+          />
 
         </Stack.Navigator>
       </NavigationContainer>

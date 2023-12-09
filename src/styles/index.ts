@@ -3,7 +3,7 @@ export { default as commissionCard } from './commissionCard';
 export { default as commissions } from './commissions';
 export { default as finalCard } from './finalCard';
 export { default as finalExamCard } from './finalExamCard';
-export { default as finalExams } from './finalExams';
+export { default as evaluationGradesList } from './evaluationGradesList';
 export { default as home } from './home';
 export { default as takePicture } from './image_recognition/takePicture';
 export { default as landing } from './landing';

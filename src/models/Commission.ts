@@ -13,7 +13,7 @@ export interface CommissionFromBackend {
   chief_teacher:  ChiefTeacherFromBackend;
 }
 
-export function parseComissionFromBackend(commission: CommissionFromBackend): Commission {
+export function parseCommissionFromBackend(commission: CommissionFromBackend): Commission {
   return {
     id: commission.id,
     subjectSiuId: commission.subject_siu_id,

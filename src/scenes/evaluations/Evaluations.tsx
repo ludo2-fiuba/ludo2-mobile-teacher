@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { RoundedButton } from '../../components';
 import { evaluations as style } from '../../styles';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import EvaluationCard from './EvaluationCard';
+import EvaluationsListElement from './EvaluationsListElement';
 import { Evaluation } from '../../models/Evaluation';
 import { Semester } from '../../models/Semester';
 
@@ -26,7 +26,10 @@ const Evaluations: React.FC<FinalsListProps> = () => {
 
   return (
     <FlatList
-      contentContainerStyle={style().listView}
+      style={{ flex: 1 }}
+      contentContainerStyle={evaluations.length === 0
+        ? { flexGrow: 1, backgroundColor: 'white' }
+        : style().listView}
       data={evaluations}
       keyExtractor={evaluation => evaluation.id.toString()}
       ListHeaderComponent={() => (
@@ -50,13 +53,14 @@ const Evaluations: React.FC<FinalsListProps> = () => {
       renderItem={({ item, index }) => (
         <TouchableOpacity
           onPress={() => {
-            console.log('QR');
-            navigation.navigate('QR', {
-              final: item
+            const evaluation = item
+            navigation.navigate('EvaluationsGradesList', {
+              evaluation: evaluation
             });
+
           }}
         >
-          <EvaluationCard evaluation={item}/>
+          <EvaluationsListElement evaluation={item}/>
         </TouchableOpacity>
       )}
     />

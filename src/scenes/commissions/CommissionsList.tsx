@@ -27,7 +27,7 @@ const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
     try {
       const commissionsData: Commission[] = await makeRequest(() => commissionRepository.fetchAll(), navigation);
       setCommissions(commissionsData)
-      console.log("Comissions data: ", commissionsData);
+      console.log("Commissions data: ", commissionsData);
       
       console.log(commissionsData);
       
@@ -70,7 +70,7 @@ const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('SemesterCard', {
-                  commissionId: item.id,
+                  commission: item,
                 });
               }}>
               <CommissionCard commission={item} />
