@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { FinalExam, Student } from '../../models';
+import { Student } from '../../models';
 import FormInput from '../../components/FormInput';
 import { finalExamCard as style } from '../../styles';
+import { Evaluation } from '../../models/Evaluation';
 
 export interface EvaluationCardProps {
-  evaluation: FinalExam;
+  evaluation: Evaluation;
   initialGrade?: number;
   disabled: boolean;
   // onGradeChanged?: (grade?: number) => void;

@@ -1,6 +1,6 @@
 import Student from './Student';
 
-export interface FinalExam {
+export default interface FinalExam {
   id: number;
   finalId: number;
   student: Student;

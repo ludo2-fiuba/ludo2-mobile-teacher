@@ -21,7 +21,8 @@ import moment from 'moment';
 import Evaluations from './src/scenes/evaluations/Evaluations';
 import TeachersScreen from './src/scenes/teachers/Teachers';
 import { AddEvaluation } from './src/scenes/finals';
-import EvaluationGradesList from './src/scenes/evaluation/EvaluationGradesList';
+import EvaluationGradesListTest from './src/scenes/evaluation/EvaluationGradesListTest';
+import SubmissionsList from './src/scenes/evaluation/SubmissionsList';
 
 
 interface SubjectParams {
@@ -110,9 +111,10 @@ const App: React.FC = () => {
             })}
           />
 
+          {/* SUBMISSIONS */}
           <Stack.Screen
-            name="EvaluationsGradesList"
-            component={EvaluationGradesList}
+            name="SubmissionsList"
+            component={SubmissionsList}
             options={({ route }) => ({
               headerShown: true,
               title: (route.params as EvaluationParams).evaluation.evaluationName,

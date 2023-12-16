@@ -4,12 +4,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { EvaluationCard, Loading } from '../../components';
 import { evaluationGradesList as style } from '../../styles';
 // import { finalRepository } from '../../repositories';
-import { Final, FinalExam, FinalStatus } from '../../models';
+import { Final, FinalStatus } from '../../models';
 import FacePictureConfiguration from '../finalExams/face_recognition';
 import { makeRequest } from '../../networking/makeRequest';
 import ListFooter from '../finalExams/ListFooter';
-import { EvaluationGradesListHeaderRight } from './EvaluationGradesListHeaderRight';
+import { EvaluationGradesListHeaderRightTest } from './EvaluationGradesListHeaderRightTest';
 import { SwipeListView } from 'react-native-swipe-list-view';
+import { Submission } from '../../models/Submission';
+import { getSubmissions } from '../../repositories/submissions';
+import SubmissionCard from './SubmissionCard';
 
 Icon.loadFont();
 
@@ -20,39 +23,10 @@ interface Props {
   navigation: any,
 };
 
-const mockedEvaluationGrades = [
-  {
-    "id": 1,
-    "student": {
-      padron: "101049",
-      firstName: "Alvaro",
-      lastName: "Iribarren"
-    },
-    "grade": 8
-  },
-  {
-    "id": 2,
-    "student": {
-      padron: "101049",
-      firstName: "Alvaro",
-      lastName: "Iribarren"
-    },
-    "grade": 8
-  },
-  {
-    "id": 3,
-    "student": {
-      padron: "101049",
-      firstName: "Alvaro",
-      lastName: "Iribarren"
-    },
-    "grade": 8
-  }
-]
 
-const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editable: propEditable, navigation }) => {
+const EvaluationGradesListTest: React.FC<Props> = ({ route, final: propFinal, editable: propEditable, navigation }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [evaluationGrades, setEvaluationGrades] = useState<any[]>(mockedEvaluationGrades);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [gradeChanges, setGradeChanges] = useState<Set<any>>(new Set());
   const [gradeLoading, setGradeLoading] = useState<boolean>(false);
   const [showSave, setShowSave] = useState<{ show: boolean, enabled: boolean }>({ show: false, enabled: false });
@@ -61,7 +35,7 @@ const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editab
   const [final, setFinal] = useState<Final>(route?.params?.final || {} as Final);
 
   useEffect(() => {
-    // fetchData();
+    fetchData();
     setNavOptions();
     if (route?.params?.final) {
       const routeParams: any = route.params
@@ -105,8 +79,22 @@ const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editab
       return;
     }
     setLoading(true);
-    setEvaluationGrades([]);
+    setSubmissions([]);
     setGradeChanges(new Set());
+
+    try {
+      console.log("Dead archive");
+      
+    } catch (error) {
+      console.error("Error fetching data", error);
+      Alert.alert(
+        '¿Qué pasó?',
+        'No sabemos pero no pudimos conseguir información acerca del semestre. ' +
+        'Volvé a intentar en unos minutos.',
+      );
+      setLoading(false);
+      navigation.pop();
+    }
 
     // makeRequest(() => finalRepository.getFinalExamsFor(final.id), navigation)
     // .then(async (exams: any[]) => {
@@ -128,56 +116,6 @@ const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editab
     // });
   };
 
-  // const gradeChanged = (exam: any) => {
-  //   if (!gradeChanges.has(exam.id)) {
-  //     if (gradeChanges.size === 0) {
-  //       addSave(!gradeLoading);
-  //     }
-  //     setGradeChanges(prev => new Set(prev).add(exam.id));
-  //   }
-  // };
-  
-  // const gradeUnChanged = (exam: any) => {
-  //   if (gradeChanges.has(exam.id)) {
-  //     setGradeChanges(prev => {
-  //       const newSet = new Set(prev);
-  //       newSet.delete(exam.id);
-  //       return newSet;
-  //     });
-  //     if (gradeChanges.size === 0) {
-  //       removeSave();
-  //     }
-  //   }
-  // };
-
-  const examEliminated = (exam: any) => {
-    // const existingFinalExams = evaluationGrades;
-    // const previousDeletions = deletionsInProgress;
-    // const newFinalExams = existingFinalExams.filter(
-    //   examAndGrade => examAndGrade[0].id !== exam.id,
-    // );
-
-    // setEvaluationGrades(newFinalExams);
-    // setDeletionsInProgress(previousDeletions + 1);
-    // if (newFinalExams.length === 0) {
-    //   removeNotify();
-    // }
-    // makeRequest(() => finalRepository.deleteExam(final.id, exam), navigation)
-    //   .then(() => {
-    //     setDeletionsInProgress((prev) => prev - 1);
-    //   })
-    //   .catch((error: string) => {
-    //     const newDeletions = deletionsInProgress - 1;
-    //     setDeletionsInProgress(newDeletions);
-    //     setFinalExams(prev => [...prev, [exam, exam.grade]]);
-    //     Alert.alert(
-    //       'Te fallamos',
-    //       'No pudimos eliminar este examen. ' +
-    //         'Guardá tus cambios y volvé a intentar en unos minutos.',
-    //     );
-    //   });
-  }
-  
   const addSave = (enabled: boolean) => {
     setShowSave({ show: true, enabled });
   };
@@ -200,7 +138,7 @@ const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editab
   const setNavOptions = () => {
     const navOptions = {
       headerRight: () => (
-        <EvaluationGradesListHeaderRight
+        <EvaluationGradesListHeaderRightTest
           showNotify={showNotify}
           showSave={showSave}
           notifyGrades={notifyGrades}
@@ -225,9 +163,9 @@ const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editab
   const saveChanges = (onSuccess?: any) => {
     setGradeLoading(true);
     addSave(false);
-    const finalExamsMap: FinalExam[] = evaluationGrades.map((examAndInitialGrade: any) => {
-      return examAndInitialGrade[0];
-    })
+    // const finalExamsMap: FinalExam[] = evaluationGrades.map((examAndInitialGrade: any) => {
+    //   return examAndInitialGrade[0];
+    // })
     // makeRequest(() => finalRepository.grade(final.id, finalExamsMap), navigation)
     //   .then(async () => {
     //     const exams = finalExams.map(examAndInitialGrade => {
@@ -291,7 +229,7 @@ const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editab
   return (
     <View style={style().view}>
     {loading && <Loading />}
-    {!loading && !evaluationGrades.length && (
+    {!loading && !submissions.length && (
       <View style={style().containerView}>
         <Text style={style().text}>
           No se han registrado alumnos que hayan rendido.
@@ -300,13 +238,16 @@ const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editab
     )}
     {!loading && (
       <SwipeListView
-        data={evaluationGrades}
-        keyExtractor={evaluation => evaluation.id}
-        renderItem={({ item: evaluation }) => (
-          <EvaluationCard
-            disabled={gradeLoading || !isEditable()}
-            evaluation={evaluation}
-            initialGrade={evaluation[1]}
+        data={submissions}
+        keyExtractor={submission => submission.student.dni}
+        renderItem={({ item: submission }) => (
+          // <EvaluationCard
+          //   disabled={gradeLoading || !isEditable()}
+          //   evaluation={evaluation}
+          //   initialGrade={evaluation[1]}
+          // />
+          <SubmissionCard
+            submission={submission}
           />
         )}
         renderHiddenItem={({ item }, rowMap) => (
@@ -327,16 +268,16 @@ const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editab
             isEditable={isEditable()}
             gradeLoading={gradeLoading}
             hasWarnings={hasWarnings}
-            ableToCloseAct={canCloseAct(evaluationGrades)}
+            ableToCloseAct={canCloseAct(submissions)}
             deletionsInProgress={deletionsInProgress > 0}
             loading={loading}
             saveChanges={saveChanges}
             closeAct={closeAct}
             getFinal={() => final}
-            setFinalExams={setEvaluationGrades}
+            setFinalExams={setSubmissions}
             setLoading={setLoading}
             addNotify={addNotify}
-            finalExams={evaluationGrades}
+            finalExams={submissions}
             gradeChanges={gradeChanges}
           />
         )}
@@ -346,4 +287,4 @@ const EvaluationGradesList: React.FC<Props> = ({ route, final: propFinal, editab
   );
 };
 
-export default EvaluationGradesList;
+export default EvaluationGradesListTest;

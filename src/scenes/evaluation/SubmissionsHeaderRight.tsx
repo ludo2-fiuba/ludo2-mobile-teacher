@@ -16,7 +16,7 @@ interface Props {
   saveChanges: (onSuccess?: any) => void;
 }
 
-export function EvaluationGradesListHeaderRight({ showNotify, showSave, ...handlers }: Props) {
+export function SubmissionsHeaderRight({ showNotify, showSave, ...handlers }: Props) {
   const saveOpacityStyle = {
     ...style().navButton,
     opacity: showSave.enabled ? 1 : 0.5,

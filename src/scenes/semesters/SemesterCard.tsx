@@ -5,7 +5,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { semesterRepository } from '../../repositories';
 // import { semesterCard as style } from '../../styles';
 import BasicList from '../../components/basicList';
-import { parseEvaluationFromBackend } from '../../models/Evaluation';
 import { lightModeColors } from '../../styles/colorPalette';
 
 interface Props {
@@ -14,8 +13,6 @@ interface Props {
 
 export function SemesterCard({ route }: Props) {
   const { commission } = route.params;
-  console.log('From route params', commission);
-  
   const [isLoading, setIsLoading] = useState(false);
   const [semester, setSemester] = useState<Semester | null>(null);
   const navigation = useNavigation();
@@ -48,7 +45,7 @@ export function SemesterCard({ route }: Props) {
 
     try {
       const semesterData: Semester = await semesterRepository.fetchPresentSemesterFromCommissionId(commission.id);
-
+      console.log('Semester data', semesterData);
       setSemester(semesterData);
       setIsLoading(false);
     } catch (error) {

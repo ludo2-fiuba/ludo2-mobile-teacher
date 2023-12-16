@@ -24,7 +24,7 @@ export function parseSemesterFromBackend(semester: SemesterFromBackend): Semeste
     startDate: semester.start_date,
     commission: parseCommissionFromBackend(semester.commission),
     evaluations: semester.evaluations.map((evaluation: EvaluationFromBackend, index) => {
-      return parseEvaluationFromBackend(index, evaluation);
+      return parseEvaluationFromBackend(evaluation);
     }),
   }
 }

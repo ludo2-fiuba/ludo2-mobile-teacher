@@ -1,7 +1,6 @@
 import { CreateEvaluation } from '../models/CreateEvaluation.ts';
 import { Evaluation } from '../models/Evaluation.ts';
 import { Semester } from '../models/Semester.ts';
-import Student from '../models/Student.ts';
 import { post } from './authenticatedRepository.ts';
 
 const domainUrl = 'api/teacher/evaluations';
@@ -16,7 +15,7 @@ async function create(semester: Semester, evaluationName: string, startDate: Dat
     end_date: finishDate
   }
 
-  return await post(`${domainUrl}`, evaluationToBeCreated) as unknown as CreateEvaluation
+  return await post(`${domainUrl}/add_evaluation`, evaluationToBeCreated) as unknown as CreateEvaluation
 }
 
 // To implement when evaluations contain grades and the backend supports adding students to evaluations

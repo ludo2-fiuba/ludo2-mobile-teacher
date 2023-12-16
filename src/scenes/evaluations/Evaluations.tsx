@@ -17,11 +17,9 @@ interface EvaluationsRouteParams {
 
 const Evaluations: React.FC<FinalsListProps> = () => {
   const route = useRoute();
-  console.log("Route params");
-  console.log(route.params);
-  
   const semester: Semester = (route.params as EvaluationsRouteParams).semester
   const evaluations: Evaluation[] = (route.params as EvaluationsRouteParams).evaluations
+  console.log("Evaluations: ", evaluations);
   const navigation = useNavigation();
 
   return (
@@ -54,7 +52,7 @@ const Evaluations: React.FC<FinalsListProps> = () => {
         <TouchableOpacity
           onPress={() => {
             const evaluation = item
-            navigation.navigate('EvaluationsGradesList', {
+            navigation.navigate('SubmissionsList', {
               evaluation: evaluation
             });
 

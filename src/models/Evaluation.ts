@@ -7,15 +7,16 @@ export interface Evaluation {
 }
 
 export interface EvaluationFromBackend {
+  id: number,
   evaluation_name: string;
   passing_grade:   number;
   start_date:      Date;
   end_date:        Date;
 }
 
-export function parseEvaluationFromBackend(id: number, evaluation: EvaluationFromBackend): Evaluation {
+export function parseEvaluationFromBackend(evaluation: EvaluationFromBackend): Evaluation {
   return {
-    id:            id,
+    id:             evaluation.id,
     evaluationName: evaluation.evaluation_name,
     passingGrade:   evaluation.passing_grade,
     startDate:      evaluation.start_date,
