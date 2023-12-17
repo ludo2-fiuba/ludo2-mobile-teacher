@@ -1,4 +1,4 @@
-import { View, Text, Alert } from 'react-native'
+import { View, Text, Alert, FlatList } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Submission } from '../../models/Submission'
 import { submissionsRepository } from '../../repositories';
@@ -58,7 +58,7 @@ export default function SubmissionsList({ route }: Props) {
     {isLoading && <Loading />}
     
     {!isLoading && (
-      <SwipeListView
+      <FlatList
         data={submissions}
         keyExtractor={submission => submission.student.dni}
         renderItem={({ item: submission }) => (
