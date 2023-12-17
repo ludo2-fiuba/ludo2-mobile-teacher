@@ -8,6 +8,7 @@ import { EvaluationCard, Loading } from '../../components';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import SubmissionCard from './SubmissionCard';
 import { Evaluation } from '../../models/Evaluation';
+import { SubmissionsHeaderRight } from './SubmissionsHeaderRight';
 
 
 interface Props {
@@ -22,8 +23,19 @@ export default function SubmissionsList({ route }: Props) {
   const navigation = useNavigation();
   const [submissions, setSubmissions] = useState<Submission[]>([])
   const [isLoading, setIsLoading] = useState(false);
+
+  const evaluation = (route.params as RouteParams).evaluation;
   const evaluationId = (route.params as RouteParams).evaluation.id;  
   
+  const setNavOptions = () => {
+    const navOptions = {
+      headerRight: () => (
+        <SubmissionsHeaderRight/>
+      ),
+    };
+    navigation.setOptions(navOptions);
+  };
+
 
   const fetchData = useCallback(async () => {
     try {
@@ -31,7 +43,6 @@ export default function SubmissionsList({ route }: Props) {
       setIsLoading(true);
 
       const submissions: Submission[] = await submissionsRepository.getSubmissions(evaluationId);
-      console.log('Submissions', submissions);
       setSubmissions(submissions);
       setIsLoading(false);
     } catch (error) {
@@ -47,6 +58,7 @@ export default function SubmissionsList({ route }: Props) {
 
   useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
+      setNavOptions();
       fetchData();
     });
     return focusUnsubscribe;
@@ -62,7 +74,7 @@ export default function SubmissionsList({ route }: Props) {
         data={submissions}
         keyExtractor={submission => submission.student.dni}
         renderItem={({ item: submission }) => (
-          <SubmissionCard submission={submission}/>
+          <SubmissionCard submission={submission} evaluation={evaluation}/>
         )}
         ListEmptyComponent={() => (
           <View style={style().containerView}>

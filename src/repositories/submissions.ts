@@ -17,7 +17,12 @@ export async function getSubmissions(evaluationId: number): Promise<Submission[]
 }
 
 export async function gradeSubmission(studentId: number, evaluationId: number, grade: number): Promise<GradeChange> {
-  const gradeChange: GradeChangeSnakeCase = await post(`${GRADE_SUBMISSION_ENDPOINT}`, {studentId, evaluationId, grade}) as GradeChangeSnakeCase;
+  const snakeCaseBody = {
+    "student": studentId,
+    "evaluation": evaluationId,
+    "grade": grade
+  }
+  const gradeChange: GradeChangeSnakeCase = await put(`${GRADE_SUBMISSION_ENDPOINT}`, snakeCaseBody) as GradeChangeSnakeCase;
   return convertSnakeToCamelCase(gradeChange) as GradeChange;
 }
 

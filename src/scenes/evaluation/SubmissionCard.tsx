@@ -1,12 +1,15 @@
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import React, { useState } from 'react';
 import { Submission } from '../../models/Submission';
+import { gradeSubmission } from '../../repositories/submissions';
+import { Evaluation } from '../../models/Evaluation';
 
 interface Props {
   submission: Submission;
+  evaluation: Evaluation;
 }
 
-export default function SubmissionCard({ submission }: Props) {
+export default function SubmissionCard({ submission, evaluation }: Props) {
   const [grade, setGrade] = useState((submission.grade || '').toString());
 
 
@@ -14,6 +17,7 @@ export default function SubmissionCard({ submission }: Props) {
     setGrade(newGrade);
     
     console.log('New grade', newGrade);
+    gradeSubmission(submission.student.id, evaluation.id, +newGrade)
   };
 
   return (
