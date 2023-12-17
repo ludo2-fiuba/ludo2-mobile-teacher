@@ -37,7 +37,6 @@ const SemesterList: React.FC<SemesterListProps> = ({ navigation }) => {
       isRefreshing ? setRefreshing(true) : setLoading(true);
 
       try {
-        console.log('Making request for Semesters');
         // set semester data with timeout
         setTimeout(() => {
           isRefreshing ? setRefreshing(false) : setLoading(false);

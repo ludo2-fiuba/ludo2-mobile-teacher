@@ -45,7 +45,6 @@ export function SemesterCard({ route }: Props) {
 
     try {
       const semesterData: Semester = await semesterRepository.fetchPresentSemesterFromCommissionId(commission.id);
-      console.log('Semester data', semesterData);
       setSemester(semesterData);
       setIsLoading(false);
     } catch (error) {

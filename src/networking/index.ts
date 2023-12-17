@@ -2,7 +2,7 @@ import { API_URL } from "@env";
 
 export const baseUrl = API_URL || 'http://example.com:8007';
 
-const logRequests = true;
+const logRequests = false;
 
 export class StatusCodeError extends Error {
   code: number;

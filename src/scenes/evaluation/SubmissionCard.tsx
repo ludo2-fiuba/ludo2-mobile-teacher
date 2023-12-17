@@ -15,8 +15,6 @@ export default function SubmissionCard({ submission, evaluation }: Props) {
 
   const handleGradeChange = (newGrade: string) => {
     setGrade(newGrade);
-    
-    console.log('New grade', newGrade);
     gradeSubmission(submission.student.id, evaluation.id, +newGrade)
   };
 

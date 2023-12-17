@@ -56,7 +56,6 @@ const AddEvaluation: React.FC<Props> = () => {
   const onStartTimeChange = (event: any, selectedTime: any) => {
     setShowStartTimePicker(false);
     if (event.type === 'set' && selectedTime) {
-      console.log(selectedTime);
       // Just update the startTime state
       setStartTime(new Date(selectedTime));
       const timeAfterThreeHours = new Date(selectedTime).setHours(new Date(selectedTime).getHours() + 3);

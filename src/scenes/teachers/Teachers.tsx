@@ -59,8 +59,6 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
 
     try {
       const staffTeachers: TeacherTuple[] = await teachersRepository.fetchTeachersOfCommission(commissionId);
-      console.log('Staff teachers', staffTeachers);
-      
       setStaffTeachers(staffTeachers);
 
       setIsLoading(false);

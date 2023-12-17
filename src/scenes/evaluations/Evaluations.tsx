@@ -19,7 +19,6 @@ const Evaluations: React.FC<FinalsListProps> = () => {
   const route = useRoute();
   const semester: Semester = (route.params as EvaluationsRouteParams).semester
   const evaluations: Evaluation[] = (route.params as EvaluationsRouteParams).evaluations
-  console.log("Evaluations: ", evaluations);
   const navigation = useNavigation();
 
   return (
