@@ -6,20 +6,10 @@ export interface Evaluation {
   endDate:        Date;
 }
 
-export interface EvaluationFromBackend {
+export interface EvaluationSnakeCase {
   id: number,
   evaluation_name: string;
   passing_grade:   number;
   start_date:      Date;
   end_date:        Date;
-}
-
-export function parseEvaluationFromBackend(evaluation: EvaluationFromBackend): Evaluation {
-  return {
-    id:             evaluation.id,
-    evaluationName: evaluation.evaluation_name,
-    passingGrade:   evaluation.passing_grade,
-    startDate:      evaluation.start_date,
-    endDate:        evaluation.end_date,
-  };
 }

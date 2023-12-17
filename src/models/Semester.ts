@@ -1,5 +1,5 @@
-import { CommissionFromBackend, Commission, parseCommissionFromBackend } from "./Commission";
-import { Evaluation, EvaluationFromBackend, parseEvaluationFromBackend } from "./Evaluation";
+import { CommissionSnakeCase, Commission } from "./Commission";
+import { Evaluation, EvaluationSnakeCase } from "./Evaluation";
 
 export interface Semester {
   id: number
@@ -9,22 +9,10 @@ export interface Semester {
   evaluations: Evaluation[];
 }
 
-export interface SemesterFromBackend {
+export interface SemesterSnakeCase {
   id: number;
   year_moment: string;
   start_date: Date;
-  commission: CommissionFromBackend;
-  evaluations: EvaluationFromBackend[];
-}
-
-export function parseSemesterFromBackend(semester: SemesterFromBackend): Semester {
-  return {
-    id: semester.id,
-    yearMoment: semester.year_moment,
-    startDate: semester.start_date,
-    commission: parseCommissionFromBackend(semester.commission),
-    evaluations: semester.evaluations.map((evaluation: EvaluationFromBackend, index) => {
-      return parseEvaluationFromBackend(evaluation);
-    }),
-  }
+  commission: CommissionSnakeCase;
+  evaluations: EvaluationSnakeCase[];
 }

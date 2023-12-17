@@ -1,4 +1,13 @@
-export interface CreatedEvaluationFromBackend {
+export interface CreatedEvaluation {
+  semesterId:   number;
+  evaluationName: string;
+  isGraded:     boolean;
+  passingGrade: number;
+  startDate:    Date;
+  endDate:      Date;
+}
+
+export interface CreatedEvaluationSnakeCase {
   semester_id:     number;
   evaluation_name: string;
   is_graded:       boolean;

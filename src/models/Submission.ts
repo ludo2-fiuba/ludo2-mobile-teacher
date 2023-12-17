@@ -1,20 +1,13 @@
-import { Student, StudentFromBackend, parseStudentFromBackend } from "./Student";
+import { Student, StudentSnakeCase } from "./Student";
 
 export interface Submission {
   student: Student;
   grade:   null;
 }
 
-export interface SubmissionFromBackend {
-  student: StudentFromBackend;
+export interface SubmissionSnakeCase {
+  student: StudentSnakeCase;
   grade:   null;
 }
-
-// export function parseSubmissionFromBackend(submissionFromBackend: SubmissionFromBackend): Submission {
-//   return {
-//     student: parseStudentFromBackend(submissionFromBackend.student),
-//     grade:   submissionFromBackend.grade,
-//   };
-// }
 
 

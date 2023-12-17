@@ -1,4 +1,4 @@
-import { ChiefTeacher, ChiefTeacherFromBackend, parseChiefTeacherFromBackend } from "./ChiefTeacher";
+import { ChiefTeacher, ChiefTeacherSnakeCase } from "./ChiefTeacher";
 
 export interface Commission {
   id: number;
@@ -6,18 +6,9 @@ export interface Commission {
   subjectName:   string;
   chiefTeacher:  ChiefTeacher;
 }
-export interface CommissionFromBackend {
+export interface CommissionSnakeCase {
   id: number;
   subject_siu_id: number;
   subject_name:   string;
-  chief_teacher:  ChiefTeacherFromBackend;
-}
-
-export function parseCommissionFromBackend(commission: CommissionFromBackend): Commission {
-  return {
-    id: commission.id,
-    subjectSiuId: commission.subject_siu_id,
-    subjectName: commission.subject_name,
-    chiefTeacher: parseChiefTeacherFromBackend(commission.chief_teacher),
-  };
+  chief_teacher:  ChiefTeacherSnakeCase;
 }

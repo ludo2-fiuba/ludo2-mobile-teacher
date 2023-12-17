@@ -5,14 +5,20 @@ function isObject(item: any): boolean {
 }
 
 export function convertSnakeToCamelCase(obj: any): any {
-  if (!isObject(obj)) return obj;
+  if (Array.isArray(obj)) {
+    return obj.map(item => convertSnakeToCamelCase(item));
+  }
+
+  if (!isObject(obj)) {
+    return obj;
+  }
 
   return Object.keys(obj).reduce((acc: any, key: any) => {
     const camelKey = lodash.camelCase(key);
     let value = obj[key];
 
-    // If the value is an object, recursively apply conversion
-    if (isObject(value)) {
+    // Apply conversion recursively if the value is an object or an array
+    if (isObject(value) || Array.isArray(value)) {
       value = convertSnakeToCamelCase(value);
     }
 

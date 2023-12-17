@@ -1,4 +1,4 @@
-import Student from './Student';
+import { Student } from "./Student";
 
 export default interface FinalExam {
   id: number;

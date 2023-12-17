@@ -5,7 +5,7 @@ import { commissions as style } from '../../styles';
 import { commissionRepository } from '../../repositories';
 import { makeRequest } from '../../networking/makeRequest';
 import { Commission } from '../../models';
-import { CommissionFromBackend } from '../../models/Commission';
+import { CommissionSnakeCase } from '../../models/Commission';
 
 interface CommissionsListProps {
   navigation: any;  // Specify a more accurate type if possible

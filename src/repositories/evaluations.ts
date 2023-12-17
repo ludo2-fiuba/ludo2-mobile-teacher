@@ -1,12 +1,13 @@
-import { CreateEvaluation } from '../models/CreateEvaluation.ts';
+import { CreatedEvaluation, CreatedEvaluationSnakeCase } from '../models/CreatedEvaluation.ts';
 import { Evaluation } from '../models/Evaluation.ts';
 import { Semester } from '../models/Semester.ts';
+import { convertSnakeToCamelCase } from '../utils/convertSnakeToCamelCase.ts';
 import { post } from './authenticatedRepository.ts';
 
 const domainUrl = 'api/teacher/evaluations';
 
-async function create(semester: Semester, evaluationName: string, startDate: Date, finishDate: Date): Promise<CreateEvaluation> {
-  const evaluationToBeCreated: CreateEvaluation = {
+async function create(semester: Semester, evaluationName: string, startDate: Date, finishDate: Date): Promise<CreatedEvaluation> {
+  const evaluationToBeCreated: CreatedEvaluationSnakeCase = {
     semester_id: semester.id,
     evaluation_name: evaluationName,
     is_graded: true,
@@ -15,7 +16,8 @@ async function create(semester: Semester, evaluationName: string, startDate: Dat
     end_date: finishDate
   }
 
-  return await post(`${domainUrl}/add_evaluation`, evaluationToBeCreated) as unknown as CreateEvaluation
+  const response = await post(`${domainUrl}/add_evaluation`, evaluationToBeCreated)
+  return convertSnakeToCamelCase(response) as CreatedEvaluation
 }
 
 // To implement when evaluations contain grades and the backend supports adding students to evaluations

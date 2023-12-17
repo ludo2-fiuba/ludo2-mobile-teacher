@@ -1,4 +1,5 @@
-import { Submission, SubmissionFromBackend } from '../models/Submission.ts';
+import { GradeChange, GradeChangeSnakeCase } from '../models/GradeChange.ts';
+import { Submission, SubmissionSnakeCase } from '../models/Submission.ts';
 import { convertSnakeToCamelCase } from '../utils/convertSnakeToCamelCase.ts';
 import { get, post, put } from './authenticatedRepository.ts';
 
@@ -9,18 +10,15 @@ const GRADE_SUBMISSION_ENDPOINT = `${domainUrl}/grade`;
 
 // Get submissions
 export async function getSubmissions(evaluationId: number): Promise<Submission[]> {
-  const submissionsFromBackend: SubmissionFromBackend[] = await get(`${GET_SUBMISSIONS_ENDPOINT}`, [{key: 'evaluation', value: evaluationId}]) as SubmissionFromBackend[]; 
-  const submissions: Submission[] = [];
-
-  for (const submission of submissionsFromBackend) {
-    submissions.push(convertSnakeToCamelCase(submission) as Submission);
-  }
-
+  const submissionsSnakeCase: SubmissionSnakeCase[] = await get(`${GET_SUBMISSIONS_ENDPOINT}`, [{key: 'evaluation', value: evaluationId}]) as SubmissionSnakeCase[]; 
+  
+  const submissions: Submission[] = convertSnakeToCamelCase(submissionsSnakeCase) as Submission[];
   return submissions;
 }
 
-export async function gradeSubmission(studentId: number, evaluationId: number, grade: number) {
-  await post(`${GRADE_SUBMISSION_ENDPOINT}`, {studentId, evaluationId, grade});
+export async function gradeSubmission(studentId: number, evaluationId: number, grade: number): Promise<GradeChange> {
+  const gradeChange: GradeChangeSnakeCase = await post(`${GRADE_SUBMISSION_ENDPOINT}`, {studentId, evaluationId, grade}) as GradeChangeSnakeCase;
+  return convertSnakeToCamelCase(gradeChange) as GradeChange;
 }
 
 export default { getSubmissions };
