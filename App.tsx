@@ -23,6 +23,7 @@ import TeachersScreen from './src/scenes/teachers/Teachers';
 import { AddEvaluation } from './src/scenes/finals';
 import EvaluationGradesListTest from './src/scenes/evaluation/EvaluationGradesListTest';
 import SubmissionsList from './src/scenes/evaluation/SubmissionsList';
+import TeachersConfiguration from './src/scenes/teachers/TeachersConfiguration';
 
 
 interface SubjectParams {
@@ -137,6 +138,12 @@ const App: React.FC = () => {
             name="Teachers"
             component={TeachersScreen}
             options={({ route }) => ({ title: 'Docentes' })}
+          />
+
+          <Stack.Screen
+            name="TeachersConfiguration"
+            component={TeachersConfiguration}
+            options={({ route }) => ({ title: 'Configuracion de Semestre' })}
           />
 
           {/* CAMERA */}

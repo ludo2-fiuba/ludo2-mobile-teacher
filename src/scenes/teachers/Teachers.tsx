@@ -5,6 +5,7 @@ import { ChiefTeacher } from '../../models/ChiefTeacher';
 import { lightModeColors } from '../../styles/colorPalette';
 import { Teacher, TeacherTuple } from '../../models/Teachers';
 import { teachersRepository } from '../../repositories';
+import TeachersHeaderRight from './TeachersHeaderRight';
 const UserIcon = require('./img/usericon.jpg');
 
 
@@ -46,12 +47,23 @@ interface TeachersRouteParams {
 
 const TeachersScreen = ({ route }: TeachersScreenProps) => {
   const navigation = useNavigation();
-  // const route = useRoute();
   const [isLoading, setIsLoading] = useState(false);
 
   const commissionId = (route.params as TeachersRouteParams).commissionId;
   const chiefTeacher = (route.params as TeachersRouteParams).chiefTeacher;
   const [staffTeachers, setStaffTeachers] = useState<TeacherTuple[]>([])
+
+  useEffect(() => {
+    const navOptions = {
+      headerRight: () => (
+        <TeachersHeaderRight 
+          staffTeachers={staffTeachers}
+        />
+      ),
+    };
+    navigation.setOptions(navOptions);
+  }, [staffTeachers])
+  
 
   const fetchData = useCallback(async () => {
     if (isLoading) return;
@@ -60,7 +72,6 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
     try {
       const staffTeachers: TeacherTuple[] = await teachersRepository.fetchTeachersOfCommission(commissionId);
       setStaffTeachers(staffTeachers);
-
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data", error);

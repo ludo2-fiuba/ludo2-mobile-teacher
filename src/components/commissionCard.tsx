@@ -12,7 +12,7 @@ const CommissionCard: React.FC<CommissionCardProps> = ({ commission }) => {
   return (
     <View style={style().view}>
       <View>
-        <Text style={style().subjectName}>{commission.subjectName.split('-')[0]}</Text>
+        <Text style={style().subjectName}>{commission.subjectName.split('-')[0]} - ID: {commission.id}</Text>
       </View>
       <View style={{}}>
         <Text style={style().catedraName}>{commission.subjectName.split('-')[1].trim()}</Text>

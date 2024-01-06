@@ -44,6 +44,7 @@ const AddEvaluation: React.FC<Props> = () => {
   const route = useRoute();
 
   const semester: Semester = (route.params as AddEvaluationRouteParams).semesterToBeAddedAnEvaluation
+  console.log('Semester from addevaluation', semester);
 
   const onStartDateChange = (event: any, selectedDate: any) => {
     setShowStartDatePicker(false);
@@ -253,9 +254,10 @@ const AddEvaluation: React.FC<Props> = () => {
           if (startDate && finishDate && startTime && finishTime) {
             if (isFinishAfterStart(startDate, startTime, finishDate, finishTime)) {
               setCreating(true);
+              
               const startFullDate = combineDateAndTime(startDate, startTime);
               const finishFullDate = combineDateAndTime(finishDate, finishTime);
-        
+              
               evaluationsRepository.create(semester, evaluationName, startFullDate, finishFullDate)
                 .then(() => {
                   setCreating(false);
