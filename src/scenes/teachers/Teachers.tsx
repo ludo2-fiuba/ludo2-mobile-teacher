@@ -6,6 +6,8 @@ import { lightModeColors } from '../../styles/colorPalette';
 import { Teacher, TeacherTuple } from '../../models/Teachers';
 import { teachersRepository } from '../../repositories';
 import TeachersHeaderRight from './TeachersHeaderRight';
+import { Loading } from '../../components';
+import teacherRoles from '../../models/TeacherRoles';
 const UserIcon = require('./img/usericon.jpg');
 
 
@@ -22,13 +24,13 @@ const ChiefCard = ({ firstName, lastName, email }: ChiefTeacher) => {
 };
 
 
-const TeacherCard = ({ teacher, role}: { teacher: Teacher, role: string }) => {
+const TeacherCard = ({ teacher, role }: { teacher: Teacher, role: string }) => {
   return (
     <View style={styles.cardContainer}>
       <Image source={UserIcon} style={styles.image} />
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{teacher.firstName + ' ' + teacher.lastName} </Text>
-        <Text style={styles.role}>{role === 'T' ? 'Teacher' : 'Assistant'}</Text>
+        <Text style={styles.role}>{teacherRoles.find(actualRole => actualRole.shortVersion === role)?.longVersion}</Text>
         <Text style={styles.email}>{teacher.email}</Text>
       </View>
     </View>
@@ -51,26 +53,32 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
 
   const commissionId = (route.params as TeachersRouteParams).commissionId;
   const chiefTeacher = (route.params as TeachersRouteParams).chiefTeacher;
+  
+  const [allTeachers, setAllTeachers] = useState<Teacher[]>([])
   const [staffTeachers, setStaffTeachers] = useState<TeacherTuple[]>([])
 
   useEffect(() => {
     const navOptions = {
       headerRight: () => (
-        <TeachersHeaderRight 
+        <TeachersHeaderRight
           staffTeachers={staffTeachers}
+          commissionId={commissionId}
         />
       ),
     };
     navigation.setOptions(navOptions);
   }, [staffTeachers])
-  
+
 
   const fetchData = useCallback(async () => {
     if (isLoading) return;
     setIsLoading(true);
 
     try {
+      const allTeachers: Teacher[] = await teachersRepository.fetchAllTeachers();
       const staffTeachers: TeacherTuple[] = await teachersRepository.fetchTeachersOfCommission(commissionId);
+
+      setAllTeachers(allTeachers);
       setStaffTeachers(staffTeachers);
       setIsLoading(false);
     } catch (error) {
@@ -90,20 +98,24 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
     });
     return focusUnsubscribe;
   }, [])
-  
+
   return (
+
     <SafeAreaView style={styles.container}>
       {chiefTeacher && <ChiefCard {...chiefTeacher} />}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Cuerpo docente</Text>
       </View>
-      <FlatList
-        data={staffTeachers}
-        renderItem={({ item }) => <TeacherCard teacher={item.teacher} role={item.role} />}
-        keyExtractor={item => item.teacher.dni}
-        style={styles.list}
-        ListEmptyComponent={() => <Text style={styles.emptyStaffTeachersList}>No hay docentes auxiliares</Text>}
-      />
+      {isLoading && <Loading />}
+      {!isLoading &&
+        <FlatList
+          data={staffTeachers}
+          renderItem={({ item }) => <TeacherCard teacher={item.teacher} role={item.role} />}
+          keyExtractor={item => item.teacher.dni}
+          style={styles.list}
+          ListEmptyComponent={() => <Text style={styles.emptyStaffTeachersList}>No hay docentes auxiliares</Text>}
+        />
+      }
     </SafeAreaView>
   );
 };
@@ -201,10 +213,10 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontSize: 18,
   },
-  emptyStaffTeachersList: { 
-    textAlign: 'center', 
-    marginTop: 20, 
-    fontSize: 18 
+  emptyStaffTeachersList: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 18
   }
 });
 

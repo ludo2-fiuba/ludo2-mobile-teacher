@@ -13,14 +13,16 @@ export interface TeacherTupleSnakeCase {
 }
 
 export interface Teacher {
-  firstName: string;
-  lastName:  string;
+  id:         number;
+  firstName:  string;
+  lastName:   string;
   dni:        string;
   email:      string;
   legajo:     string;
 }
 
 export interface TeacherSnakeCase {
+  id:         number;
   first_name: string;
   last_name:  string;
   dni:        string;

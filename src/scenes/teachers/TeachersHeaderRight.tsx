@@ -6,9 +6,10 @@ import { TeacherTuple } from '../../models/Teachers';
 
 interface Props {
   staffTeachers: TeacherTuple[];
+  commissionId: number;
 }
 
-export default function TeachersHeaderRight({ staffTeachers }: Props) {
+export default function TeachersHeaderRight({ staffTeachers, commissionId }: Props) {
   const navigation = useNavigation();
 
   const saveOpacityStyle = {
@@ -20,6 +21,7 @@ export default function TeachersHeaderRight({ staffTeachers }: Props) {
   const navigateToTeachersConfiguration = () => {
     navigation.navigate('TeachersConfiguration', {
       staffTeachers: staffTeachers,
+      commissionId: commissionId,
     });
   }
 

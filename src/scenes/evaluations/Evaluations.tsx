@@ -51,8 +51,6 @@ const Evaluations: React.FC<FinalsListProps> = () => {
   }, [navigation, fetchData]);
 
   const EvaluationsList = () => {
-    console.log("Evaluations list", evaluations);
-
     return (
       <FlatList
         style={{ flex: 1, height: '100%' }}
