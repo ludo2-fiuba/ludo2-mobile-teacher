@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import basic from './basic';
+import { lightModeColors } from './colorPalette';
 
 const BasicSubmitButtonStyle = {
   paddingTop: 15,
@@ -11,9 +12,12 @@ const BasicSubmitButtonStyle = {
 export default StyleSheet.create({
   MainContainer: {
     justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 20,
+    elevation: 3,
+    backgroundColor: lightModeColors.institutional,
+    borderRadius: 35,
+    width: '100%'
   },
+
   EnabledSubmitButtonStyle: {
     ...BasicSubmitButtonStyle,
     opacity: 1,
@@ -22,10 +26,14 @@ export default StyleSheet.create({
     ...BasicSubmitButtonStyle,
     opacity: 0.5,
   },
+
   TextStyle: {
     ...basic().text,
     textAlign: 'center',
+    fontSize: 18,
+    color: 'white'
   },
+
   DefaultPropStyle: {
     fontSize: 15,
     fontWeight: 'bold',
@@ -33,6 +41,6 @@ export default StyleSheet.create({
     height: 70,
     borderRadius: 35,
     backgroundColor: 'red',
-    tintColor: 'orange',
+    tintColor: 'white',
   },
 });
