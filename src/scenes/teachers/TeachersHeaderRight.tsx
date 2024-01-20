@@ -1,15 +1,16 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import { TeacherTuple } from '../../models/Teachers';
+import { Teacher, TeacherTuple } from '../../models/Teachers';
 
 interface Props {
   staffTeachers: TeacherTuple[];
+  allTeachers: Teacher[];
   commissionId: number;
 }
 
-export default function TeachersHeaderRight({ staffTeachers, commissionId }: Props) {
+export default function TeachersHeaderRight({ staffTeachers, allTeachers, commissionId }: Props) {
   const navigation = useNavigation();
 
   const saveOpacityStyle = {
@@ -25,13 +26,29 @@ export default function TeachersHeaderRight({ staffTeachers, commissionId }: Pro
     });
   }
 
+  const addNewTeacherToCommission = () => {
+    console.log("Add new teacher to commission");
+    navigation.navigate('AddTeachersConfigurationList', {
+      staffTeachers: staffTeachers,
+      allTeachers: allTeachers,
+      commissionId: commissionId,
+    })
+  }
+
+
   return (
-    <View>
+    <View style={styles.iconsContainer}>
       <TouchableOpacity
-          style={saveOpacityStyle}
-          // disabled={!showSave}
-          onPress={() => navigateToTeachersConfiguration()}>
-          <Icon style={styles.navButtonIcon} name="settings" />
+        style={saveOpacityStyle}
+        // disabled={!showSave}
+        onPress={() => addNewTeacherToCommission()}>
+        <Icon style={styles.navButtonIcon} name="edit" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={saveOpacityStyle}
+        // disabled={!showSave}
+        onPress={() => navigateToTeachersConfiguration()}>
+        <Icon style={styles.navButtonIcon} name="settings" />
       </TouchableOpacity>
     </View>
   )
@@ -52,5 +69,10 @@ const styles = StyleSheet.create({
   navButtonIcon: {
     fontSize: 25,
     marginRight: 10,
-  }
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
 })

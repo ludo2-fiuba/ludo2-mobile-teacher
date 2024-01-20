@@ -62,6 +62,7 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
       headerRight: () => (
         <TeachersHeaderRight
           staffTeachers={staffTeachers}
+          allTeachers={allTeachers}
           commissionId={commissionId}
         />
       ),
@@ -100,7 +101,6 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
   }, [])
 
   return (
-
     <SafeAreaView style={styles.container}>
       {chiefTeacher && <ChiefCard {...chiefTeacher} />}
       <View style={styles.headerContainer}>

@@ -19,9 +19,6 @@ export async function modifyRoleOfTeacherInCommission(commissionId: number, teac
     teacher: teacherId,
     role: role
   }
-  console.log("Updating role for teacher in commission");
-  console.log(roleToBeCreatedInCommission);
-  
   const result = await put(`api/commissions/teachers`, roleToBeCreatedInCommission)
   return result;
 }
@@ -32,8 +29,9 @@ export async function createRoleForTeacherInCommission(commissionId: number, tea
     teacher: teacherId,
     role: role
   }
-  console.log("Creating role for teacher in commission");
-  console.log(roleToBeCreatedInCommission);
+
+  console.log("roleToBeCreatedInCommission")
+  console.log(roleToBeCreatedInCommission)
   
   const result = await post(`api/commissions/teachers`, roleToBeCreatedInCommission)
   return result;
