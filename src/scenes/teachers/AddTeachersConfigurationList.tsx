@@ -7,11 +7,12 @@ import { Loading } from '../../components';
 import { useRoute } from '@react-navigation/native';
 import TeachersSearchBar from './TeachersSearchBar';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { increment, selectCount } from '../../features/counter/counterSlice';
 
 const UserIcon = require('./img/usericon.jpg');
 
 const TeacherCard = ({ teacher, role }: { teacher: Teacher, role: string }) => {
-  
   const deleteTeacherFromCommission = () => {
     console.log("Delete teacher from commission");
   }

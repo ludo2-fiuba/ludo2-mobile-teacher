@@ -25,6 +25,8 @@ import EvaluationGradesListTest from './src/scenes/evaluation/EvaluationGradesLi
 import SubmissionsList from './src/scenes/evaluation/SubmissionsList';
 import TeachersConfiguration from './src/scenes/teachers/TeachersConfiguration';
 import AddTeachersConfigurationList from './src/scenes/teachers/AddTeachersConfigurationList';
+import { Provider } from 'react-redux';
+import { store } from './src/store';
 
 
 interface SubjectParams {
@@ -41,7 +43,14 @@ interface FinalParams {
 
 const Stack = createStackNavigator();
 
-const App: React.FC = () => {
+const App = () => (
+  <Provider store={store}>
+    <AllComponents />
+  </Provider>
+);
+
+
+const AllComponents: React.FC = () => {
   return (
     <ActionSheetProvider>
       <NavigationContainer>
