@@ -27,6 +27,7 @@ import TeachersConfiguration from './src/scenes/teachers/TeachersConfiguration';
 import AddTeachersConfigurationList from './src/scenes/teachers/AddTeachersConfigurationList';
 import { Provider } from 'react-redux';
 import { store } from './src/store';
+import SemesterStudents from './src/scenes/semesters/SemesterStudents';
 
 
 interface SubjectParams {
@@ -90,19 +91,18 @@ const AllComponents: React.FC = () => {
           />
 
           {/* SEMESTERS */}
-
-          {/* 
-          <Stack.Screen
-            name='SubjectsList'
-            component={SemesterList}
-            options={({ route }) => ({ title: 'Materias' })}
-          /> */}
-
           <Stack.Screen
             name='SemesterCard'
             component={SemesterCard}
             options={({ route }) => ({ title: 'Semestre Actual' })}
           />
+
+          <Stack.Screen
+            name='SemesterStudents'
+            component={SemesterStudents}
+            options={({ route }) => ({ title: 'Estudiantes del semestre' })}
+          />
+
 
           {/* EVALUATIONS */}
           <Stack.Screen

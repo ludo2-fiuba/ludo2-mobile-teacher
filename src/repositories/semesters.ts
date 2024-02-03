@@ -10,5 +10,4 @@ export async function fetchPresentSemesterFromCommissionId(commissionId: number)
   return convertSnakeToCamelCase(presentSemester)
 }
 
-
 export default {fetchPresentSemesterFromCommissionId};

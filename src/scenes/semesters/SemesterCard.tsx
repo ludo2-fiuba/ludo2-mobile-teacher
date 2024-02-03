@@ -1,35 +1,57 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Alert, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Alert, SafeAreaView, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { Semester } from '../../models/Semester';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { semesterRepository } from '../../repositories';
 // import { semesterCard as style } from '../../styles';
 import BasicList from '../../components/basicList';
 import { lightModeColors } from '../../styles/colorPalette';
+import { fetchSemesterDataAsync } from '../../features/semesterSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { Commission } from '../../models';
 
 interface Props {
   route: any;
 }
 
+interface RouteParams {
+  commission: Commission;
+}
+
 export function SemesterCard({ route }: Props) {
-  const { commission } = route.params;
-  const [isLoading, setIsLoading] = useState(false);
-  const [semester, setSemester] = useState<Semester | null>(null);
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const commission = (route.params as RouteParams).commission;
+  const semesterData = useAppSelector((state) => state.semester.data);
+  const isLoading = useAppSelector((state) => state.semester.loading);
+  const error = useAppSelector((state) => state.semester.error);
 
   const listItems = [
-    { name: "Ver Instancias de Examen", onPress: () => { 
-      navigation.navigate('Evaluations', {
-        semester: semester,
-        evaluations: semester?.evaluations,
-      });
-    } },
-    { name: "Cuerpo Docente", onPress: () => { 
-      navigation.navigate('Teachers', {
-        commissionId: commission.id, // Used to get the staff teachers
-        chiefTeacher: semester?.commission.chiefTeacher, // pass the chief teacher from the semester
-      });
-    } },
+    {
+      name: "Ver Instancias de Examen", onPress: () => {
+        navigation.navigate('Evaluations', {
+          semester: semesterData,
+          evaluations: semesterData?.evaluations,
+        });
+      }
+    },
+    {
+      name: "Cuerpo Docente", onPress: () => {
+        navigation.navigate('Teachers', {
+          commissionId: commission.id, // Used to get the staff teachers
+          chiefTeacher: semesterData?.commission.chiefTeacher, // pass the chief teacher from the semester
+        });
+      }
+    },
+    {
+      name: "Ver Alumnos", onPress: () => {
+        navigation.navigate('SemesterStudents', {
+          commission: commission,
+          semester: semesterData,
+        });
+      }
+    }
+
     // {
     //   name: "Ver Correlativas", onPress: () => {
     //     navigation.navigate('CorrelativeSubjects', {
@@ -39,44 +61,34 @@ export function SemesterCard({ route }: Props) {
     // },
   ]
 
-  const fetchData = useCallback(async () => {
-    if (isLoading) return;
-    setIsLoading(true);
-
-    try {
-      const semesterData: Semester = await semesterRepository.fetchPresentSemesterFromCommissionId(commission.id);
-      setSemester(semesterData);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching data", error);
-      Alert.alert(
-        '¿Qué pasó?',
-        'No sabemos pero no pudimos conseguir información acerca del semestre. ' +
-        'Volvé a intentar en unos minutos.',
-      );
-      setIsLoading(false);
-    }
-  }, [isLoading, commission.id]);
+  useEffect(() => {
+    dispatch(fetchSemesterDataAsync(commission.id));
+  }, [dispatch, commission]);
 
   useEffect(() => {
-    const focusUnsubscribe = navigation.addListener('focus', () => {
-      fetchData();
-    });
-    return focusUnsubscribe;
-  }, [navigation, fetchData]);
-
+    if (error) {
+      Alert.alert(
+        'Error',
+        'No se pudo cargar la información del semestre. Intente nuevamente más tarde.'
+      );
+    }
+  }, [error]);
   if (isLoading) {
-    return <View style={{ padding: 10, backgroundColor: 'black' }}><Text>Loading...</Text></View>;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={lightModeColors.institutional} />
+      </View>
+    );
   }
 
-  if (!semester) {
-    return <View style={{ padding: 10, backgroundColor: 'black' }}><Text>No data available</Text></View>;
+  if (!semesterData) {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>No hay datos disponibles</Text></View>;
   }
 
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>{commission.subject_name}</Text>
+      <Text style={styles.header}>{commission.subjectName}</Text>
       <Text style={styles.header2}>{commission.chiefTeacher.firstName} {commission.chiefTeacher.lastName}</Text>
       <View style={styles.card}>
         <View style={styles.cardItem}>

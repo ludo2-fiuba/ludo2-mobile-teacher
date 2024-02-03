@@ -1,5 +1,6 @@
 import { CommissionSnakeCase, Commission } from "./Commission";
 import { Evaluation, EvaluationSnakeCase } from "./Evaluation";
+import { Student, StudentSnakeCase } from "./Student";
 
 export interface Semester {
   id: number
@@ -7,6 +8,7 @@ export interface Semester {
   startDate: Date;
   commission: Commission
   evaluations: Evaluation[];
+  students: Student[];
 }
 
 export interface SemesterSnakeCase {
@@ -15,4 +17,5 @@ export interface SemesterSnakeCase {
   start_date: Date;
   commission: CommissionSnakeCase;
   evaluations: EvaluationSnakeCase[];
+  students: StudentSnakeCase[];
 }
