@@ -38,7 +38,6 @@ export const fetchTeachers = createAsyncThunk(
   'teachers/fetchTeachers',
   async (commissionId: number, { rejectWithValue }) => {
     try {
-      console.log("Loading teachers from the async thunk");
       const allTeachers: Teacher[]  = await teachersRepository.fetchAllTeachers();
       const staffTeachers: TeacherTuple[] = await teachersRepository.fetchTeachersOfCommission(commissionId);
       return { allTeachers, staffTeachers };

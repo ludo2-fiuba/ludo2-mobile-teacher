@@ -9,8 +9,6 @@ const SemesterStudents: React.FC = () => {
   const renderStudent = ({ item }: { item: Student }) => (
     <View style={styles.studentCard}>
       <Text style={styles.studentName}>{item.firstName} {item.lastName} ({item.email}) </Text>
-      {/* <Text style={styles.studentDetail}>DNI: {item.dni}</Text> */}
-      {/* <Text style={styles.studentDetail}>Email: </Text> */}
       <Text style={styles.studentDetail}>Padrón: {item.legajo || 'Padrón faltante'}</Text>
     </View>
   );
