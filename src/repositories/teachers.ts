@@ -10,7 +10,7 @@ export async function fetchAllTeachers(): Promise<Teacher[]> {
 export async function fetchTeachersOfCommission(commissionId: number): Promise<TeacherTuple[]> {
   const teachersList: TeacherTupleSnakeCase[] = await get(`api/commissions/teachers`, [{key: 'commission_id', value: commissionId}]) as TeacherTupleSnakeCase[]; 
   const parsedTeachersList: TeacherTuple[] = convertSnakeToCamelCase(teachersList)
-  return parsedTeachersList
+  return convertSnakeToCamelCase(parsedTeachersList)
 }
 
 export async function modifyRoleOfTeacherInCommission(commissionId: number, teacherId: number, role: string) {
@@ -20,7 +20,7 @@ export async function modifyRoleOfTeacherInCommission(commissionId: number, teac
     role: role
   }
   const result = await put(`api/commissions/teachers`, roleToBeCreatedInCommission)
-  return result;
+  return convertSnakeToCamelCase(result);
 }
 
 export async function createRoleForTeacherInCommission(commissionId: number, teacherId: number, role: string) {
@@ -34,7 +34,7 @@ export async function createRoleForTeacherInCommission(commissionId: number, tea
   console.log(roleToBeCreatedInCommission)
   
   const result = await post(`api/commissions/teachers`, roleToBeCreatedInCommission)
-  return result;
+  return convertSnakeToCamelCase(result);
 }
 
-export default { fetchTeachersOfCommission, fetchAllTeachers, modifyRoleOfTeacherInCommission };
+export default { fetchTeachersOfCommission, fetchAllTeachers, modifyRoleOfTeacherInCommission, createRoleForTeacherInCommission };

@@ -13,10 +13,6 @@ import { increment, selectCount } from '../../features/counter/counterSlice';
 const UserIcon = require('./img/usericon.jpg');
 
 const TeacherCard = ({ teacher, role }: { teacher: Teacher, role: string }) => {
-  const deleteTeacherFromCommission = () => {
-    console.log("Delete teacher from commission");
-  }
-
   return (
     <View style={styles.cardContainer}>
       <Image source={UserIcon} style={styles.image} />
@@ -25,11 +21,6 @@ const TeacherCard = ({ teacher, role }: { teacher: Teacher, role: string }) => {
         <Text style={styles.role}>{teacherRoles.find(actualRole => actualRole.shortVersion === role)?.longVersion}</Text>
         <Text style={styles.email}>{teacher.email}</Text>
       </View>
-      
-      <TouchableOpacity
-        onPress={deleteTeacherFromCommission}>
-        <Icon style={styles.deleteTeacherIcon} name="delete" />
-      </TouchableOpacity>
     </View>
   );
 };
@@ -42,9 +33,10 @@ interface RouteProps {
 
 function AddTeachersConfigurationList() {
   const route = useRoute()
-  const staffTeachers = (route.params as RouteProps).staffTeachers
   const allTeachers = (route.params as RouteProps).allTeachers
   const commissionId = (route.params as RouteProps).commissionId
+  
+  const staffTeachers = useAppSelector((state) => state.teachers.staffTeachers)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -129,11 +121,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
-  deleteTeacherIcon: {
-    fontSize: 20,
-    marginRight: 10,
-    // width: 50
-  }
 });
 
 export default AddTeachersConfigurationList

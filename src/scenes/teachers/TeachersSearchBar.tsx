@@ -4,7 +4,8 @@ import { Teacher } from '../../models/Teachers';
 import ModalSelector from 'react-native-modal-selector';
 import ModalSelectorItem from './ModalSelectorItem';
 import teacherRoles, { TeacherRole } from '../../models/TeacherRoles';
-import { createRoleForTeacherInCommission } from '../../repositories/teachers';
+import { useAppDispatch } from '../../hooks';
+import { addTeacherRoleToCommission } from '../../features/teachersSlice';
 
 interface RecommendationItemProps {
   teacher: Teacher
@@ -33,6 +34,7 @@ interface Props {
 }
 
 const TeachersSearchBar: React.FC<Props> = ({ allTeachers, commissionId }) => {
+  const dispatch = useAppDispatch()
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [recommendations, setRecommendations] = useState<Teacher[]>([]);
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
@@ -72,15 +74,16 @@ const TeachersSearchBar: React.FC<Props> = ({ allTeachers, commissionId }) => {
   };
 
   const cancelTeacherAddition = () => { 
-    setShowConfirmationModal(false); 
-    setSelectedRole(null) 
+    setSelectedTeacher(null);
+    setSelectedRole(null);
+    setShowConfirmationModal(false);
   }
 
   const confirmAddition = () => {
     if (selectedTeacher && selectedRole) {
       console.log(`Adding ${selectedTeacher?.firstName} as ${selectedRole}`);
       // Add logic here to actually add the teacher with the selected role
-      createRoleForTeacherInCommission(commissionId, selectedTeacher.id, selectedRole.shortVersion)
+      dispatch(addTeacherRoleToCommission({ commissionId: commissionId, teacherId: selectedTeacher.id, role: selectedRole.shortVersion}))
 
       setSelectedTeacher(null);
       setSelectedRole(null);
@@ -128,7 +131,7 @@ const TeachersSearchBar: React.FC<Props> = ({ allTeachers, commissionId }) => {
                 value={selectedRole?.longVersion} />
             </ModalSelector>
             <View style={styles.modalSelectorButtons}>
-              <Button title="Cancelar" onPress={() => cancelTeacherAddition } />
+              <Button title="Cancelar" onPress={cancelTeacherAddition} />
               <View style={styles.modalSelectorConfirmButton}>
                 <Button title="Confirmar" onPress={confirmAddition} disabled={!selectedRole} />
               </View>

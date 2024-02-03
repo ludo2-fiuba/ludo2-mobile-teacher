@@ -42,13 +42,13 @@ export default function TeachersHeaderRight({ staffTeachers, allTeachers, commis
         style={saveOpacityStyle}
         // disabled={!showSave}
         onPress={() => addNewTeacherToCommission()}>
-        <Icon style={styles.navButtonIcon} name="edit" />
+        <Icon style={styles.navButtonIcon} name="add" />
       </TouchableOpacity>
       <TouchableOpacity
         style={saveOpacityStyle}
         // disabled={!showSave}
         onPress={() => navigateToTeachersConfiguration()}>
-        <Icon style={styles.navButtonIcon} name="settings" />
+        <Icon style={styles.navButtonIcon} name="edit" />
       </TouchableOpacity>
     </View>
   )

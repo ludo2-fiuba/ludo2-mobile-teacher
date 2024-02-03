@@ -1,13 +1,14 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useCallback, useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, FlatList, Image, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect } from 'react';
+import { SafeAreaView, View, Text, FlatList, Image, StyleSheet, Alert } from 'react-native';
 import { ChiefTeacher } from '../../models/ChiefTeacher';
 import { lightModeColors } from '../../styles/colorPalette';
-import { Teacher, TeacherTuple } from '../../models/Teachers';
-import { teachersRepository } from '../../repositories';
+import { Teacher } from '../../models/Teachers';
 import TeachersHeaderRight from './TeachersHeaderRight';
 import { Loading } from '../../components';
 import teacherRoles from '../../models/TeacherRoles';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchTeachers } from '../../features/teachersSlice';
 const UserIcon = require('./img/usericon.jpg');
 
 
@@ -49,13 +50,13 @@ interface TeachersRouteParams {
 
 const TeachersScreen = ({ route }: TeachersScreenProps) => {
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const commissionId = (route.params as TeachersRouteParams).commissionId;
   const chiefTeacher = (route.params as TeachersRouteParams).chiefTeacher;
   
-  const [allTeachers, setAllTeachers] = useState<Teacher[]>([])
-  const [staffTeachers, setStaffTeachers] = useState<TeacherTuple[]>([])
+  const { staffTeachers, allTeachers, isLoading, error } = useAppSelector((state) => state.teachers);
+
 
   useEffect(() => {
     const navOptions = {
@@ -73,15 +74,9 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
 
   const fetchData = useCallback(async () => {
     if (isLoading) return;
-    setIsLoading(true);
-
+    
     try {
-      const allTeachers: Teacher[] = await teachersRepository.fetchAllTeachers();
-      const staffTeachers: TeacherTuple[] = await teachersRepository.fetchTeachersOfCommission(commissionId);
-
-      setAllTeachers(allTeachers);
-      setStaffTeachers(staffTeachers);
-      setIsLoading(false);
+      dispatch(fetchTeachers(commissionId))
     } catch (error) {
       console.error("Error fetching data", error);
       Alert.alert(
@@ -89,9 +84,8 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
         'No sabemos pero no pudimos conseguir información acerca del semestre. ' +
         'Volvé a intentar en unos minutos.',
       );
-      setIsLoading(false);
     }
-  }, [isLoading, commissionId]);
+  }, [dispatch, isLoading, commissionId]);
 
   useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
