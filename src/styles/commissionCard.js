@@ -13,7 +13,7 @@ const sharedStyle = StyleSheet.create({
     alignItems: 'stretch',
     flex: 1,
     justifyContent: 'space-between',
-    marginVertical: 10,
+    marginVertical: 5,
     marginHorizontal: 10,
     padding: 15,
     borderRadius: 10

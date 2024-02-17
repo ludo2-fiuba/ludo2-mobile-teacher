@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, Image, StyleSheet, Text, View } from 'react-native';
 import { authorize } from 'react-native-app-auth';
 import { RoundedButton } from '../../components';
 import SessionManager from '../../managers/sessionManager';
@@ -7,6 +7,8 @@ import { authenticationRepository, usersRepository } from '../../repositories';
 import { landing as style } from '../../styles';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import { lightModeColors } from '../../styles/colorPalette';
+const LudoIcon = require('../../assets/ludo_icon.png');
 
 type LandingProps = {
   navigation: StackNavigationProp<any, 'Landing'>;
@@ -59,18 +61,30 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
 
   return (
     <View style={style().view}>
-      <RoundedButton
-        text="PRE-REGISTRO"
-        style={style().button}
-        enabled={!loginInProgress}
-        onPress={() => navigation.navigate('PreRegister')}
-      />
-      <RoundedButton
-        text="LOGIN"
-        style={style().button}
-        enabled={!loginInProgress}
-        onPress={onPressLogin}
-      />
+      <View style={styles.card}>
+        <View style={styles.cardItem}>
+          <Image source={LudoIcon} style={{ width: 130, height: 130 }} />
+          <View style={{flexDirection: 'column'}}>
+          <Text style={styles.cardTitle}>LODU</Text>
+          <Text style={{...styles.cardLabel, marginTop: 7}}>La Organizadora para</Text>
+          <Text style={{...styles.cardLabel, marginTop: 5}}>el Docente Universitario</Text>
+          </View>
+        </View>
+      </View>
+      <View style={{ width: '90%', marginBottom: 8}}>
+        <RoundedButton
+          text="Pre-registro"
+          enabled={!loginInProgress}
+          onPress={() => navigation.navigate('PreRegister')}
+        />
+      </View>
+      <View style={{ width: '90%'}}>
+        <RoundedButton
+          text="Iniciar sesión"
+          enabled={!loginInProgress}
+          onPress={onPressLogin}
+        />
+      </View>
     </View>
   );
 };
@@ -99,3 +113,33 @@ function showRoleError() {
       'chequeá que hayas ingresado correctamente tus datos.',
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  card: {
+    flexDirection: 'column',
+    marginBottom: 28,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    elevation: 3,
+    gap: 18
+  },
+  cardItem: {
+    flexDirection: 'row',
+    margin: 18,
+    alignItems: 'center',
+    gap: 14
+  },
+  cardTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: lightModeColors.institutional,
+  },
+  cardLabel: {
+    fontSize: 18,
+    color: 'gray',
+  },
+});

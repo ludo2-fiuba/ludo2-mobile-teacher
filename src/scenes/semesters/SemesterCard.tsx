@@ -50,8 +50,14 @@ export function SemesterCard({ route }: Props) {
           semester: semesterData,
         });
       }
+    },
+    {
+      name: "Generar QR de Asistencias", onPress: () => {
+        navigation.navigate('QRAttendance', {
+          semester: semesterData,
+        });
+      }
     }
-
     // {
     //   name: "Ver Correlativas", onPress: () => {
     //     navigation.navigate('CorrelativeSubjects', {
@@ -114,7 +120,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'column',
-    marginBottom: 20,
+    marginBottom: 10,
     backgroundColor: 'white',
     borderRadius: 8,
     elevation: 3,

@@ -4,16 +4,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import {
-  CameraTest,
   FinalExamsListScreen,
-  FinalsListScreen,
   LandingScreen,
   PreRegisterLastInstructionsScreen,
   PreRegisterScreen,
   QRGeneratorScreen,
   RootDrawer,
   SemesterCard,
-  SemesterList,
   SplashScreen,
   TakePictureStepScreen
 } from './src/scenes';
@@ -21,13 +18,13 @@ import moment from 'moment';
 import Evaluations from './src/scenes/evaluations/Evaluations';
 import TeachersScreen from './src/scenes/teachers/Teachers';
 import { AddEvaluation } from './src/scenes/finals';
-import EvaluationGradesListTest from './src/scenes/evaluation/EvaluationGradesListTest';
 import SubmissionsList from './src/scenes/evaluation/SubmissionsList';
 import TeachersConfiguration from './src/scenes/teachers/TeachersConfiguration';
 import AddTeachersConfigurationList from './src/scenes/teachers/AddTeachersConfigurationList';
 import { Provider } from 'react-redux';
 import { store } from './src/store';
 import SemesterStudents from './src/scenes/semesters/SemesterStudents';
+import SemesterAttendanceQR from './src/scenes/qr_generator/AttendanceQR';
 
 
 interface SubjectParams {
@@ -172,6 +169,16 @@ const AllComponents: React.FC = () => {
               ),
             })}
           />
+
+          <Stack.Screen
+            name="QRAttendance"
+            component={SemesterAttendanceQR}
+            options={({ route }) => ({
+              headerShown: true,
+              title: 'Generar QR de Asistencias',
+            })}
+          />
+
 
 
           <Stack.Screen

@@ -51,6 +51,7 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
   const [loading, setLoading] = useState(false);
   const [closing, setClosing] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  
   const [qrId, setQrId] = useState<string | null>(null);
   const [qrSize, setQrSize] = useState(300);
   const [final, setFinal] = useState<Final | null>(propFinal || null);

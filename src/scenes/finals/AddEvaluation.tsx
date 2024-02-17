@@ -244,7 +244,7 @@ const AddEvaluation: React.FC<Props> = () => {
           </Text>)
         }
       </TouchableOpacity>
-      <Text style={{ color: 'grey', fontSize: 12, marginTop: 3}}> Los horarios están restringidos a intervalos de 30 minutos</Text>
+      <Text style={{ color: 'grey', fontSize: 12, marginTop: 3, marginBottom: 20}}> Los horarios están restringidos a intervalos de 30 minutos</Text>
 
       <RoundedButton
         text="Agregar evaluación"

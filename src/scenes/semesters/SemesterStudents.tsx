@@ -12,10 +12,9 @@ const SemesterStudents: React.FC = () => {
       <Text style={styles.studentDetail}>Padrón: {item.legajo || 'Padrón faltante'}</Text>
     </View>
   );
-
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Students ({students?.length || 0})</Text>
+      <Text style={styles.header}>Alumnos ({students?.length || 0})</Text>
       <FlatList
         data={students}
         renderItem={renderStudent}
