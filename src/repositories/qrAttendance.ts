@@ -2,7 +2,7 @@ import { QRAttendance, QRAttendanceSnakeCase } from '../models/QRAttendance.ts';
 import { convertSnakeToCamelCase } from '../utils/convertSnakeToCamelCase.ts';
 import { post } from './authenticatedRepository.ts';
 
-const domainUrl = 'api/teacher/semesters/attendance';
+const domainUrl = 'api/teacher/semesters/attendance/latest_qr';
 
 export async function generateAttendanceQR(semesterId: number): Promise<QRAttendance> {
   const qrAttendanceSnakeCase: QRAttendanceSnakeCase = await post(`${domainUrl}`, {'semester': semesterId}) as QRAttendanceSnakeCase; 

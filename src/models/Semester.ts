@@ -9,13 +9,17 @@ export interface Semester {
   commission: Commission
   evaluations: Evaluation[];
   students: Student[];
+  classesAmount: number;
+  minimumAttendance: number;
 }
 
 export interface SemesterSnakeCase {
-  id: number;
-  year_moment: string;
-  start_date: Date;
-  commission: CommissionSnakeCase;
-  evaluations: EvaluationSnakeCase[];
-  students: StudentSnakeCase[];
+  id:                 number;
+  year_moment:        string;
+  start_date:         Date;
+  commission:         Commission;
+  evaluations:        EvaluationSnakeCase[];
+  students:           StudentSnakeCase[];
+  classes_amount:     number;
+  minimum_attendance: number;
 }
