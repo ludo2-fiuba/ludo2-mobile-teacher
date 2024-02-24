@@ -109,8 +109,6 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
     setQrSize(Math.min(width, height));
   };
 
-
-
   const [svgRef, setSvgRef] = useState(React.createRef());  // Assume the correct type for your SVG component
 
   return (

@@ -27,6 +27,7 @@ const EvaluationsListElement = ({ evaluation }: Props) => {
       <Text style={style().endDate}>
         Fecha de entrega: { evaluation && evaluation.endDate ? getDateStringFormat(evaluation.endDate) : "no disponible"}
       </Text>
+      
     </View>
   )
 }

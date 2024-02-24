@@ -36,6 +36,14 @@ export function SemesterCard({ route }: Props) {
       }
     },
     {
+      name: "Ver Instancias de Final", onPress: () => {
+        navigation.navigate('Evaluations', {
+          semester: semesterData,
+          evaluations: semesterData?.evaluations,
+        });
+      }
+    },
+    {
       name: "Cuerpo Docente", onPress: () => {
         navigation.navigate('Teachers', {
           commissionId: commission.id, // Used to get the staff teachers

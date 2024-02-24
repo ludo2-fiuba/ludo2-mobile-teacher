@@ -34,6 +34,8 @@ export function fetchFromSubject(subjectId: number): Promise<Final[]> {
 }
 
 export function getDetail(finalId: number): Promise<Final> {
+  console.log("Final id: ", finalId);
+  
   return get(`${domainUrl}/${finalId}`).then(json =>
     Promise.resolve(
       new Final(

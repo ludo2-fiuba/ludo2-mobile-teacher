@@ -160,7 +160,7 @@ const AllComponents: React.FC = () => {
           />
           {/* CAMERA */}
           <Stack.Screen
-            name="QR"
+            name="QRFinalExam"
             component={QRGeneratorScreen}
             options={({ route }) => ({
               headerShown: true,
