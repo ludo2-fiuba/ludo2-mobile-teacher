@@ -52,6 +52,10 @@ export default class Final {
         return FinalStatus.Closed;
       case FinalStatus.Grading:
         return FinalStatus.Grading;
+      // TODO: Remove this case
+      case FinalStatus.Open:
+        return FinalStatus.Open;
+      // TODO: Remove up to here
       default:
         const hoursBefore = new Date(this.date);
         hoursBefore.setHours(this.date.getHours() - 5);

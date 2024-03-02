@@ -1,7 +1,6 @@
 export { default as getStyleSheet } from './basic';
 export { default as commissionCard } from './commissionCard';
 export { default as commissions } from './commissions';
-export { default as finalCard } from './finalCard';
 export { default as finalExamCard } from './finalExamCard';
 export { default as evaluationGradesList } from './evaluationGradesList';
 export { default as home } from './home';
@@ -18,3 +17,4 @@ export { default as semesterCard} from './semesterCard';
 export { default as basicList } from './basicList';
 export { default as evaluationCard } from './evaluationCard'
 export { default as evaluations } from './evaluations'
+export { default as finalExamSubmissions } from './finalExamSubmissions'

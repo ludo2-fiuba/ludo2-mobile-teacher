@@ -37,9 +37,8 @@ export function SemesterCard({ route }: Props) {
     },
     {
       name: "Ver Instancias de Final", onPress: () => {
-        navigation.navigate('Evaluations', {
-          semester: semesterData,
-          evaluations: semesterData?.evaluations,
+        navigation.navigate('FinalsList', {
+          subjectId: commission.subjectSiuId
         });
       }
     },

@@ -4,20 +4,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import {
-  FinalExamsListScreen,
   LandingScreen,
   PreRegisterLastInstructionsScreen,
   PreRegisterScreen,
-  QRGeneratorScreen,
   RootDrawer,
   SemesterCard,
   SplashScreen,
   TakePictureStepScreen
 } from './src/scenes';
 import moment from 'moment';
-import Evaluations from './src/scenes/evaluations/Evaluations';
+import EvaluationsList from './src/scenes/evaluations/EvaluationsList';
 import TeachersScreen from './src/scenes/teachers/Teachers';
-import { AddEvaluation } from './src/scenes/finals';
+import { AddEvaluation, FinalsList } from './src/scenes/finals';
 import SubmissionsList from './src/scenes/evaluation/SubmissionsList';
 import TeachersConfiguration from './src/scenes/teachers/TeachersConfiguration';
 import AddTeachersConfigurationList from './src/scenes/teachers/AddTeachersConfigurationList';
@@ -25,6 +23,8 @@ import { Provider } from 'react-redux';
 import { store } from './src/store';
 import SemesterStudents from './src/scenes/semesters/SemesterStudents';
 import SemesterAttendanceQR from './src/scenes/qr_generator/AttendanceQR';
+import FinalExamQR from './src/scenes/qr_generator/FinalExamQR';
+import FinalExamSubmissions from './src/scenes/finalExams/FinalExamSubmissions';
 
 
 interface SubjectParams {
@@ -104,18 +104,38 @@ const AllComponents: React.FC = () => {
           {/* EVALUATIONS */}
           <Stack.Screen
             name="Evaluations"
-            component={Evaluations}
+            component={EvaluationsList}
             options={({ route }) => ({
               headerShown: true,
               title: "Evaluaciones",
             })}
           />
+
           <Stack.Screen
             name="AddEvaluation"
             component={AddEvaluation}
             options={({ route }) => ({
               headerShown: true,
               title: "Agregar instancia de evaluación",
+            })}
+          />
+
+          {/* FINALS */}
+          <Stack.Screen
+            name="FinalsList"
+            component={FinalsList}
+            options={({ route }) => ({
+              headerShown: true,
+              title: 'Finales',
+            })}
+          />
+
+          <Stack.Screen
+            name="FinalExamSubmissions"
+            component={FinalExamSubmissions}
+            options={({ route }) => ({
+              headerShown: true,
+              title: 'Entregas del final',
             })}
           />
 
@@ -126,17 +146,6 @@ const AllComponents: React.FC = () => {
             options={({ route }) => ({
               headerShown: true,
               title: (route.params as EvaluationParams).evaluation.evaluationName,
-            })}
-          />
-
-          <Stack.Screen
-            name="FinalExamsList"
-            component={FinalExamsListScreen}
-            options={({ route }) => ({
-              headerShown: true,
-              title: moment((route.params as FinalParams)?.final.date).format(
-                'DD/MM/YYYY HH:mm',
-              ),
             })}
           />
 
@@ -158,10 +167,11 @@ const AllComponents: React.FC = () => {
             component={AddTeachersConfigurationList}
             options={({ route }) => ({ title: 'Docentes en la comisión' })}
           />
+
           {/* CAMERA */}
           <Stack.Screen
-            name="QRFinalExam"
-            component={QRGeneratorScreen}
+            name="FinalExamQR"
+            component={FinalExamQR}
             options={({ route }) => ({
               headerShown: true,
               title: moment((route.params as FinalParams)?.final.date).format(
@@ -178,8 +188,6 @@ const AllComponents: React.FC = () => {
               title: 'Generar QR de Asistencias',
             })}
           />
-
-
 
           <Stack.Screen
             name="TakePicture"

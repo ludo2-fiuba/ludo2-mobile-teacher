@@ -17,8 +17,6 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import QRCode from 'react-native-qrcode-svg';
 import { StackActions } from '@react-navigation/native';
 
-type QRGeneratorRouteProp = RouteProp<{ params: { final: Final } }, 'params'>;
-
 // Aux function to format the filename
 function addDateToSubjectName(dateParam: Date | string, originalFilename: string): string {
   // Parse the date
@@ -43,55 +41,39 @@ function replaceTildes(str: string) : string {
   return str.replace(/[áéíóúÁÉÍÓÚ]/g, match => accents[match]);
 }
 
-interface QRGeneratorProps {
-  final?: Final;
+interface FinalExamQRRouteProps {
+  final: Final;
 }
 
-const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
+const FinalExamQR: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [closing, setClosing] = useState(false);
   const [downloading, setDownloading] = useState(false);
   
-  const [qrId, setQrId] = useState<string | null>(null);
   const [qrSize, setQrSize] = useState(300);
-  const [final, setFinal] = useState<Final | null>(propFinal || null);
-
+  
   const navigation = useNavigation();
-  const route = useRoute<QRGeneratorRouteProp>();
+  
+  const route = useRoute();
+  const final = (route.params as FinalExamQRRouteProps).final;
 
-  const fetchData = useCallback(async () => {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const fetchedFinal = await finalRepository.getDetail(final!.id);
-      setQrId(fetchedFinal.qrId as string);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      Alert.alert(
-        '¿Qué pasó?',
-        'No sabemos pero no pudimos obtener la información del final. ' +
-        'Volvé a intentar en unos minutos.'
-      );
-      navigation.goBack();
-    }
-  }, [loading, final, navigation]);
 
-  useEffect(() => {
-    if (final) {
-      fetchData();
-    }
-  }, [final]);
-
-  useEffect(() => {
-    if (route.params?.final) {
-      const routerParams: any = route.params
-      const final: Final = Final.fromObject(routerParams.final);
-      setFinal(final);
-    } else {
-      setFinal(propFinal || null);
-    }
-  }, [route.params, propFinal]);
+  // const fetchData = useCallback(async () => {
+  //   if (loading) return;
+  //   setLoading(true);
+  //   try {
+  //     setQrId(final.qrId as string);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     Alert.alert(
+  //       '¿Qué pasó?',
+  //       'No sabemos pero no pudimos obtener la información del final. ' +
+  //       'Volvé a intentar en unos minutos.'
+  //     );
+  //     navigation.goBack();
+  //   }
+  // }, [loading, final, navigation]);
 
   const hasAndroidPermission = async () => {
     const permission = PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE;
@@ -114,14 +96,12 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
   return (
     <View style={style().view} onLayout={handleLayout}>
       {loading && <Loading />}
-      {qrId && (
-        <QRCode
-          value={qrId}
-          size={qrSize}
-          getRef={(c) => (setSvgRef(c))}
-          quietZone={20}
-        />
-      )}
+      <QRCode
+        value={final.qrId as string}
+        size={qrSize}
+        getRef={(c) => (setSvgRef(c))}
+        quietZone={20}
+      />
       {!loading && (
         <View style={style().containerView}>
           <RoundedButton
@@ -169,42 +149,44 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
               
             }}
           />
-          <RoundedButton
-            text="Finalizar entrega"
-            style={style().button}
-            enabled={!closing}
-            onPress={async () => {
-              var finalInstance = final;
-              if (finalInstance!.currentStatus() === FinalStatus.SoonToStart) {
-                Alert.alert('Bajá esa ansiedad. Todavía ni empezó el final');
-                return;
-              }
-              setClosing(true);
-              try {
-                await finalRepository.close(finalInstance!.id, '');
-                finalInstance!.finalize();
-              
-
-                navigation.dispatch(
-                  StackActions.replace('FinalExamsList', {
-                    final: finalInstance!.toObject(),
-                    editable: true,
-                  })
-                );
-                setClosing(false);
-              } catch (error) {
-                setClosing(false);
-                console.log("error", error);
+          <View style={{ marginTop: 10}}>
+            <RoundedButton
+              text="Finalizar entrega"
+              style={{...style().button}}
+              enabled={!closing}
+              onPress={async () => {
+                var finalInstance = final;
+                if (finalInstance!.currentStatus() === FinalStatus.SoonToStart) {
+                  Alert.alert('Bajá esa ansiedad. Todavía ni empezó el final');
+                  return;
+                }
+                setClosing(true);
+                try {
+                  await finalRepository.close(finalInstance!.id, '');
+                  finalInstance!.finalize();
                 
-                Alert.alert(
-                  '¿Qué pasó?',
-                  'No sabemos pero no pudimos cerrar el examen. ' +
-                  'Volvé a intentar en un minuto o sacale a los alumnos ' +
-                  'el acceso al QR.'
-                );
-              }
-            }}
-          />
+
+                  navigation.dispatch(
+                    StackActions.replace('FinalExamsList', {
+                      final: finalInstance!.toObject(),
+                      editable: true,
+                    })
+                  );
+                  setClosing(false);
+                } catch (error) {
+                  setClosing(false);
+                  console.log("error", error);
+                  
+                  Alert.alert(
+                    '¿Qué pasó?',
+                    'No sabemos pero no pudimos cerrar el examen. ' +
+                    'Volvé a intentar en un minuto o sacale a los alumnos ' +
+                    'el acceso al QR.'
+                  );
+                }
+              }}
+            />
+          </View>
 
         </View>
       )}
@@ -212,7 +194,7 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ final: propFinal }) => {
   );
 };
 
-export default QRGenerator;
+export default FinalExamQR;
 
 export class MessageError extends Error {
   constructor(message: string) {

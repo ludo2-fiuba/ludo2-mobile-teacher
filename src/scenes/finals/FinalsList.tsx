@@ -1,62 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
-import { FinalCard, Loading, RoundedButton } from '../../components';
+import { Loading, RoundedButton } from '../../components';
 import { getStyleSheet as style } from '../../styles';
 import { finalRepository } from '../../repositories';
-import { FinalStatus, Subject } from '../../models';
+import { Final, FinalStatus, Subject } from '../../models';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { makeRequest } from '../../networking/makeRequest';
-
-interface FinalsListProps {
-}
+import FinalsListItem from './FinalsListItem';
 
 interface FinalsListRouteParams {
-  subject: Subject;
+  subjectId: number;
+  subjectName: string;
 }
 
-const FinalsList: React.FC<FinalsListProps> = () => {
+const FinalsList: React.FC = () => {
   const [hasDoneFirstLoad, setHasDoneFirstLoad] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [finals, setFinals] = useState<any[]>([]);
-  
+  const [finals, setFinals] = useState<Final[]>([]);
+
   const route = useRoute();
-  const subject = (route.params as FinalsListRouteParams).subject
+  const subjectId = (route.params as FinalsListRouteParams).subjectId;
+  const subjectName = (route.params as FinalsListRouteParams).subjectName;
+
   const navigation = useNavigation();
 
   useFocusEffect(
     React.useCallback(() => {
       fetchData(hasDoneFirstLoad);
-      return () => {}; // Return a cleanup function if necessary
+      return () => { }; // Return a cleanup function if necessary
     }, [])
   );
 
-  const fetchData = (refreshing: boolean = false) => {
+  const fetchData = async (refreshing: boolean = false) => {
     if (loading || refreshing) return;
 
     setRefreshing(refreshing);
     setLoading(!refreshing);
     setHasDoneFirstLoad(true);
 
-    // Assuming request method is available globally or via a custom hook
-    makeRequest(() => finalRepository.fetchFromSubject(subject?.id), navigation)
-      .then((retrievedFinals: any) => {
-        const orderedFinals = retrievedFinals.sort((a: any, b: any) => (a.date < b.date ? 1 : -1));
-        setFinals(orderedFinals);
-        setLoading(false);
-        setRefreshing(false);
-      })
-      .catch((error: string) => {
-        setLoading(false);
-        setRefreshing(false);
-        Alert.alert(
-          'Te fallamos',
-          'No pudimos encontrar los finales de esta materia. ' +
-            'Volvé a intentar en unos minutos.',
-        );
-        navigation.goBack();
-      });
+    try {
+      const retrievedFinals = await makeRequest(() => finalRepository.fetchFromSubject(subjectId), navigation);
+      const orderedFinals = retrievedFinals.sort((a: any, b: any) => (a.date < b.date ? 1 : -1));
+      setFinals(orderedFinals);
+    } catch (error) {
+      Alert.alert(
+        'Te fallamos',
+        'No pudimos encontrar los finales de esta materia. ' +
+        'Volvé a intentar en unos minutos.',
+      );
+      navigation.goBack();
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   };
+
 
   return (
     <View style={style().view}>
@@ -68,7 +67,10 @@ const FinalsList: React.FC<FinalsListProps> = () => {
             style={style().button}
             onPress={() => {
               navigation.navigate('AddEvaluation', {
-                subject: subject,
+                subject: {
+                  id: subjectId,
+                  name: subjectName,
+                },
               });
             }}
           />
@@ -90,46 +92,16 @@ const FinalsList: React.FC<FinalsListProps> = () => {
               style={{ ...style().button, ...style().listHeaderFooter }}
               onPress={() => {
                 navigation.navigate('AddEvaluation', {
-                  subject: subject,
+                  subject: {
+                    id: subjectId,
+                    name: subjectName,
+                  },
                 });
               }}
             />
           )}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-            onPress={() => {
-              if (
-                item.currentStatus() == FinalStatus.Draft ||
-                item.currentStatus() == FinalStatus.Rejected
-              ) {
-                return;
-              }
-              if (item.currentStatus() == FinalStatus.Future) {
-                console.log('Final status: Future');
-                Alert.alert('Bajá esa ansiedad, todavía falta.');
-              } else if (item.currentStatus() == FinalStatus.Closed) {
-                console.log('Final status: Closed');
-                navigation.navigate('FinalExamsList', {
-                  final: item.toObject(),
-                  editable: false,
-                });
-              } else if (item.currentStatus() == FinalStatus.Grading) {
-                console.log('Final status: Grading');
-                const finalToBeSent = item.toObject();
-                console.log("Final to be sent", finalToBeSent);
-                                
-                navigation.navigate('FinalExamsList', {
-                  final: finalToBeSent,
-                });
-              } else {
-                console.log('QR');
-                navigation.navigate('QR', {
-                  final: item.toObject(),
-                });
-              }
-            }}>
-              <FinalCard final={item} />
-            </TouchableOpacity>
+          renderItem={({ item }) => (
+            <FinalsListItem final={item} subjectId={subjectId} />
           )}
         />
       )}

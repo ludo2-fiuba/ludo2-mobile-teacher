@@ -1,6 +1,6 @@
-import {Final, FinalExam, Student} from '../models';
-import {get, put, post, deleteMethod} from './authenticatedRepository.ts';
-import {StatusCodeError} from '../networking';
+import { Final, FinalExam, FinalStatus, Student } from '../models';
+import { get, put, post, deleteMethod } from './authenticatedRepository.ts';
+import { StatusCodeError } from '../networking';
 
 const domainUrl = 'api/finals';
 
@@ -11,68 +11,66 @@ export class IdentityFail extends Error {
   }
 }
 
-export function fetchFromSubject(subjectId: number): Promise<Final[]> {
-  return get(`${domainUrl}`, [
-    {key: 'subject_siu_id', value: subjectId},
-  ]).then(json =>
-    Promise.resolve(
-      json
-        ? json.map(
-            (data, index) =>
-              new Final(
-                data.id,
-                data.subject.name,
-                new Date(data.date),
-                data.status,
-                null,
-                data.act,
-              ),
-          )
-        : [],
-    ),
-  );
-}
+export async function fetchFromSubject(subjectId: number): Promise<any> {
+  const response = await get(`${domainUrl}`, [{ key: 'subject_siu_id', value: subjectId }]) as any[]
 
-export function getDetail(finalId: number): Promise<Final> {
-  console.log("Final id: ", finalId);
+  const finals = response.map((json: any) => new Final(
+    json.id,
+    json.subject.name,
+    new Date(json.date),
+    // json.status,
+    FinalStatus.Closed,
+    json.qrid,
+    json.act,
+  ));
   
-  return get(`${domainUrl}/${finalId}`).then(json =>
-    Promise.resolve(
-      new Final(
-        json.id,
-        json.subject.name,
-        new Date(json.date),
-        json.status,
-        json.qrid,
-        json.act,
-      ),
-    ),
-  );
+
+  return finals;
 }
 
-export function getFinalExamsFor(finalId: number): Promise<FinalExam> {
-  return get(`${domainUrl}/${finalId}`).then(json =>
-    Promise.resolve(
-      json.final_exams
-        ? json.final_exams.map(
-            (data, index) =>
-              new FinalExam(
-                data.id,
-                finalId,
-                new Student(
-                  data.student.padron,
-                  data.student.first_name,
-                  data.student.last_name,
-                  data.student.dni,
-                  data.student.email,
-                ),
-                data.grade,
-                data.correlatives_approved,
-              ),
-          )
-        : [],
-    ),
-  );
+// export function getDetail(finalId: number): Promise<Final> {
+//   console.log("Final id: ", finalId);
+
+//   return get(`${domainUrl}/${finalId}`).then(json =>
+//     Promise.resolve(
+//       new Final(
+//         json.id,
+//         json.subject.name,
+//         new Date(json.date),
+//         json.status,
+//         json.qrid,
+//         json.act,
+//       ),
+//     ),
+//   );
+// }
+
+export async function getFinalExamsFor(finalId: number): Promise<FinalExam[]> {
+  try {
+    const json = await get(`${domainUrl}/${finalId}`);
+    if (json.final_exams) {
+      return json.final_exams.map(data =>
+        new FinalExam(
+          data.id,
+          finalId,
+          new Student(
+            data.student.padron,
+            data.student.first_name,
+            data.student.last_name,
+            data.student.dni,
+            data.student.email,
+          ),
+          data.grade,
+          data.correlatives_approved,
+        ),
+      );
+    }
+    return [];
+  } catch (error) {
+    // Handle or rethrow error as needed
+    console.error('Error fetching final exams:', error);
+    throw error; // Rethrow if you want the caller to handle it
+  }
 }
 
 export function grade(
@@ -82,7 +80,7 @@ export function grade(
   var body = {};
   var grades = [];
   finalExams.forEach(exam => {
-    grades.push({final_exam_id: exam.id, grade: exam.grade});
+    grades.push({ final_exam_id: exam.id, grade: exam.grade });
   });
   body.grades = grades;
   return put(`${domainUrl}/${finalId}/grade`, body).then(json =>
@@ -173,7 +171,6 @@ export function notifyGrades(finalId: number): Promise<boolean> {
 
 export default {
   fetchFromSubject,
-  getDetail,
   getFinalExamsFor,
   grade,
   deleteExam,
