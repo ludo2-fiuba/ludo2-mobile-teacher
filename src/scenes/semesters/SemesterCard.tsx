@@ -6,7 +6,7 @@ import { semesterRepository } from '../../repositories';
 // import { semesterCard as style } from '../../styles';
 import BasicList from '../../components/basicList';
 import { lightModeColors } from '../../styles/colorPalette';
-import { fetchSemesterDataAsync } from '../../features/semesterSlice';
+import { fetchSemesterDataAsync, selectSemesterData } from '../../features/semesterSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Commission } from '../../models';
 
@@ -22,14 +22,14 @@ export function SemesterCard({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const commission = (route.params as RouteParams).commission;
-  const semesterData = useAppSelector((state) => state.semester.data);
+  const semesterData = useAppSelector(selectSemesterData);
   const isLoading = useAppSelector((state) => state.semester.loading);
   const error = useAppSelector((state) => state.semester.error);
 
   const listItems = [
     {
       name: "Ver Instancias de Examen", onPress: () => {
-        navigation.navigate('Evaluations', {
+        navigation.navigate('EvaluationsList', {
           semester: semesterData,
           evaluations: semesterData?.evaluations,
         });

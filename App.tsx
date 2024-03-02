@@ -24,7 +24,8 @@ import { store } from './src/store';
 import SemesterStudents from './src/scenes/semesters/SemesterStudents';
 import SemesterAttendanceQR from './src/scenes/qr_generator/AttendanceQR';
 import FinalExamQR from './src/scenes/qr_generator/FinalExamQR';
-import FinalExamSubmissions from './src/scenes/finalExams/FinalExamSubmissions';
+import FinalExamSubmissions from './src/scenes/finalExamsSubmissions/FinalExamSubmissions';
+import AddFinal from './src/scenes/finals/AddFinal';
 
 
 interface SubjectParams {
@@ -103,7 +104,7 @@ const AllComponents: React.FC = () => {
 
           {/* EVALUATIONS */}
           <Stack.Screen
-            name="Evaluations"
+            name="EvaluationsList"
             component={EvaluationsList}
             options={({ route }) => ({
               headerShown: true,
@@ -127,6 +128,15 @@ const AllComponents: React.FC = () => {
             options={({ route }) => ({
               headerShown: true,
               title: 'Finales',
+            })}
+          />
+
+          <Stack.Screen
+            name="AddFinal"
+            component={AddFinal}
+            options={({ route }) => ({
+              headerShown: true,
+              title: "Agregar instancia de final",
             })}
           />
 

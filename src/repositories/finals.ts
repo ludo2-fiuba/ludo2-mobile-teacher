@@ -1,4 +1,4 @@
-import { Final, FinalExam, FinalStatus, Student } from '../models';
+import { Final, FinalExam, FinalStatus, Student, Subject } from '../models';
 import { get, put, post, deleteMethod } from './authenticatedRepository.ts';
 import { StatusCodeError } from '../networking';
 

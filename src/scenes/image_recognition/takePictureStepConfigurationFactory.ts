@@ -1,5 +1,5 @@
 import RegisterFacePictureConfiguration from '../preregister/face_recognition';
-import CloseActFacePictureConfiguration from '../finalExams/face_recognition';
+import CloseActFacePictureConfiguration from '../finalExamsSubmissions/face_recognition';
 import TakePictureStepConfiguration from './takePictureStepConfiguration';
 
 import Type from './takePictureStepConfigurationType';

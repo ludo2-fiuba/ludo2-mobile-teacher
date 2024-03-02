@@ -56,24 +56,27 @@ const FinalsList: React.FC = () => {
     }
   };
 
+  const AddFinalButton = () => (
+    <RoundedButton
+      text="Agregar final"
+      style={style().button}
+      onPress={() => {
+        navigation.navigate('AddFinal', {
+          subject: {
+            id: subjectId,
+            name: subjectName,
+          },
+        });
+      }}
+    />
+  );
 
   return (
     <View style={style().view}>
       {(loading || !hasDoneFirstLoad) && <Loading />}
       {hasDoneFirstLoad && !loading && !finals.length && (
         <View style={style().containerView}>
-          <RoundedButton
-            text="Agregar final"
-            style={style().button}
-            onPress={() => {
-              navigation.navigate('AddEvaluation', {
-                subject: {
-                  id: subjectId,
-                  name: subjectName,
-                },
-              });
-            }}
-          />
+          <AddFinalButton />
           <Text style={style().text}>
             Esta comisión no tiene finales aún.
           </Text>
@@ -87,18 +90,7 @@ const FinalsList: React.FC = () => {
           refreshing={refreshing}
           keyExtractor={final => final.id.toString()}
           ListHeaderComponent={() => (
-            <RoundedButton
-              text="Agregar final"
-              style={{ ...style().button, ...style().listHeaderFooter }}
-              onPress={() => {
-                navigation.navigate('AddEvaluation', {
-                  subject: {
-                    id: subjectId,
-                    name: subjectName,
-                  },
-                });
-              }}
-            />
+            <AddFinalButton />
           )}
           renderItem={({ item }) => (
             <FinalsListItem final={item} subjectId={subjectId} />
