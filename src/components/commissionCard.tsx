@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Commission, Subject } from '../models';
+import { Commission } from '../models';
 import { commissionCard as style } from '../styles';
 
 export interface CommissionCardProps {

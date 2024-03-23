@@ -1,6 +1,10 @@
-import { Final, FinalExam, FinalStatus, Student, Subject } from '../models';
-import { get, put, post, deleteMethod } from './authenticatedRepository.ts';
+import { Final } from '../models';
+import { get, post, put } from './authenticatedRepository.ts';
 import { StatusCodeError } from '../networking';
+import { FinalCamelCase } from '../models/Final.ts';
+import { convertSnakeToCamelCase } from '../utils/convertSnakeToCamelCase.ts';
+import { FinalStatus } from '../models/FinalStatus.ts';
+import { Subject } from '../models/Subject.ts';
 
 const domainUrl = 'api/finals';
 
@@ -12,120 +16,67 @@ export class IdentityFail extends Error {
 }
 
 export async function fetchFromSubject(subjectId: number): Promise<any> {
-  const response = await get(`${domainUrl}`, [{ key: 'subject_siu_id', value: subjectId }]) as any[]
+  const response: FinalCamelCase[] = await get(`${domainUrl}`, [{ key: 'subject_siu_id', value: subjectId }]) as FinalCamelCase[]
+  const allFinals = response.map((json: FinalCamelCase) => convertSnakeToCamelCase(json) as Final);
 
-  const finals = response.map((json: any) => new Final(
-    json.id,
-    json.subject.name,
-    new Date(json.date),
-    // json.status,
-    FinalStatus.Closed,
-    json.qrid,
-    json.act,
-  ));
-  
-
-  return finals;
+  // TODO: remove this
+  // allFinals.forEach(final => final.status = FinalStatus.Grading);
+  return allFinals
 }
 
-// export function getDetail(finalId: number): Promise<Final> {
-//   console.log("Final id: ", finalId);
+export async function getDetail(finalId: number): Promise<Final> {
+  const finalData: FinalCamelCase = await get(`${domainUrl}/${finalId}`) as FinalCamelCase
+  return convertSnakeToCamelCase(finalData) as Final;  
+}
 
-//   return get(`${domainUrl}/${finalId}`).then(json =>
+export async function grade(
+  finalId: number,
+  finalExams: { finalExamSubmissionId: number, grade: number }[],
+): Promise<boolean> {
+  var body = { grades: finalExams.map(exam => ({ final_exam_id: exam.finalExamSubmissionId, grade: exam.grade })) }
+  console.log('body', body);
+  
+  await put(`${domainUrl}/${finalId}/grade`, body)
+  return true
+}
+
+// export function deleteExam(
+//   finalId: number,
+//   finalExam: FinalExam,
+// ): Promise<boolean> {
+//   return deleteMethod(
+//     `${domainUrl}/${finalId}/final_exams/${finalExam.id}`,
+//   ).then(json => Promise.resolve(true));
+// }
+
+// export function addStudent(
+//   finalId: number,
+//   padron: number,
+// ): Promise<boolean> {
+//   return post(`${domainUrl}/${finalId}/final_exams`, {
+//     padron: padron,
+//   }).then(data =>
 //     Promise.resolve(
-//       new Final(
-//         json.id,
-//         json.subject.name,
-//         new Date(json.date),
-//         json.status,
-//         json.qrid,
-//         json.act,
+//       new FinalExam(
+//         data.id,
+//         finalId,
+//         new Student(
+//           data.student.padron,
+//           data.student.first_name,
+//           data.student.last_name,
+//           data.student.dni,
+//           data.student.email,
+//         ),
+//         data.grade,
+//         data.correlatives_approved,
 //       ),
 //     ),
 //   );
 // }
 
-export async function getFinalExamsFor(finalId: number): Promise<FinalExam[]> {
-  try {
-    const json = await get(`${domainUrl}/${finalId}`);
-    if (json.final_exams) {
-      return json.final_exams.map(data =>
-        new FinalExam(
-          data.id,
-          finalId,
-          new Student(
-            data.student.padron,
-            data.student.first_name,
-            data.student.last_name,
-            data.student.dni,
-            data.student.email,
-          ),
-          data.grade,
-          data.correlatives_approved,
-        ),
-      );
-    }
-    return [];
-  } catch (error) {
-    // Handle or rethrow error as needed
-    console.error('Error fetching final exams:', error);
-    throw error; // Rethrow if you want the caller to handle it
-  }
-}
-
-export function grade(
-  finalId: number,
-  finalExams: FinalExam[],
-): Promise<boolean> {
-  var body = {};
-  var grades = [];
-  finalExams.forEach(exam => {
-    grades.push({ final_exam_id: exam.id, grade: exam.grade });
-  });
-  body.grades = grades;
-  return put(`${domainUrl}/${finalId}/grade`, body).then(json =>
-    Promise.resolve(true),
-  );
-}
-
-export function deleteExam(
-  finalId: number,
-  finalExam: FinalExam,
-): Promise<boolean> {
-  return deleteMethod(
-    `${domainUrl}/${finalId}/final_exams/${finalExam.id}`,
-  ).then(json => Promise.resolve(true));
-}
-
-export function addStudent(
-  finalId: number,
-  padron: number,
-): Promise<boolean> {
-  return post(`${domainUrl}/${finalId}/final_exams`, {
-    padron: padron,
-  }).then(data =>
-    Promise.resolve(
-      new FinalExam(
-        data.id,
-        finalId,
-        new Student(
-          data.student.padron,
-          data.student.first_name,
-          data.student.last_name,
-          data.student.dni,
-          data.student.email,
-        ),
-        data.grade,
-        data.correlatives_approved,
-      ),
-    ),
-  );
-}
-
-export function close(finalId: number, image: string): Promise<boolean> {
-  return post(`${domainUrl}/${finalId}/close`, '').then(json =>
-    Promise.resolve(true),
-  );
+export async function close(finalId: number, image: string): Promise<boolean> {
+  await post(`${domainUrl}/${finalId}/close`, '')
+  return true
 }
 
 export function sendAct(finalId: number, image: string): Promise<boolean> {
@@ -144,23 +95,15 @@ export function sendAct(finalId: number, image: string): Promise<boolean> {
     .then(json => Promise.resolve(true));
 }
 
-export function create(subject: Subject, date: Date): Promise<Final> {
-  return post(`${domainUrl}`, {
-    subject_siu_id: subject.id,
-    subject_name: subject.name,
+export async function createFinal(subjectId: number, subjectName: string, date: Date): Promise<Final> {
+  console.log("Creating final", subjectId, subjectName);
+  
+  const createdFinal = await post(`${domainUrl}`, {
+    subject_siu_id: subjectId,
+    subject_name: subjectName,
     timestamp: Math.trunc(date.getTime() / 1000), // Transform milliseconds to seconds
-  }).then(json =>
-    Promise.resolve(
-      new Final(
-        json.id,
-        json.subject.name,
-        new Date(json.date),
-        json.status,
-        json.qrid,
-        json.act,
-      ),
-    ),
-  );
+  }) as FinalCamelCase
+  return convertSnakeToCamelCase(createdFinal) as Final;
 }
 
 export function notifyGrades(finalId: number): Promise<boolean> {
@@ -171,13 +114,13 @@ export function notifyGrades(finalId: number): Promise<boolean> {
 
 export default {
   fetchFromSubject,
-  getFinalExamsFor,
+  getDetail,
   grade,
-  deleteExam,
-  addStudent,
+  // deleteExam,
+  // addStudent,
   close,
   sendAct,
-  create,
+  createFinal,
   notifyGrades,
   IdentityFail,
 };

@@ -38,7 +38,8 @@ export function SemesterCard({ route }: Props) {
     {
       name: "Ver Instancias de Final", onPress: () => {
         navigation.navigate('FinalsList', {
-          subjectId: commission.subjectSiuId
+          subjectId: commission.subjectSiuId,
+          subjectName: commission.subjectName
         });
       }
     },

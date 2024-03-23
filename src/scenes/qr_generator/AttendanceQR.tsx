@@ -77,7 +77,7 @@ const SemesterAttendanceQR: React.FC = () => {
       )}
       <View style={style().containerView}>
         <RoundedButton
-          text="Download QR"
+          text="Descargar QR"
           style={style().button}
           enabled={!downloading && !!qrValue} // Ensure QR code is loaded
           onPress={downloadQR}

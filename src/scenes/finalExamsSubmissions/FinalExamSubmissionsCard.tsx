@@ -1,69 +1,80 @@
-import React, { useRef } from 'react';
-import { View, Text } from 'react-native';
+import React from 'react';
+import { View, Text, TextInput } from 'react-native';
+import { Formik, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
 import { finalExamCard as style } from '../../styles';
-import FinalExam from '../../models/FinalExam';
-import { FormInput } from '../../components';
+import { FinalExam } from '../../models/FinalExam';
+import { finalRepository } from '../../repositories';
+import { Final } from '../../models/Final';
 
 interface FinalExamCardProps {
-  exam: FinalExam;
+  final: Final;
+  finalExamSubmission: FinalExam;
   initialGrade?: number;
   disabled: boolean;
-  onGradeChanged?: (grade?: number) => void;
-  onGradeUnchanged?: (grade?: number) => void;
 }
 
-const FinalExamCard: React.FC<FinalExamCardProps> = ({
-  exam,
+interface FormValues {
+  grade: string;
+}
+
+const validationSchema = Yup.object().shape<any>({
+  grade: Yup.number()
+    .typeError('Grade must be a number')
+    .integer('Grade must be an integer')
+    .min(1, 'Grade must be greater than or equal to 0')
+    .max(10, 'Grade must be less than or equal to 10')
+    .required('Grade is required'),
+});
+
+const FinalExamSubmissionsCard: React.FC<FinalExamCardProps> = ({
+  final,
+  finalExamSubmission,
   initialGrade = null,
   disabled,
-  onGradeChanged = () => {},
-  onGradeUnchanged = () => {},
 }) => {
-  const textInputRef = useRef<any>(null); // Adjust the type according to FormInput ref type
+  // Custom handleChange to prevent invalid input
+  const customHandleChange = (
+    setFieldValue: (field: string, value: any) => void
+  ) => (text: string) => {
+    const numericValue = parseInt(text, 10);
+
+    // Allow only numbers between 0 and 10, or empty input
+    if (text === '' || (!isNaN(numericValue) && numericValue >= 0 && numericValue <= 10)) {
+      setFieldValue('grade', text);
+      finalRepository.grade(final.id, [{ finalExamSubmissionId: finalExamSubmission.id, grade: numericValue }]);
+    }
+  };
 
   return (
-    <View style={style().view}>
-      <View style={style().studentInfo}>
-        <Text style={style().padron}>{exam.student.id}</Text>
-        <Text style={style().name}>
-          {exam.student.lastName}, {exam.student.firstName}
-        </Text>
-      </View>
-      <View style={style().gradeInfo}>
-        <FormInput
-          ref={textInputRef}
-          disabled={disabled}
-          style={style().grade}
-          placeholderColor={style().textInputPlaceholder.color}
-          errorStyle={style().errorInInput}
-          keyboardType="numeric"
-          placeholder=""
-          initialValue={exam.grade != null ? exam.grade.toString() : ''}
-          blurOnSubmit={false}
-          onTextChanged={(text, isValid) => {
-            let newGrade: number | null = null;
-            if (isValid && text) {
-              newGrade = parseInt(text);
-            }
-            exam.grade = newGrade || 0;
-            if (newGrade === initialGrade) {
-              onGradeUnchanged(newGrade || 0);
-            } else {
-              onGradeChanged(newGrade || 0);
-            }
-          }}
-          validation={{
-            numericality: {
-              onlyInteger: true,
-              lessThanOrEqualTo: 10,
-              message: ' ',
-            },
-          }}
-        />
-        {!exam.hasAllCorrelatives && <Text style={style().warning}>⚠️</Text>}
-      </View>
-    </View>
+    <Formik<FormValues>
+      initialValues={{ grade: finalExamSubmission.grade?.toString() || '' }}
+      validationSchema={validationSchema}
+      onSubmit={() => {}}
+    >
+      {({ setFieldValue, handleBlur, values, errors, touched }) => (
+        <View style={style().view}>
+          <View style={style().studentInfo}>
+            <Text style={style().padron}>{finalExamSubmission.student.id}</Text>
+            <Text style={style().name}>
+              {finalExamSubmission.student.lastName}, {finalExamSubmission.student.firstName}
+            </Text>
+          </View>
+          <View style={style().gradeInfo}>
+            <TextInput
+              onChangeText={customHandleChange(setFieldValue)}
+              onBlur={handleBlur('grade')}
+              value={values.grade}
+              keyboardType="numeric"
+              editable={!disabled}
+            />
+            {touched.grade && errors.grade && <Text style={style().warning}>{errors.grade}</Text>}
+            {!finalExamSubmission.correlativesApproved && <Text style={style().warning}>⚠️</Text>}
+          </View>
+        </View>
+      )}
+    </Formik>
   );
 };
 
-export default FinalExamCard;
+export default FinalExamSubmissionsCard;

@@ -8,14 +8,15 @@ import {
 import RNFS from 'react-native-fs';
 // Check if CameraRoll is necessary and add it to the package.jsojn
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
-import Permissions, {PERMISSIONS} from 'react-native-permissions';
 import { Loading, RoundedButton } from '../../components';
-import { Final, FinalStatus } from '../../models';
+import { Final } from '../../models';
 import { finalRepository } from '../../repositories';
 import { getStyleSheet as style } from '../../styles';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import QRCode from 'react-native-qrcode-svg';
 import { StackActions } from '@react-navigation/native';
+import { calculateFinalCurrentStatus } from '../../models/Final';
+import { FinalStatus } from '../../models/FinalStatus';
 
 // Aux function to format the filename
 function addDateToSubjectName(dateParam: Date | string, originalFilename: string): string {
@@ -57,7 +58,6 @@ const FinalExamQR: React.FC = () => {
   const route = useRoute();
   const final = (route.params as FinalExamQRRouteProps).final;
 
-
   // const fetchData = useCallback(async () => {
   //   if (loading) return;
   //   setLoading(true);
@@ -75,21 +75,37 @@ const FinalExamQR: React.FC = () => {
   //   }
   // }, [loading, final, navigation]);
 
-  const hasAndroidPermission = async () => {
-    const permission = PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE;
-    const hasPermission = await Permissions.check(permission);
-    console.log("Has permission:", hasPermission);
-    if (hasPermission) return true;
-    
-    console.log("Requesting permission");
-    const status = await Permissions.request(permission);
-    return status === 'granted';
-  };
-
   const handleLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
     setQrSize(Math.min(width, height));
   };
+
+  const downloadQR = async () => {
+    if (downloading) return;
+    setDownloading(true);
+    // Update the below code according to your project's structure and libraries
+    await (svgRef as any).toDataURL(async (data: string) => {
+      try {
+        const subjectName = replaceTildes(final!.subjectName.replaceAll(' ', '-').toLowerCase());
+        const subjectNameWithDate = addDateToSubjectName(final!.date, subjectName)
+        const path = (RNFS.CachesDirectoryPath + '/' + subjectNameWithDate + '.png')
+        await RNFS.writeFile(path, data, 'base64');
+        await CameraRoll.save(path, { type: 'photo', album: '/QrExams' });
+        setDownloading(false);
+        Alert.alert('QR guardado en la galería.');
+      } catch (error) {
+        console.log("error", error);
+        setDownloading(false);
+        Alert.alert(
+          'Te fallamos',
+          'No pudimos descargar el QR. ' +
+          'Usalo desde el teléfono o pedile al departamento que ' +
+          'te lo pase/imprima. Sino siempre podés volver a ' +
+          'intentar en unos minutos.'
+        );
+      }
+    });
+  }
 
   const [svgRef, setSvgRef] = useState(React.createRef());  // Assume the correct type for your SVG component
 
@@ -108,46 +124,7 @@ const FinalExamQR: React.FC = () => {
             text="Descargar QR"
             style={style().button}
             enabled={!downloading}
-            onPress={async () => {
-              if (downloading) return;
-              setDownloading(true);
-              // Update the below code according to your project's structure and libraries
-              await (svgRef as any).toDataURL(async (data: string) => {
-                try {
-                  const subjectName = replaceTildes(final!.subjectName.replaceAll(' ', '-').toLowerCase());
-                  const subjectNameWithDate = addDateToSubjectName(final!.date, subjectName)
-                  const path = (RNFS.CachesDirectoryPath + '/' + subjectNameWithDate + '.png')
-                  
-                  await RNFS.writeFile(
-                    path,
-                    data,
-                    'base64'
-                  );
-                  
-                  if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
-                    throw new MessageError('Necesitamos permisos para guardar el QR en tu teléfono');
-                  }
-                  
-                  await CameraRoll.save(
-                    path,
-                    {type: 'photo', album: '/QrExams'}
-                  );
-              
-                  setDownloading(false);
-                  Alert.alert('QR guardado en la galería.');
-                } catch (error) {
-                  setDownloading(false);
-                  Alert.alert(
-                    'Te fallamos',
-                    'No pudimos descargar el QR. ' +
-                    'Usalo desde el teléfono o pedile al departamento que ' +
-                    'te lo pase/imprima. Sino siempre podés volver a ' +
-                    'intentar en unos minutos.'
-                  );
-                }
-              });
-              
-            }}
+            onPress={() => { downloadQR() }}
           />
           <View style={{ marginTop: 10}}>
             <RoundedButton
@@ -155,23 +132,18 @@ const FinalExamQR: React.FC = () => {
               style={{...style().button}}
               enabled={!closing}
               onPress={async () => {
-                var finalInstance = final;
-                if (finalInstance!.currentStatus() === FinalStatus.SoonToStart) {
+                const finalCurrentStatus = calculateFinalCurrentStatus(final)
+                if (finalCurrentStatus === FinalStatus.SoonToStart) {
                   Alert.alert('Bajá esa ansiedad. Todavía ni empezó el final');
                   return;
                 }
                 setClosing(true);
                 try {
-                  await finalRepository.close(finalInstance!.id, '');
-                  finalInstance!.finalize();
-                
+                  console.log("FINAL", final);
+                  
+                  await finalRepository.close(final.id, '');
 
-                  navigation.dispatch(
-                    StackActions.replace('FinalExamsList', {
-                      final: finalInstance!.toObject(),
-                      editable: true,
-                    })
-                  );
+                  navigation.goBack()
                   setClosing(false);
                 } catch (error) {
                   setClosing(false);

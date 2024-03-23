@@ -6,9 +6,9 @@ import {finalExamSubmissions as style} from '../../styles';
 import {Final} from '../../models'; // Assuming there's a Final model
 import FinalExamSubmissionsCard from './FinalExamSubmissionsCard';
 import { finalRepository } from '../../repositories';
-import FinalExam from '../../models/FinalExam';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import FinalExamSubmissionsListFooter from './FinalExamSubmissionsListFooter';
+import { FinalExam } from '../../models/FinalExam';
 
 Icon.loadFont();
 
@@ -31,8 +31,8 @@ const FinalExamSubmissions: React.FC = () => {
     // setGradeChanges(new Set());
 
     try {
-      const finalExamsData = await finalRepository.getFinalExamsFor(final.id);
-      setFinalExams(finalExamsData);
+      const finalData = await finalRepository.getDetail(final.id);
+      setFinalExams(finalData.finalExams);
       setLoading(false);
 
     } catch (error) {
@@ -48,7 +48,7 @@ const FinalExamSubmissions: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, []);
 
 
   return (
@@ -67,8 +67,9 @@ const FinalExamSubmissions: React.FC = () => {
           renderItem={({item}) => (
             <TouchableOpacity>
               <FinalExamSubmissionsCard
+                final={final}
+                finalExamSubmission={item}
                 disabled={false}
-                exam={item}
                 initialGrade={item.grade}
               />
             </TouchableOpacity>

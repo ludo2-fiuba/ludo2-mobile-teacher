@@ -3,7 +3,7 @@ import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
 import { Loading, RoundedButton } from '../../components';
 import { getStyleSheet as style } from '../../styles';
 import { finalRepository } from '../../repositories';
-import { Final, FinalStatus, Subject } from '../../models';
+import { Final } from '../../models';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { makeRequest } from '../../networking/makeRequest';
 import FinalsListItem from './FinalsListItem';
@@ -41,6 +41,7 @@ const FinalsList: React.FC = () => {
 
     try {
       const retrievedFinals = await makeRequest(() => finalRepository.fetchFromSubject(subjectId), navigation);
+      console.log("Retrieved finals", retrievedFinals);
       const orderedFinals = retrievedFinals.sort((a: any, b: any) => (a.date < b.date ? 1 : -1));
       setFinals(orderedFinals);
     } catch (error) {
@@ -62,10 +63,8 @@ const FinalsList: React.FC = () => {
       style={style().button}
       onPress={() => {
         navigation.navigate('AddFinal', {
-          subject: {
-            id: subjectId,
-            name: subjectName,
-          },
+          subjectId: subjectId,
+          subjectName: subjectName,
         });
       }}
     />

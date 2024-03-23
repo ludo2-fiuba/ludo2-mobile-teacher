@@ -4,9 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Button,
   TextInput,
-  StyleSheet,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Loading, RoundedButton } from '../../components';
@@ -14,7 +12,6 @@ import { getStyleSheet as style } from '../../styles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import moment from 'moment';
 import 'moment/locale/es'
-import { Semester } from '../../models/Semester';
 import { finalRepository } from '../../repositories';
 
 moment.locale('es');
@@ -24,7 +21,8 @@ interface Props {
 }
 
 interface AddFinalRouteParams {
-  semesterToBeAddedAnFinal: Semester;
+  subjectId: number;
+  subjectName: string;
 }
 
 const AddFinal: React.FC<Props> = () => {
@@ -44,8 +42,8 @@ const AddFinal: React.FC<Props> = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const semester: Semester = (route.params as AddFinalRouteParams).semesterToBeAddedAnFinal
-  console.log('Semester from addfinal', semester);
+  const subjectId: number = (route.params as AddFinalRouteParams).subjectId
+  const subjectName: string = (route.params as AddFinalRouteParams).subjectName
 
   const onStartDateChange = (event: any, selectedDate: any) => {
     setShowStartDatePicker(false);
@@ -260,19 +258,19 @@ const AddFinal: React.FC<Props> = () => {
               const finishFullDate = combineDateAndTime(finishDate, finishTime);
               
               // TODO: resolve this, endpoint not working from backend
-              // finalRepository.create(semester, finalName, startFullDate, finishFullDate)
-              //   .then(() => {
-              //     setCreating(false);
-              //     navigation.goBack();
-              //   })
-              //   .catch((error: any) => {
-              //     setCreating(false);
-              //     Alert.alert(
-              //       'Te fallamos',
-              //       'No pudimos crear este final. ' +
-              //       'Volvé a intentar en unos minutos.',
-              //     );
-              //   });
+              finalRepository.createFinal(subjectId, subjectName, startFullDate)
+                .then(() => {
+                  setCreating(false);
+                  navigation.goBack();
+                })
+                .catch((error: any) => {
+                  setCreating(false);
+                  Alert.alert(
+                    'Te fallamos',
+                    'No pudimos crear este final. ' +
+                    'Volvé a intentar en unos minutos.',
+                  );
+                });
             } else {
               Alert.alert('Error', 'La fecha y hora de finalización no pueden ser anteriores a la fecha y hora de inicio.');
             }

@@ -1,9 +1,11 @@
 import React from 'react';
 import { TouchableOpacity, Alert, View, Text, StyleSheet } from 'react-native';
-import { Final, FinalStatus } from '../../models';
+import { Final } from '../../models';
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import { lightModeColors } from '../../styles/colorPalette';
+import { calculateFinalCurrentStatus } from '../../models/Final';
+import { FinalStatus } from '../../models/FinalStatus';
 
 
 interface FinalsListItemProps {
@@ -15,41 +17,44 @@ const FinalsListItem: React.FC<FinalsListItemProps> = ({ final, subjectId }) => 
   const navigation = useNavigation();
 
   const onPressItem = () => {
-    const currentStatus = final.currentStatus();
-    if (currentStatus === FinalStatus.Draft || currentStatus === FinalStatus.Rejected) {
+    const currentStatus = calculateFinalCurrentStatus(final)
+    if (currentStatus === FinalStatus.Draft) {
+      Alert.alert('Este final todavía no fue aprobado', 'Por favor espere a que se apruebe para poder ver los detalles.');
       return;
-    }
-    if (currentStatus === FinalStatus.Future) {
-      console.log('Final status: Future');
-      Alert.alert('Bajá esa ansiedad, todavía falta.');
+    } else if (currentStatus === FinalStatus.Rejected) {
+      Alert.alert('Este final fue rechazado', 'Por favor consulte al departamento para obtener mas información.');
+      return;
+    } else if (currentStatus === FinalStatus.Future) {
+      Alert.alert('Este final aún no ha comenzado', 'Por favor espere a que comience para poder ver los detalles.');
+      return;
     } else if (currentStatus === FinalStatus.Closed) {
       console.log('Final status: Closed', final);
       navigation.navigate('FinalExamSubmissions', {
-        final: final.toObject(),
+        final: final,
         editable: false,
       });
     } else if (currentStatus === FinalStatus.Grading) {
       console.log('Final status: Grading');
-      const finalToBeSent = final.toObject();
-      console.log("Final to be sent", finalToBeSent);
+      console.log("Final to be sent", final);
 
       navigation.navigate('FinalExamSubmissions', {
-        final: finalToBeSent,
+        final: final,
       });
     } else {
       navigation.navigate('FinalExamQR', {
-        final: final.toObject(),
+        final: final,
       });
     }
   };
 
   const getStatusText = () => {
-    console.log("Final status: ", final.currentStatus());
+    const finalCurrentStatus = calculateFinalCurrentStatus(final)
     
-    switch (final.currentStatus()) {
+    switch (finalCurrentStatus) {
       case FinalStatus.Future:
         return 'Pronto';
       case FinalStatus.SoonToStart:
+        return 'Pronto';
       case FinalStatus.Open:
         return 'Ver QR';
       case FinalStatus.Grading:

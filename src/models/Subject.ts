@@ -1,23 +1,15 @@
-export default class Subject {
-  readonly id: integer;
-  readonly code: string;
-  readonly name: string;
+export interface Subject {
+  id: number;
+  code: string;
+  name: string;
+  departmentId: number;
+  correlatives: any[];
+}
 
-  constructor(id: integer, code: string, name: string) {
-    this.id = id;
-    this.code = code;
-    this.name = name;
-  }
-
-  toObject() {
-    return {
-      id: this.id,
-      code: this.code,
-      name: this.name,
-    };
-  }
-
-  static fromObject(object) {
-    return new Subject(object.id, object.code, object.name);
-  }
+export interface SubjectCamelCase {
+  id: number;
+  code: string;
+  name: string;
+  department_id: number;
+  correlatives: any[];
 }
