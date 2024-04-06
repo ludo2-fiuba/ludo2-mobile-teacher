@@ -63,7 +63,7 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
     <View style={style().view}>
       <View style={styles.card}>
         <View style={styles.cardItem}>
-          <Image source={LudoIcon} style={{ width: 130, height: 130 }} />
+          <Image source={LudoIcon} style={{ width: 120, height: 120 }} />
           <View style={{flexDirection: 'column'}}>
           <Text style={styles.cardTitle}>LODU</Text>
           <Text style={{...styles.cardLabel, marginTop: 7}}>La Organizadora para</Text>
