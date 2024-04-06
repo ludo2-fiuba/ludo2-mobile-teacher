@@ -8,19 +8,21 @@ interface IProps {
 
 interface IBasicListItem {
   name: string
-  onPress: () => void
+  onPress?: () => void
+  materialIcon?: React.ReactNode
 }
 
 const BasicList: React.FC<IProps> = ({ items }: IProps) => {
   return (
     <View style={style().view}>
-      {items.map((item) => (
-        <View key={item.name}>
+      {items.map((item, index) => (
+        <React.Fragment key={item.name}>
           <TouchableOpacity onPress={item.onPress} style={style().touchableOpacity}>
+            {item.materialIcon}
             <Text style={style().itemText}>{item.name}</Text>
           </TouchableOpacity >
-          <View style={style().separator} />
-        </View>
+          {index !== items.length - 1 && <View style={style().separator} />}
+        </React.Fragment>
       ))}
     </View>
   );

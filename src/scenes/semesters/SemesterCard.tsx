@@ -9,6 +9,7 @@ import { lightModeColors } from '../../styles/colorPalette';
 import { fetchSemesterDataAsync, selectSemesterData } from '../../features/semesterSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Commission } from '../../models';
+import MaterialIcon from '../../components/MaterialIcon';
 
 interface Props {
   route: any;
@@ -33,7 +34,8 @@ export function SemesterCard({ route }: Props) {
           semester: semesterData,
           evaluations: semesterData?.evaluations,
         });
-      }
+      },
+      materialIcon: <MaterialIcon name="note-multiple" fontSize={24} />
     },
     {
       name: "Ver Instancias de Final", onPress: () => {
@@ -41,7 +43,8 @@ export function SemesterCard({ route }: Props) {
           subjectId: commission.subjectSiuId,
           subjectName: commission.subjectName
         });
-      }
+      },
+      materialIcon: <MaterialIcon name="book-variant" fontSize={24} />
     },
     {
       name: "Cuerpo Docente", onPress: () => {
@@ -49,7 +52,8 @@ export function SemesterCard({ route }: Props) {
           commissionId: commission.id, // Used to get the staff teachers
           chiefTeacher: semesterData?.commission.chiefTeacher, // pass the chief teacher from the semester
         });
-      }
+      },
+      materialIcon: <MaterialIcon name="account-tie" fontSize={24} />
     },
     {
       name: "Ver Alumnos", onPress: () => {
@@ -57,14 +61,16 @@ export function SemesterCard({ route }: Props) {
           commission: commission,
           semester: semesterData,
         });
-      }
+      },
+      materialIcon: <MaterialIcon name="account-group" fontSize={24} />
     },
     {
       name: "Generar QR de Asistencias", onPress: () => {
         navigation.navigate('QRAttendance', {
           semester: semesterData,
         });
-      }
+      },
+      materialIcon: <MaterialIcon name="qrcode" fontSize={24} />
     }
     // {
     //   name: "Ver Correlativas", onPress: () => {
@@ -128,7 +134,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'column',
-    marginBottom: 10,
+    marginBottom: 20,
     backgroundColor: 'white',
     borderRadius: 8,
     elevation: 3,
