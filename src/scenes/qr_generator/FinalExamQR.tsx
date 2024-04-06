@@ -86,16 +86,14 @@ const FinalExamQR: React.FC = () => {
     // Update the below code according to your project's structure and libraries
     await (svgRef as any).toDataURL(async (data: string) => {
       try {
-        const subjectName = replaceTildes(final!.subjectName.replaceAll(' ', '-').toLowerCase());
+        const subjectName = replaceTildes(final!.subject.name.replaceAll(' ', '-').toLowerCase());
         const subjectNameWithDate = addDateToSubjectName(final!.date, subjectName)
         const path = (RNFS.CachesDirectoryPath + '/' + subjectNameWithDate + '.png')
         await RNFS.writeFile(path, data, 'base64');
         await CameraRoll.save(path, { type: 'photo', album: '/QrExams' });
-        setDownloading(false);
-        Alert.alert('QR guardado en la galería.');
+        Alert.alert('Éxito', 'QR guardado en la galería.');
       } catch (error) {
         console.log("error", error);
-        setDownloading(false);
         Alert.alert(
           'Te fallamos',
           'No pudimos descargar el QR. ' +
@@ -103,6 +101,8 @@ const FinalExamQR: React.FC = () => {
           'te lo pase/imprima. Sino siempre podés volver a ' +
           'intentar en unos minutos.'
         );
+      } finally {
+        setDownloading(false);
       }
     });
   }
