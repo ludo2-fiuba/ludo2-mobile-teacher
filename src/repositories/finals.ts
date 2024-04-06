@@ -3,8 +3,7 @@ import { get, post, put } from './authenticatedRepository.ts';
 import { StatusCodeError } from '../networking';
 import { FinalCamelCase } from '../models/Final.ts';
 import { convertSnakeToCamelCase } from '../utils/convertSnakeToCamelCase.ts';
-import { FinalStatus } from '../models/FinalStatus.ts';
-import { Subject } from '../models/Subject.ts';
+import { FinalExam } from '../models/FinalExam.ts';
 
 const domainUrl = 'api/finals';
 
@@ -49,30 +48,33 @@ export async function grade(
 //   ).then(json => Promise.resolve(true));
 // }
 
-// export function addStudent(
-//   finalId: number,
-//   padron: number,
-// ): Promise<boolean> {
-//   return post(`${domainUrl}/${finalId}/final_exams`, {
-//     padron: padron,
-//   }).then(data =>
-//     Promise.resolve(
-//       new FinalExam(
-//         data.id,
-//         finalId,
-//         new Student(
-//           data.student.padron,
-//           data.student.first_name,
-//           data.student.last_name,
-//           data.student.dni,
-//           data.student.email,
-//         ),
-//         data.grade,
-//         data.correlatives_approved,
-//       ),
-//     ),
-//   );
-// }
+export async function addStudent(
+  finalId: number,
+  padron: number,
+): Promise<FinalExam> {
+  const finalExam = await post(`${domainUrl}/${finalId}/final_exams`, {
+    padron: padron,
+  })
+  
+  return convertSnakeToCamelCase(finalExam) as FinalExam;
+  // then(data =>
+  //   Promise.resolve(
+  //     new FinalExam(
+  //       data.id,
+  //       finalId,
+  //       new Student(
+  //         data.student.padron,
+  //         data.student.first_name,
+  //         data.student.last_name,
+  //         data.student.dni,
+  //         data.student.email,
+  //       ),
+  //       data.grade,
+  //       data.correlatives_approved,
+  //     ),
+  //   ),
+  // );
+}
 
 export async function close(finalId: number, image: string): Promise<boolean> {
   await post(`${domainUrl}/${finalId}/close`, '')

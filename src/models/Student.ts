@@ -5,7 +5,7 @@ export interface Student {
   lastName: string;
   dni: string;
   email: string;
-  legajo: string;
+  legajo?: string;
 }
 
 export interface StudentSnakeCase {
@@ -15,5 +15,5 @@ export interface StudentSnakeCase {
   last_name: string;
   dni: string;
   email: string;
-  legajo: string
+  legajo?: string
 }

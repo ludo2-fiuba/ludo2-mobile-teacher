@@ -6,6 +6,7 @@ import { finalExamCard as style } from '../../styles';
 import { FinalExam } from '../../models/FinalExam';
 import { finalRepository } from '../../repositories';
 import { Final } from '../../models/Final';
+import { FinalExamSubmissionStudentCard } from '../../components/FinalExamSubmissionStudentCard';
 
 interface FinalExamCardProps {
   final: Final;
@@ -50,16 +51,11 @@ const FinalExamSubmissionsCard: React.FC<FinalExamCardProps> = ({
     <Formik<FormValues>
       initialValues={{ grade: finalExamSubmission.grade?.toString() || '' }}
       validationSchema={validationSchema}
-      onSubmit={() => {}}
+      onSubmit={() => { }}
     >
       {({ setFieldValue, handleBlur, values, errors, touched }) => (
         <View style={style().view}>
-          <View style={style().studentInfo}>
-            <Text style={style().padron}>{finalExamSubmission.student.id}</Text>
-            <Text style={style().name}>
-              {finalExamSubmission.student.lastName}, {finalExamSubmission.student.firstName}
-            </Text>
-          </View>
+          <FinalExamSubmissionStudentCard student={finalExamSubmission.student} />
           <View style={style().gradeInfo}>
             <TextInput
               onChangeText={customHandleChange(setFieldValue)}
