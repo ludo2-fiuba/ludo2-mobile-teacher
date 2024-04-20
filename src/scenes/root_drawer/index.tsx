@@ -1,5 +1,5 @@
 import { DrawerContentComponentProps, DrawerContentOptions, DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
-import { HomeScreen } from "..";
+import { HomeScreen, StatsScreen } from "..";
 import { ProfileOverview } from "../../components";
 import { SessionManager } from "../../managers";
 import { darkModeColors, lightModeColors } from "../../styles/colorPalette";
@@ -11,6 +11,7 @@ const Drawer = createDrawerNavigator()
 
 const DRAWER_MENU_SHOWN_SCREENS = [
   "Home",
+  "Stats"
 ]
 
 const FilteredDrawerContent = (props: DrawerContentComponentProps<DrawerContentOptions>) => {
@@ -49,6 +50,12 @@ const RootDrawer = () => {
         name="Home"
         component={HomeScreen}
         options={{ headerShown: true, title: 'Comisiones', drawerIcon: makeDrawerIcon('home', 'home-outline')}}
+      />
+      
+      <Drawer.Screen
+        name="Stats"
+        component={StatsScreen}
+        options={{ headerShown: true, title: 'Estadisticas', drawerIcon: makeDrawerIcon('chart-box', 'chart-box-outline') }}
       />
     </Drawer.Navigator>
   )

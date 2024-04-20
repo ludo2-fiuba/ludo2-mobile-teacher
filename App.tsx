@@ -10,6 +10,7 @@ import {
   RootDrawer,
   SemesterCard,
   SplashScreen,
+  StatsScreen,
   TakePictureStepScreen
 } from './src/scenes';
 import moment from 'moment';
@@ -205,6 +206,11 @@ const AllComponents: React.FC = () => {
             options={({ route }) => ({ title: 'Tomar foto' })}
           />
 
+          <Stack.Screen
+            name="Stats"
+            component={StatsScreen}
+            options={({ route }) => ({ title: 'Estadísticas' })}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </ActionSheetProvider>
