@@ -10,6 +10,7 @@ export { default as submissionsRepository } from './submissions.ts';
 export { default as QRAttendanceRepository } from './qrAttendance.ts';
 export { default as finalRepository } from './finals.ts';
 export { default as studentsRepository } from './students.ts';
+export { default as statsRepository } from './stats.ts';
 // Removed as it is not used and was replaced for evaluations repository 
 // (i don't delete as it might be used in the future)
 

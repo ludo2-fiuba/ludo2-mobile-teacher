@@ -8,6 +8,7 @@ export { default as PreRegisterLastInstructionsScreen } from './preregister/done
 export { default as SplashScreen } from './splash/index';
 export { default as RootDrawer } from './root_drawer/index';
 export { SemesterCard } from './semesters/SemesterCard';
+export { default as StatsScreen } from './stats';
 // export { default as SemesterList } from './semesters/SemesterList';
 // export { default as FinalExamsListScreen } from './evaluation/EvaluationGradesListTest';
 
