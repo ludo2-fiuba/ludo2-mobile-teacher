@@ -9,7 +9,7 @@ import { Loading } from '../../components';
 import teacherRoles from '../../models/TeacherRoles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchTeachers } from '../../features/teachersSlice';
-const UserIcon = require('./img/usericon.jpg');
+const UserIcon = require('../img/usericon.jpg');
 
 
 const ChiefCard = ({ firstName, lastName, email }: ChiefTeacher) => {

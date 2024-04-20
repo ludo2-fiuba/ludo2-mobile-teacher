@@ -1,6 +1,6 @@
 import { API_URL } from "@env";
 
-export const baseUrl = API_URL || 'http://example.com:8007';
+export const baseUrl = API_URL || 'http://192.168.0.10:8007';
 
 const logRequests = false;
 
@@ -84,6 +84,8 @@ export function post(url: string, body: any, queryParams = [], headers = {}) {
 export function get(url: string, queryParams: any[] = [], headers = {}) {
   const reducer = (acc: any, param: any) => `${acc}&${param.key}=${param.value}`;
   const queryParamsString = `?${queryParams.reduce(reducer, '')}`;
+  console.log(`GET ${baseUrl}/${url}/${queryParamsString}`);
+  
   if (logRequests) {
     console.log(`GET ${baseUrl}/${url}/${queryParamsString}`);
   }

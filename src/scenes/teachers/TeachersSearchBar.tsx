@@ -82,9 +82,7 @@ const TeachersSearchBar: React.FC<Props> = ({ allTeachers, commissionId }) => {
   const confirmAddition = () => {
     if (selectedTeacher && selectedRole) {
       console.log(`Adding ${selectedTeacher?.firstName} as ${selectedRole}`);
-      // Add logic here to actually add the teacher with the selected role
       dispatch(addTeacherRoleToCommission({ commissionId: commissionId, teacherId: selectedTeacher.id, role: selectedRole.shortVersion}))
-
       setSelectedTeacher(null);
       setSelectedRole(null);
       setShowConfirmationModal(false);

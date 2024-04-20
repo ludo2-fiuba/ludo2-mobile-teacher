@@ -52,8 +52,10 @@ export const addTeacherRoleToCommission = createAsyncThunk(
   async ({ commissionId, teacherId, role }: { commissionId: number; teacherId: number; role: string; }, { rejectWithValue }) => {
     try {
       const response = await teachersRepository.createRoleForTeacherInCommission(commissionId, teacherId, role);
+      console.log('Response from adding teacher role to commission', response);
       return response;
     } catch (error: any) {
+      console.log('Error adding teacher role to commission', error.message);
       return rejectWithValue(error.message);
     }
   }

@@ -1,15 +1,19 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import { useAppSelector } from '../../hooks';
 import { Student } from '../../models/Student'; // Make sure this import reflects the actual path
+const UserIcon = require('../img/usericon.jpg');
 
 const SemesterStudents: React.FC = () => {
   const students = useAppSelector((state) => state.semester.data?.students as Student[]);
 
   const renderStudent = ({ item }: { item: Student }) => (
-    <View style={styles.studentCard}>
-      <Text style={styles.studentName}>{item.firstName} {item.lastName} ({item.email}) </Text>
-      <Text style={styles.studentDetail}>Padrón: {item.legajo || 'Padrón faltante'}</Text>
+      <View style={styles.studentCard}>
+      <Image source={UserIcon} style={styles.image} />
+      <View style={styles.infoContainer}>
+        <Text style={styles.studentName}>{item.firstName} {item.lastName} </Text>
+        <Text style={styles.studentDetail}>Padrón: {item.legajo || 'Padrón faltante'}</Text>
+      </View>
     </View>
   );
   return (
@@ -36,18 +40,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   studentCard: {
-    backgroundColor: 'white', // White background for the card
-    borderRadius: 8, // Rounded corners for the card
-    padding: 15, // Padding inside the card
-    marginBottom: 10, // Margin at the bottom of each card
-    shadowColor: '#000', // Shadow color
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 3, // Elevation for Android
+    flexDirection: 'row',
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  image: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 10,
   },
   studentName: {
     fontSize: 18,
@@ -59,7 +67,10 @@ const styles = StyleSheet.create({
     color: 'grey',
     marginBottom: 2, // Space between each detail
   },
-  // Add additional styles for other elements if needed
+  infoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
 });
 
 export default SemesterStudents;

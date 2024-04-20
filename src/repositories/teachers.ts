@@ -3,12 +3,12 @@ import { convertSnakeToCamelCase } from '../utils/convertSnakeToCamelCase.ts';
 import { get, post, put } from './authenticatedRepository.ts';
 
 export async function fetchAllTeachers(): Promise<Teacher[]> {
-  const teachersList: TeacherSnakeCase[] = await get(`api/teachers`) as TeacherSnakeCase[];
+  const teachersList: TeacherSnakeCase[] = await get('api/teachers') as TeacherSnakeCase[];
   return convertSnakeToCamelCase(teachersList)
 }
 
 export async function fetchTeachersOfCommission(commissionId: number): Promise<TeacherTuple[]> {
-  const teachersList: TeacherTupleSnakeCase[] = await get(`api/commissions/teachers`, [{key: 'commission_id', value: commissionId}]) as TeacherTupleSnakeCase[]; 
+  const teachersList: TeacherTupleSnakeCase[] = await get('api/commissions/teachers', [{key: 'commission_id', value: commissionId}]) as TeacherTupleSnakeCase[]; 
   const parsedTeachersList: TeacherTuple[] = convertSnakeToCamelCase(teachersList)
   return convertSnakeToCamelCase(parsedTeachersList)
 }
@@ -19,7 +19,7 @@ export async function modifyRoleOfTeacherInCommission(commissionId: number, teac
     teacher: teacherId,
     role: role
   }
-  const result = await put(`api/commissions/teachers`, roleToBeCreatedInCommission)
+  const result = await put('api/commissions/teachers', roleToBeCreatedInCommission)
   return convertSnakeToCamelCase(result);
 }
 
@@ -27,13 +27,16 @@ export async function createRoleForTeacherInCommission(commissionId: number, tea
   const roleToBeCreatedInCommission = {
     commission: commissionId,
     teacher: teacherId,
-    role: role
+    role: role,
+    grader_weight: 1,
   }
 
-  console.log("roleToBeCreatedInCommission")
+  console.log('roleToBeCreatedInCommission')
   console.log(roleToBeCreatedInCommission)
   
-  const result = await post(`api/commissions/teachers`, roleToBeCreatedInCommission)
+  const result = await post('api/commissions/teachers', roleToBeCreatedInCommission)
+  console.log('result', result);
+  
   return convertSnakeToCamelCase(result);
 }
 

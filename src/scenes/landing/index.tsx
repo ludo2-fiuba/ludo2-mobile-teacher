@@ -32,12 +32,22 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
       additionalParameters: {},
     };
     try {
-      const { authorizationCode } = await authorize(config);
-      const response = await authenticationRepository.login(authorizationCode, redirectUrl);
+      // const { authorizationCode } = await authorize(config);
+      // const response = await authenticationRepository.login(authorizationCode, redirectUrl);
+      const response = {
+        'refresh': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxMzcyOTA5NiwiaWF0IjoxNzEzNjQyNjk2LCJqdGkiOiJiMGNjMThmOGU2YjQ0MTgxYTRhZGY4MDE1YWM4M2FmNSIsInVzZXJfaWQiOjEzfQ.Qbow3wFH8X-EtwtypG0TI4bNhKZOCHmd1Tm2OP2gMRE',
+        'access': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEzNjQyOTk2LCJpYXQiOjE3MTM2NDI2OTYsImp0aSI6IjFlYTdkMjY1ZDlhZjRkM2Q5ZDAyYmFiODBkYTIzZDg5IiwidXNlcl9pZCI6MTN9.Z2v2oOgim2HNiiPkAVOjYw6VvOSly4uVZBzxEccjHLU'
+      }
+      console.log('Using credentials', response);
       const sessionManager: SessionManager = await SessionManager.getInstance()!;
+      
       if (sessionManager) {
+        console.log('Entre al if');
+        
         sessionManager.saveCredentials(response);
         const user = await usersRepository.getInfo();
+        console.log('User info', user);
+        
         if (!user.isTeacher()) {
           sessionManager.clearCredentials();
           throw new authenticationRepository.NotATeacher();
@@ -47,6 +57,8 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
           index: 0,
           routes: [{ name: 'RootDrawer' }],
         });
+      } else {
+        console.log("No se pudo obtener el sessionManager");
       }
 
     } catch (error) {
