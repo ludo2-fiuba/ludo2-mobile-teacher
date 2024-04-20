@@ -28,26 +28,16 @@ export async function fetchPresentSemesterEvaluations(commissionId: number): Pro
 
 
 // To implement when evaluations contain grades and the backend supports adding students to evaluations
-async function addStudent(evaluationId: number, padron: string) {
-  // const data: any = await post(`${domainUrl}/${evaluationId}/final_exams`, {
-  //   padron: padron,
-  // })
+async function addStudent(evaluationId: number, padron: string, grade: string) {
 
-  // const studentData = data.student
-  // const modifiedEvaluation = new FinalExam(
-  //     data.id,
-  //     evaluationId,
-  //     new Student(
-  //       studentData.padron,
-  //       studentData.first_name,
-  //       studentData.last_name,
-  //       studentData.dni,
-  //       studentData.email,
-  //     ),
-  //     data.grade,
-  //     data.correlatives_approved,
-  //   )
-  // const modifiedEvaluation = data
+  const studentToAdd = {
+    evaluation: evaluationId,
+    student: padron,
+    grade: grade,
+  }
+
+  const data: any = await post(`${domainUrl}/submissions/add_evaluation_submission`, studentToAdd);
+  return data;
 }
 
 export default { create, addStudent, fetchPresentSemesterEvaluations }

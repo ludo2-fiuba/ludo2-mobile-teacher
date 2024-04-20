@@ -28,8 +28,6 @@ const EvaluationsList: React.FC<EvaluationsProps> = () => {
 
   const fetchData = async () => {
     try {
-      console.log("Evaluations data: ", semester.commission.id);
-      
       const evaluationsData: Evaluation[] = await makeRequest(() => evaluationsRepository.fetchPresentSemesterEvaluations(semester.commission.id), navigation);
       setEvaluations(evaluationsData);
       setLoading(false);

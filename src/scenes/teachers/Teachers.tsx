@@ -69,7 +69,7 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
       ),
     };
     navigation.setOptions(navOptions);
-  }, [staffTeachers])
+  }, [allTeachers, commissionId, navigation, staffTeachers])
 
 
   const fetchData = useCallback(async () => {
@@ -78,7 +78,7 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
     try {
       dispatch(fetchTeachers(commissionId))
     } catch (error) {
-      console.error("Error fetching data", error);
+      console.error('Error fetching data', error);
       Alert.alert(
         '¿Qué pasó?',
         'No sabemos pero no pudimos conseguir información acerca del semestre. ' +
@@ -92,7 +92,7 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
       fetchData();
     });
     return focusUnsubscribe;
-  }, [])
+  }, [fetchData, navigation])
 
   return (
     <SafeAreaView style={styles.container}>
