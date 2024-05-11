@@ -6,16 +6,20 @@ import { commissionRepository } from '../../repositories';
 import { makeRequest } from '../../networking/makeRequest';
 import { Commission } from '../../models';
 import { CommissionSnakeCase } from '../../models/Commission';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchTeacherCommissionsAsync, selectTeacherCommissions } from '../../features/userDataSlice';
 
 interface CommissionsListProps {
   navigation: any;  // Specify a more accurate type if possible
 }
 
 const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
+  const dispatch = useAppDispatch()
   const [hasDoneFirstLoad, setHasDoneFirstLoad] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [commissions, setCommissions] = useState<Commission[]>([]);
+  // const [commissions, setCommissions] = useState<Commission[]>([]);
+  const commissions = useAppSelector(selectTeacherCommissions)
 
   const fetchData = useCallback(async (isRefreshing: boolean = false) => {
     if (loading || refreshing) {
@@ -25,8 +29,7 @@ const CommissionsList: React.FC<CommissionsListProps> = ({ navigation }) => {
     setHasDoneFirstLoad(true);
 
     try {
-      const commissionsData: Commission[] = await makeRequest(() => commissionRepository.fetchAll(), navigation);
-      setCommissions(commissionsData)
+      dispatch(fetchTeacherCommissionsAsync())
       isRefreshing ? setRefreshing(false) : setLoading(false);
     } catch (error) {
       isRefreshing ? setRefreshing(false) : setLoading(false);

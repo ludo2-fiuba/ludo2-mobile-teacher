@@ -32,22 +32,21 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
       additionalParameters: {},
     };
     try {
-      // const { authorizationCode } = await authorize(config);
+      const { authorizationCode } = await authorize(config);
       // const response = await authenticationRepository.login(authorizationCode, redirectUrl);
       const response = {
-        'refresh': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxMzcyOTA5NiwiaWF0IjoxNzEzNjQyNjk2LCJqdGkiOiJiMGNjMThmOGU2YjQ0MTgxYTRhZGY4MDE1YWM4M2FmNSIsInVzZXJfaWQiOjEzfQ.Qbow3wFH8X-EtwtypG0TI4bNhKZOCHmd1Tm2OP2gMRE',
-        'access': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEzNjQyOTk2LCJpYXQiOjE3MTM2NDI2OTYsImp0aSI6IjFlYTdkMjY1ZDlhZjRkM2Q5ZDAyYmFiODBkYTIzZDg5IiwidXNlcl9pZCI6MTN9.Z2v2oOgim2HNiiPkAVOjYw6VvOSly4uVZBzxEccjHLU'
+        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNTUzOTM3NSwiaWF0IjoxNzE1NDUyOTc1LCJqdGkiOiI4OTI3YTgwM2NiMzY0ZjQxYjYzMDFjOTY0ZGZmYjJlNiIsInVzZXJfaWQiOjEzfQ.7D7-q_NQxsGVaDoBOEXBR58Odqtkg0RkBJLeCiMoANQ",
+        "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1NDUzMjc1LCJpYXQiOjE3MTU0NTI5NzUsImp0aSI6IjU4OWFiZmQxOWU5YTQ3MWI4Y2Q4NzliZWQ2N2I5NTU0IiwidXNlcl9pZCI6MTN9.T5GTV7Hfa9RkFuN6l6dfpLVPl7xoHHQzpT0L9mY0s9U"
       }
       console.log('Using credentials', response);
       const sessionManager: SessionManager = await SessionManager.getInstance()!;
-      
+
       if (sessionManager) {
-        console.log('Entre al if');
-        
+        // console.log('Entre al if');
         sessionManager.saveCredentials(response);
         const user = await usersRepository.getInfo();
         console.log('User info', user);
-        
+
         if (!user.isTeacher()) {
           sessionManager.clearCredentials();
           throw new authenticationRepository.NotATeacher();
@@ -76,21 +75,21 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
       <View style={styles.card}>
         <View style={styles.cardItem}>
           <Image source={LudoIcon} style={{ width: 120, height: 120 }} />
-          <View style={{flexDirection: 'column'}}>
-          <Text style={styles.cardTitle}>LODU</Text>
-          <Text style={{...styles.cardLabel, marginTop: 7}}>La Organizadora para</Text>
-          <Text style={{...styles.cardLabel, marginTop: 5}}>el Docente Universitario</Text>
+          <View style={{ flexDirection: 'column' }}>
+            <Text style={styles.cardTitle}>LODU</Text>
+            <Text style={{ ...styles.cardLabel, marginTop: 7 }}>La Organizadora para</Text>
+            <Text style={{ ...styles.cardLabel, marginTop: 5 }}>el Docente Universitario</Text>
           </View>
         </View>
       </View>
-      <View style={{ width: '90%', marginBottom: 8}}>
+      <View style={{ width: '90%', marginBottom: 8 }}>
         <RoundedButton
           text="Pre-registro"
           enabled={!loginInProgress}
           onPress={() => navigation.navigate('PreRegister')}
         />
       </View>
-      <View style={{ width: '90%'}}>
+      <View style={{ width: '90%' }}>
         <RoundedButton
           text="Iniciar sesión"
           enabled={!loginInProgress}
@@ -109,7 +108,7 @@ function isCancellationError(error: any): boolean {
   return (
     error.message === 'User cancelled flow' || // Happens in Android when closing browser.
     error.message ===
-      'The operation couldn’t be completed. (org.openid.appauth.general error -3.)'
+    'The operation couldn’t be completed. (org.openid.appauth.general error -3.)'
   );
 }
 
@@ -121,8 +120,8 @@ function showRoleError() {
   Alert.alert(
     'Error',
     '¿Te has registrado? ' +
-      'Te recordamos que esta app es para docentes. Si lo sos, ' +
-      'chequeá que hayas ingresado correctamente tus datos.',
+    'Te recordamos que esta app es para docentes. Si lo sos, ' +
+    'chequeá que hayas ingresado correctamente tus datos.',
   );
 }
 

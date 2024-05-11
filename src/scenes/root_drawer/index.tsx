@@ -6,11 +6,13 @@ import { darkModeColors, lightModeColors } from "../../styles/colorPalette";
 import { Appearance } from "react-native";
 import React from "react";
 import MaterialIcon from "../../components/MaterialIcon";
+import CreateSemester from "../semesters/CreateSemester";
 
 const Drawer = createDrawerNavigator()
 
 const DRAWER_MENU_SHOWN_SCREENS = [
   "Home",
+  "CreateSemester",
   "Stats"
 ]
 
@@ -50,6 +52,12 @@ const RootDrawer = () => {
         name="Home"
         component={HomeScreen}
         options={{ headerShown: true, title: 'Comisiones', drawerIcon: makeDrawerIcon('home', 'home-outline')}}
+      />
+
+      <Drawer.Screen
+        name="CreateSemester"
+        component={CreateSemester}
+        options={{ headerShown: true, title: 'Crear Semestre', drawerIcon: makeDrawerIcon('chart-box', 'chart-box-outline') }}
       />
       
       <Drawer.Screen

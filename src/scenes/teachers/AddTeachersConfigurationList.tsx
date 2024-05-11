@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { increment, selectCount } from '../../features/counter/counterSlice';
 
-const UserIcon = require('./img/usericon.jpg');
+const UserIcon = require('../img/usericon.jpg');
 
 const TeacherCard = ({ teacher, role }: { teacher: Teacher, role: string }) => {
   return (

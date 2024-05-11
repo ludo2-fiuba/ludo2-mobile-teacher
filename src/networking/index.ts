@@ -1,6 +1,6 @@
 import { API_URL } from "@env";
 
-export const baseUrl = API_URL || 'http://192.168.0.10:8007';
+export const baseUrl = API_URL || 'http://192.168.0.13:8007';
 
 const logRequests = false;
 

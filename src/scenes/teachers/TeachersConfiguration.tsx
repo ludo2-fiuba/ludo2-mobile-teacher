@@ -68,7 +68,7 @@ const TeachersConfiguration: React.FC = () => {
           </View>
         </View>
       ))}
-      <Button title="Save Changes" onPress={saveChanges} />
+      <Button title="Guardar cambios" onPress={saveChanges} />
     </View>
   );
 };

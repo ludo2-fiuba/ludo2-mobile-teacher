@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Alert, SafeAreaView, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Alert, SafeAreaView, ScrollView, StyleSheet, ActivityIndicator, Button, TouchableOpacity } from 'react-native';
 import { Semester } from '../../models/Semester';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { semesterRepository } from '../../repositories';
 // import { semesterCard as style } from '../../styles';
 import BasicList from '../../components/basicList';
 import { lightModeColors } from '../../styles/colorPalette';
-import { fetchSemesterDataAsync, selectSemesterData } from '../../features/semesterSlice';
+import { fetchSemesterDataAsync, selectSemesterData, selectSemesterError, selectSemesterLoading } from '../../features/semesterSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Commission } from '../../models';
 import MaterialIcon from '../../components/MaterialIcon';
@@ -24,8 +24,8 @@ export function SemesterCard({ route }: Props) {
   const navigation = useNavigation();
   const commission = (route.params as RouteParams).commission;
   const semesterData = useAppSelector(selectSemesterData);
-  const isLoading = useAppSelector((state) => state.semester.loading);
-  const error = useAppSelector((state) => state.semester.error);
+  const isLoading = useAppSelector(selectSemesterLoading);
+  const error = useAppSelector(selectSemesterError);
 
   const listItems = [
     {

@@ -50,5 +50,7 @@ const semesterSlice = createSlice({
 
 // declare selector for Semester data
 export const selectSemesterData = (state: RootState) => state.semester.data;
+export const selectSemesterLoading = (state: RootState) => state.semester.loading;
+export const selectSemesterError = (state: RootState) => state.semester.error;
 
 export default semesterSlice.reducer;

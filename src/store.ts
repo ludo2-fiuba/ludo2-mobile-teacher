@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import counterSlice from './features/counter/counterSlice'
 import { teachersSlice } from './features/teachersSlice'
 import semesterSlice from './features/semesterSlice'
+import userDataSlice from './features/userDataSlice'
 
 export const store = configureStore({
   reducer: {
     counter: counterSlice,
     teachers: teachersSlice.reducer,
     semester: semesterSlice,
+    userData: userDataSlice
   }
 })
 

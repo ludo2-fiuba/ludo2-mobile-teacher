@@ -13,6 +13,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import moment from 'moment';
 import 'moment/locale/es'
 import { finalRepository } from '../../repositories';
+import combineDateAndTime from '../../utils/combineDateAndTime';
 
 moment.locale('es');
 
@@ -75,16 +76,6 @@ const AddFinal: React.FC<Props> = () => {
     if (event.type === 'set' && selectedTime) {
       setFinishTime(new Date(selectedTime));
     }
-  };
-
-  const combineDateAndTime = (date: Date, time: Date) => {
-    return new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      time.getHours(),
-      time.getMinutes()
-    );
   };
 
   const isFinishAfterStart = (startDate: Date, startTime: Date, finishDate: Date, finishTime: Date) => {
