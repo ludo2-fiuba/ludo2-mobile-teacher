@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
 import teacherRoles from '../../models/TeacherRoles';
-import { Teacher } from '../../models/Teachers';
+import { Teacher } from '../../models/TeacherTuple';
 import { lightModeColors } from '../../styles/colorPalette';
 import { Loading } from '../../components';
 import { useRoute } from '@react-navigation/native';

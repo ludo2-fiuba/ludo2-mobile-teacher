@@ -1,18 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect } from 'react';
 import { SafeAreaView, View, Text, FlatList, Image, StyleSheet, Alert } from 'react-native';
-import { ChiefTeacher } from '../../models/ChiefTeacher';
 import { lightModeColors } from '../../styles/colorPalette';
-import { Teacher } from '../../models/Teachers';
 import TeachersHeaderRight from './TeachersHeaderRight';
 import { Loading } from '../../components';
 import teacherRoles from '../../models/TeacherRoles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchTeachers } from '../../features/teachersSlice';
+import { Teacher } from '../../models';
 const UserIcon = require('../img/usericon.jpg');
 
 
-const ChiefCard = ({ firstName, lastName, email }: ChiefTeacher) => {
+const ChiefCard = ({ firstName, lastName, email }: Teacher) => {
   return (
     <View style={styles.leaderCardContainer}>
       <Image source={UserIcon} style={styles.leaderImage} />
@@ -44,7 +43,7 @@ interface TeachersScreenProps {
 
 interface TeachersRouteParams {
   commissionId: number;
-  chiefTeacher: ChiefTeacher;
+  chiefTeacher: Teacher;
 }
 
 

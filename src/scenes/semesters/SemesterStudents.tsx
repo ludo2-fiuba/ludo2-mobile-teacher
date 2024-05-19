@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import { useAppSelector } from '../../hooks';
 import { Student } from '../../models/Student'; // Make sure this import reflects the actual path
+import { useNavigation } from '@react-navigation/native';
+import { SemesterHeaderRight } from './SemesterHeaderRight';
 const UserIcon = require('../img/usericon.jpg');
 
 const SemesterStudents: React.FC = () => {
   const students = useAppSelector((state) => state.semester.data?.students as Student[]);
+
+  const navigation = useNavigation()
+
+  const setNavOptions = useCallback(() => {
+    navigation.setOptions({
+      title: 'Alumnos del semestre', // Set the screen title
+      headerRight: () => <SemesterHeaderRight />,
+    });
+  }, [navigation]);
+
+  useEffect(() => {
+    const focusUnsubscribe = navigation.addListener('focus', () => {
+      setNavOptions();
+    });
+    return focusUnsubscribe;
+  }, [])
 
   const renderStudent = ({ item }: { item: Student }) => (
       <View style={styles.studentCard}>

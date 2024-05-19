@@ -1,11 +1,11 @@
 // src/features/teachers/teachersSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { teachersRepository } from '../repositories';
-import { ChiefTeacher } from '../models';
-import { Teacher, TeacherTuple } from '../models/Teachers';
+import { TeacherTuple } from '../models/TeacherTuple';
+import { Teacher } from '../models/Teacher';
 
 interface State {
-  chiefTeacher: ChiefTeacher | null;
+  chiefTeacher: Teacher | null;
   staffTeachers: TeacherTuple[];
   allTeachers: Teacher[];
   isLoading: boolean;

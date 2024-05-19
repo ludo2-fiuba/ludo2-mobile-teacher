@@ -1,6 +1,6 @@
 import { Evaluation, EvaluationSnakeCase } from "./Evaluation";
 import { Student, StudentSnakeCase } from "./Student";
-import { Teacher, TeacherSnakeCase } from "./Teachers";
+import { Teacher, TeacherSnakeCase } from "./TeacherTuple";
 
 export interface GradeChange {
   evaluation: Evaluation;

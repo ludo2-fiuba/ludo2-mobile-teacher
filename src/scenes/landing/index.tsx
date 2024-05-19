@@ -35,8 +35,8 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
       const { authorizationCode } = await authorize(config);
       // const response = await authenticationRepository.login(authorizationCode, redirectUrl);
       const response = {
-        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNTUzOTM3NSwiaWF0IjoxNzE1NDUyOTc1LCJqdGkiOiI4OTI3YTgwM2NiMzY0ZjQxYjYzMDFjOTY0ZGZmYjJlNiIsInVzZXJfaWQiOjEzfQ.7D7-q_NQxsGVaDoBOEXBR58Odqtkg0RkBJLeCiMoANQ",
-        "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1NDUzMjc1LCJpYXQiOjE3MTU0NTI5NzUsImp0aSI6IjU4OWFiZmQxOWU5YTQ3MWI4Y2Q4NzliZWQ2N2I5NTU0IiwidXNlcl9pZCI6MTN9.T5GTV7Hfa9RkFuN6l6dfpLVPl7xoHHQzpT0L9mY0s9U"
+        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNjE0NTAyMSwiaWF0IjoxNzE2MDU4NjIxLCJqdGkiOiIxZjg3YzRjYzM1MzE0ZjRjOWI2ZGFkYWQ0MDI2ZTNmYSIsInVzZXJfaWQiOjEzfQ.AYyh88lNg-QJT1D2BuTnTkgbdh7SKenPT-o4RkeKeVg",
+        "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MDU4OTIxLCJpYXQiOjE3MTYwNTg2MjEsImp0aSI6IjEwNmY0MWJlYjNhOTRiZTQ5NGMyN2E3NzY5OGZjZDBjIiwidXNlcl9pZCI6MTN9.oBMPWHL13Q8bIpDdvg326GViy7FhrquB_A1kXW6U65E"
       }
       console.log('Using credentials', response);
       const sessionManager: SessionManager = await SessionManager.getInstance()!;

@@ -4,46 +4,47 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useAppSelector } from '../../hooks';
 import { selectSemesterData } from '../../features/semesterSlice';
-import StudentSelectionModal from './StudentSelectionModal';
+import EntitySelectionModal from './EntitySelectionModal';
+import { Student } from '../../models';
+import { evaluationsRepository } from '../../repositories';
+import { Evaluation } from '../../models/Evaluation';
+
+interface Props {
+  evaluation: Evaluation
+}
 
 
-
-export function SubmissionsHeaderRight() {
+export function SubmissionsHeaderRight({ evaluation }: Props) {
   const semesterData = useAppSelector(selectSemesterData);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
-
-  const addStudentSubmissionToExam = () => {
-    setModalVisible(true);
-  };
 
   const saveChanges = () => {
     console.log('Saving changes');
   };
 
   const generateFinalExamQR = () => {
-    console.log('Generating final exam QR');
     navigation.navigate('QRFinalExam', { final: { date: new Date() } });
+  }
+
+  const addStudentSubmission = async (student: Student) => {
+    setModalVisible(false);
+    const result = await evaluationsRepository.addStudent(evaluation.id, student.padron, null)
+    console.log(result);
   }
 
   return (
     <View style={styles.navButtonsContainer}>
-      <StudentSelectionModal
+      <EntitySelectionModal
         visible={modalVisible}
-        students={semesterData?.students} // Assuming 'students' is part of the semester data
-        onSelect={(student: any) => {
-          console.log('Selected student', student);
-          setModalVisible(false);
-        }}
+        entities={semesterData?.students || []}
+        onSelect={(student: any) =>  addStudentSubmission(student)}
         onClose={() => setModalVisible(false)}
+        title="Estudiantes del semestre"
       />
 
-      <TouchableOpacity style={styles.navButton} onPress={addStudentSubmissionToExam}>
+      <TouchableOpacity style={styles.navButton} onPress={() => {setModalVisible(true)}}>
         <Icon name="add" style={styles.navButtonIcon} />
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.navButton} onPress={saveChanges}>
-        <Icon name="qr-code" style={styles.navButtonIcon} />
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.navButton} onPress={saveChanges}>

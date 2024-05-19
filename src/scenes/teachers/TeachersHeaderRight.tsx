@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import { Teacher, TeacherTuple } from '../../models/Teachers';
+import { Teacher, TeacherTuple } from '../../models/TeacherTuple';
 
 interface Props {
   staffTeachers: TeacherTuple[];

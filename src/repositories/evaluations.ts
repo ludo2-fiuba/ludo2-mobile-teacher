@@ -28,7 +28,7 @@ export async function fetchPresentSemesterEvaluations(commissionId: number): Pro
 
 
 // To implement when evaluations contain grades and the backend supports adding students to evaluations
-async function addStudent(evaluationId: number, padron: string, grade: string) {
+async function addStudent(evaluationId: number, padron: string, grade: string | null) {
 
   const studentToAdd = {
     evaluation: evaluationId,

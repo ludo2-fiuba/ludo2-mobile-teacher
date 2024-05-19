@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
-import { TeacherTuple } from '../../models/Teachers';
+import { TeacherTuple } from '../../models/TeacherTuple';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import teacherRoles from '../../models/TeacherRoles';

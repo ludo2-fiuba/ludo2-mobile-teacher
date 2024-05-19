@@ -1,4 +1,4 @@
-import { Teacher, TeacherSnakeCase, TeacherTuple, TeacherTupleSnakeCase } from '../models/Teachers.ts';
+import { Teacher, TeacherSnakeCase, TeacherTuple, TeacherTupleSnakeCase } from '../models/TeacherTuple.ts';
 import { convertSnakeToCamelCase } from '../utils/convertSnakeToCamelCase.ts';
 import { get, post, put } from './authenticatedRepository.ts';
 
