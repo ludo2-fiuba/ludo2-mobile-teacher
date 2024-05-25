@@ -7,12 +7,12 @@ import { fetchPresentSemesterFromCommissionId } from './semesters.ts';
 
 const domainUrl = 'api/teacher/evaluations';
 
-async function create(semester: Semester, evaluationName: string, startDate: Date, finishDate: Date): Promise<CreatedEvaluation> {
+async function create(semester: Semester, evaluationName: string, startDate: Date, finishDate: Date, minimumPassingGrade: string): Promise<CreatedEvaluation> {
   const evaluationToBeCreated: CreatedEvaluationSnakeCase = {
     semester_id: semester.id,
     evaluation_name: evaluationName,
     is_graded: true,
-    passing_grade: 4,
+    passing_grade: +minimumPassingGrade,
     start_date: startDate,
     end_date: finishDate
   }
@@ -28,16 +28,18 @@ export async function fetchPresentSemesterEvaluations(commissionId: number): Pro
 
 
 // To implement when evaluations contain grades and the backend supports adding students to evaluations
-async function addStudent(evaluationId: number, padron: string, grade: string | null) {
+async function addSubmissionToEvaluation(evaluationId: number, studentId: number) {
 
   const studentToAdd = {
     evaluation: evaluationId,
-    student: padron,
-    grade: grade,
+    student: studentId,
+    grade: null,
   }
 
+  console.log("Student to be added", studentToAdd);
+  
   const data: any = await post(`${domainUrl}/submissions/add_evaluation_submission`, studentToAdd);
   return data;
 }
 
-export default { create, addStudent, fetchPresentSemesterEvaluations }
+export default { create, addSubmissionToEvaluation, fetchPresentSemesterEvaluations }

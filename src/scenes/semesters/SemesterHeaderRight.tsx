@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Alert, TextInput, Modal, Button, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useAppSelector } from '../../hooks';
-import { selectSemesterData } from '../../features/semesterSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { modifyStudentsOfASemester, selectSemesterData } from '../../features/semesterSlice';
 import { useNavigation } from '@react-navigation/native';
-import { studentsRepository } from '../../repositories';
+import { semesterRepository, studentsRepository } from '../../repositories';
 import { Student } from '../../models';
+import { AddedStudentToSemester } from '../../models/AddedStudentToSemester';
 
 interface Props {}
 
 export function SemesterHeaderRight({ }: Props) {
-  const semesterData = useAppSelector(selectSemesterData);
+  const semesterData = useAppSelector(selectSemesterData)!;
   const [modalVisible, setModalVisible] = useState(false);
   const [studentPadron, setStudentPadron] = useState<string>('');
   const [student, setStudent] = useState<Student | null>(null);
   const [confirmVisible, setConfirmVisible] = useState(false);
+  const dispatch = useAppDispatch()
   const navigation = useNavigation();
 
   const openAddStudentPrompt = () => {
@@ -26,7 +28,6 @@ export function SemesterHeaderRight({ }: Props) {
 
     if (studentPadron) {
       try {
-        console.log("Student padron", studentPadron);
         const studentData: Student = await studentsRepository.getStudentByPadron(studentPadron);
         setStudent(studentData);
         setConfirmVisible(true);
@@ -40,7 +41,8 @@ export function SemesterHeaderRight({ }: Props) {
     setConfirmVisible(false);
     if (student) {
       try {
-        // Add your API call to add the student here
+        const addedStudentToSemester: AddedStudentToSemester = await semesterRepository.addStudentToSemester(student.id, semesterData.id)
+        dispatch(modifyStudentsOfASemester(addedStudentToSemester.semester.students))
         Alert.alert('Éxito', 'Estudiante agregado exitosamente');
       } catch (error) {
         Alert.alert('Error', 'An error occurred while adding the student');
@@ -64,7 +66,7 @@ export function SemesterHeaderRight({ }: Props) {
           <View style={styles.modalView}>
             <TextInput
               style={styles.input}
-              placeholder="Enter Padrón del estudiante"
+              placeholder="Ingresar padrón del estudiante"
               value={studentPadron}
               onChangeText={setStudentPadron}
             />
@@ -86,8 +88,9 @@ export function SemesterHeaderRight({ }: Props) {
           <View style={styles.confirmModalView}>
             {student && (
               <>
-                <Text style={styles.studentName}>{student.firstName} {student.lastName} </Text>
-                <Text style={{...styles.studentText, marginTop: 10 }}>DNI: {student.dni}</Text>
+                <Text style={styles.studentName}>¿Está seguro de agregar este estudiante al semestre? </Text>
+                <Text style={{...styles.studentText, marginTop: 10 }}>Nombre completo: {student.firstName} {student.lastName} </Text>
+                <Text style={{...styles.studentText}}>DNI: {student.dni}</Text>
                 <Text style={styles.studentText}>Email: {student.email}</Text>
                 <Text style={styles.studentText}>Padron: {student.padron}</Text>
                 <View style={{...styles.buttonContainer, marginTop: 10}}>

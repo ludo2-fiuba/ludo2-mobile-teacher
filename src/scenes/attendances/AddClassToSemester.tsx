@@ -22,14 +22,14 @@ interface Props {
 
 }
 
-interface AddEvaluationRouteParams {
-  semesterToBeAddedAnEvaluation: Semester;
+interface AddSemesterRouteParams {
+  semesterToBeAddedAClass: Semester;
 }
 
-const AddEvaluation: React.FC<Props> = () => {
+const AddClassToSemester: React.FC<Props> = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
-
+  
   const [finishDate, setFinishDate] = useState<Date | null>(null);
   const [finishTime, setFinishTime] = useState<Date | null>(null);
 
@@ -38,15 +38,12 @@ const AddEvaluation: React.FC<Props> = () => {
 
   const [showFinishDatePicker, setShowFinishDatePicker] = useState(false);
   const [showFinishTimePicker, setShowFinishTimePicker] = useState(false);
-
-  const [minimumPassingGrade, setMinimumPassingGrade] = useState<string>('')
   const [creating, setCreating] = useState(false);
 
   const navigation = useNavigation();
   const route = useRoute();
 
-  const semester: Semester = (route.params as AddEvaluationRouteParams).semesterToBeAddedAnEvaluation
-  console.log('Semester from addevaluation', semester);
+  const semester: Semester = (route.params as AddSemesterRouteParams).semesterToBeAddedAClass
 
   const onStartDateChange = (event: any, selectedDate: any) => {
     setShowStartDatePicker(false);
@@ -110,31 +107,11 @@ const AddEvaluation: React.FC<Props> = () => {
           borderWidth: 1,
           padding: 10,
           borderRadius: 5,
-          borderColor: 'grey',
-          marginBottom: 10
+          borderColor: 'grey'
         }}
         onChangeText={setEvaluationName}
         value={evaluationName}
         placeholder="Por ejemplo: Primer Parcial"
-      />
-
-      <View style={style().dateButtonInputs}>
-        <Text style={{ ...style().text, color: 'black', }}>
-          Nota mínima de aprobación
-        </Text>
-      </View>
-
-      <TextInput
-        style={{
-          height: 40,
-          borderWidth: 1,
-          padding: 10,
-          borderRadius: 5,
-          borderColor: 'grey',
-        }}
-        onChangeText={setMinimumPassingGrade}
-        value={minimumPassingGrade}
-        placeholder="Por ejemplo: 4"
       />
 
       <View style={style().dateButtonInputs}>
@@ -200,7 +177,7 @@ const AddEvaluation: React.FC<Props> = () => {
           </Text>)
         }
       </TouchableOpacity>
-      <Text style={{ color: 'grey', fontSize: 12, marginTop: 3 }}> Los horarios están restringidos a intervalos de 30 minutos</Text>
+      <Text style={{ color: 'grey', fontSize: 12, marginTop: 3}}> Los horarios están restringidos a intervalos de 30 minutos</Text>
 
 
       {/* Fecha de finalización */}
@@ -266,21 +243,21 @@ const AddEvaluation: React.FC<Props> = () => {
           </Text>)
         }
       </TouchableOpacity>
-      <Text style={{ color: 'grey', fontSize: 12, marginTop: 3, marginBottom: 25 }}> Los horarios están restringidos a intervalos de 30 minutos</Text>
+      <Text style={{ color: 'grey', fontSize: 12, marginTop: 3, marginBottom: 20}}> Los horarios están restringidos a intervalos de 30 minutos</Text>
 
       <RoundedButton
-        text="Agregar evaluación"
-        style={{ ...style().button }}
-        enabled={!!evaluationName && !!evaluationName && !!startDate && !!finishDate && !!startTime && !!finishTime && !creating && !!minimumPassingGrade}
+        text="Agregar semestre"
+        style={style().button}
+        enabled={evaluationName !== null && evaluationName !== '' && startDate !== null && finishDate !== null && startTime !== null && finishTime !== null && !creating}
         onPress={() => {
           if (startDate && finishDate && startTime && finishTime) {
             if (isFinishAfterStart(startDate, startTime, finishDate, finishTime)) {
               setCreating(true);
-
+              
               const startFullDate = combineDateAndTime(startDate, startTime);
               const finishFullDate = combineDateAndTime(finishDate, finishTime);
-
-              evaluationsRepository.create(semester, evaluationName, startFullDate, finishFullDate, minimumPassingGrade)
+              
+              evaluationsRepository.create(semester, evaluationName, startFullDate, finishFullDate)
                 .then(() => {
                   setCreating(false);
                   navigation.goBack();
@@ -306,4 +283,4 @@ const AddEvaluation: React.FC<Props> = () => {
   );
 };
 
-export default AddEvaluation;
+export default AddClassToSemester;

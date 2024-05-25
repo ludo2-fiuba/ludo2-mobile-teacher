@@ -11,6 +11,7 @@ import { useAppSelector } from '../../hooks';
 import { selectSemesterData } from '../../features/semesterSlice';
 import { TeacherTuple } from '../../models/TeacherTuple';
 import EntitySelectionModal from './EntitySelectionModal';
+import { selectStaffTeachers } from '../../features/teachersSlice';
 
 interface Props {
   route: any;
@@ -60,6 +61,8 @@ export default function SubmissionsList({ route }: Props) {
 
   const { evaluation } = route.params as RouteParams;
 
+  const teachersTuples: TeacherTuple[] = useAppSelector(selectStaffTeachers)
+  
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
       title: 'Entregas', // Set the screen title
@@ -74,13 +77,13 @@ export default function SubmissionsList({ route }: Props) {
     try {
       let submissions: Submission[] = await submissionsRepository.getSubmissions(evaluation.id);
       submissions = submissions.sort((a, b) => a.student.lastName.localeCompare(b.student.lastName));
-      console.log("Submissions", submissions);
-      
 
       if (semester) {
-        const teachersTuples: TeacherTuple[] = await teachersRepository.fetchTeachersOfCommission(semester.commission.id);
+        // Getting only teachers
         const commissionTeachers = teachersTuples.map(actual => actual.teacher);
+        // Add chief teacher
         commissionTeachers.push(semester.commission.chiefTeacher);
+        // Set state
         setSemesterTeachers(commissionTeachers);
       }
 
@@ -156,7 +159,7 @@ export default function SubmissionsList({ route }: Props) {
               <Text style={styles.cell}>{`${submission.student.firstName} ${submission.student.lastName}`}</Text>
               <View style={styles.divider} />
               <TouchableOpacity style={styles.cell} onPress={() => updateCorrector(submission.student)}>
-                <Text style={styles.text}>{submission.corrector}</Text>
+                <Text style={styles.text}>{submission.grader?.lastName}</Text>
               </TouchableOpacity>
               <View style={styles.divider} />
               <EditableText

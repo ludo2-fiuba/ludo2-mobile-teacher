@@ -3,11 +3,17 @@ import { Evaluation } from '../models/Evaluation.ts';
 import { Semester, SemesterSnakeCase } from '../models/Semester.ts';
 import { convertSnakeToCamelCase } from '../utils/convertSnakeToCamelCase.ts';
 import { get, post } from './authenticatedRepository.ts';
+import { ClassAttendanceSnakeCase } from '../models/ClassAttendance.ts';
+import { AddedStudentToSemester } from '../models/AddedStudentToSemester.ts';
 
 const domainUrl = 'api/semesters';
+const COMMISION_PRESENT_SEMESTER = `${domainUrl}/commission_present_semester`
+
+const BASE_TEACHER_SEMESTER = `api/teacher/semesters`
+const GET_ATTENDANCES = `${BASE_TEACHER_SEMESTER}/attendance`
 
 export async function fetchPresentSemesterFromCommissionId(commissionId: number): Promise<Semester> {
-  const presentSemester: SemesterSnakeCase = await get(`${domainUrl}/commission_present_semester`, [{key: 'commission_id', value: commissionId}]) as SemesterSnakeCase; 
+  const presentSemester: SemesterSnakeCase = await get(COMMISION_PRESENT_SEMESTER, [{key: 'commission_id', value: commissionId}]) as SemesterSnakeCase; 
   return convertSnakeToCamelCase(presentSemester)
 }
 
@@ -22,14 +28,24 @@ export async function createSemester(commissionId: number, yearMoment: string, s
     "classes_amount": classesAmount,
     "minimum_attendance": minimumAttendance
   }
-
-  console.log("Body to push", body);
-  console.log("Domain url", domainUrl);
-  
-  
-  const createdSemester: SemesterSnakeCase = await post(`api/teacher/semesters`, body) as  SemesterSnakeCase;
-  console.log("Created semester", createdSemester);
+  const createdSemester: SemesterSnakeCase = await post(BASE_TEACHER_SEMESTER, body) as SemesterSnakeCase;
   return convertSnakeToCamelCase(createdSemester)
 }
 
-export default {fetchPresentSemesterFromCommissionId, createSemester};
+export async function getSemesterAttendances(semesterId: number) {
+  const attendancesData = await get(GET_ATTENDANCES, [{ key: 'semester_id', value: semesterId}]) as ClassAttendanceSnakeCase
+  return convertSnakeToCamelCase(attendancesData)
+}
+
+export async function addStudentToSemester(studentId: number, semesterId: number) {
+  const bodyToSend = {
+    student: studentId,
+    semester: semesterId
+  }
+  console.log("About to add student to semester", bodyToSend);
+  
+  const addedStudent = await post(`api/teacher/commission_inscription/add_student`, bodyToSend) as AddedStudentToSemester
+  return addedStudent
+}
+
+export default { fetchPresentSemesterFromCommissionId, createSemester, getSemesterAttendances, addStudentToSemester };

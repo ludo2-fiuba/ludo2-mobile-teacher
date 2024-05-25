@@ -27,6 +27,8 @@ import SemesterAttendanceQR from './src/scenes/qr_generator/AttendanceQR';
 import FinalExamQR from './src/scenes/qr_generator/FinalExamQR';
 import FinalExamSubmissions from './src/scenes/finalExamsSubmissions/FinalExamSubmissions';
 import AddFinal from './src/scenes/finals/AddFinal';
+import SemesterAttendances from './src/scenes/attendances/SemesterAttendances';
+import AttendanceDetails from './src/scenes/attendances/AttendanceDetails';
 
 
 interface SubjectParams {
@@ -188,6 +190,27 @@ const AllComponents: React.FC = () => {
               title: moment((route.params as FinalParams)?.final.date).format(
                 'dd/MM/YYYY HH:mm',
               ),
+            })}
+          />
+
+          {/* Attendances */}
+          <Stack.Screen
+            name="SemesterAttendances"
+            component={SemesterAttendances}
+            options={({ route }) => ({
+              headerShown: true,
+              title: 'Asistencias del semestre',
+            })}
+          />
+
+
+
+          <Stack.Screen
+            name="AttendanceDetails"
+            component={AttendanceDetails}
+            options={({ route }) => ({
+              headerShown: true,
+              title: 'Asistencias del semestre',
             })}
           />
 

@@ -10,6 +10,7 @@ import { fetchSemesterDataAsync, selectSemesterData, selectSemesterError, select
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Commission } from '../../models';
 import MaterialIcon from '../../components/MaterialIcon';
+import { fetchTeachers } from '../../features/teachersSlice';
 
 interface Props {
   route: any;
@@ -64,13 +65,21 @@ export function SemesterCard({ route }: Props) {
       },
       materialIcon: <MaterialIcon name="account-group" fontSize={24} />
     },
+    // {
+    //   name: "Generar QR de Asistencias", onPress: () => {
+    //     navigation.navigate('QRAttendance', {
+    //       semester: semesterData,
+    //     });
+    //   },
+    //   materialIcon: <MaterialIcon name="qrcode" fontSize={24} />
+    // },
     {
-      name: "Generar QR de Asistencias", onPress: () => {
-        navigation.navigate('QRAttendance', {
+      name: "Ver asistencias por fecha", onPress: () => {
+        navigation.navigate('SemesterAttendances', {
           semester: semesterData,
         });
       },
-      materialIcon: <MaterialIcon name="qrcode" fontSize={24} />
+      materialIcon: <MaterialIcon name="account-check" fontSize={24} />
     }
     // {
     //   name: "Ver Correlativas", onPress: () => {
@@ -83,6 +92,7 @@ export function SemesterCard({ route }: Props) {
 
   useEffect(() => {
     dispatch(fetchSemesterDataAsync(commission.id));
+    dispatch(fetchTeachers(commission.id))
   }, [dispatch, commission]);
 
   useEffect(() => {

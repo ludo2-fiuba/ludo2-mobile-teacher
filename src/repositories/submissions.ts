@@ -34,7 +34,7 @@ async function assignGraderToSubmission(studentId: number, evaluationId: number,
     "evaluation": evaluationId,
     "grader_teacher": graderTeacher
   }
-
+  
   const assignedGraderResponse: AssignGraderCamelCase = await put(ASSIGN_GRADER_TO_SUBMISSION_ENDPOINT, snakeCaseBody) as AssignGraderCamelCase
   console.log("Response:", assignedGraderResponse);
   

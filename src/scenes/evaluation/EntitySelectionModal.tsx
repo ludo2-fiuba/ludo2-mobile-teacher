@@ -33,7 +33,7 @@ const EntitySelectionModal: React.FC<StudentSelectionModalProps> = ({
             )}
           />
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>Close</Text>
+            <Text style={styles.closeButtonText}>Cerrar</Text>
           </TouchableOpacity>
         </View>
       </View>

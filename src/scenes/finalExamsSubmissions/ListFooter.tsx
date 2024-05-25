@@ -44,32 +44,32 @@ const ListFooter: React.FC<ListFooterProps> = ({
   const navigation = useNavigation();
   if (!isEditable) return null;
   
-  const studentAdded = async (padron: string) => {
-    console.log("Adding Student");
+  // const studentAdded = async (padron: string) => {
+  //   console.log("Adding Student");
     
-    await makeRequest(() => evaluationsRepository.addStudent(getFinal().id, padron), navigation)
-      .then(async (finalExam: any) => {
-        setFinalExams((prev: any[]) => [...prev, [finalExam, finalExam.grade]])
-        if (finalExams.length === 1) {
-          addNotify(true);
-        }
-      })
-      .catch((error: any) => {
-        setLoading(false)
-        if (error instanceof StatusCodeError && error.code === 404) {
-          Alert.alert(
-            'Alumno no encontrado',
-            `Parece que no existe un alumno registrado con el padrón ${padron}.`,
-          );
-        } else {
-          Alert.alert(
-            '¿Qué pasó?',
-            'No sabemos pero no pudimos agregar al alumno que pediste. ' +
-              'Volvé a intentar en unos minutos.',
-          );
-        }
-      });
-  }
+  //   await makeRequest(() => evaluationsRepository.addSubmissionToEvaluation(getFinal().id, padron), navigation)
+  //     .then(async (finalExam: any) => {
+  //       setFinalExams((prev: any[]) => [...prev, [finalExam, finalExam.grade]])
+  //       if (finalExams.length === 1) {
+  //         addNotify(true);
+  //       }
+  //     })
+  //     .catch((error: any) => {
+  //       setLoading(false)
+  //       if (error instanceof StatusCodeError && error.code === 404) {
+  //         Alert.alert(
+  //           'Alumno no encontrado',
+  //           `Parece que no existe un alumno registrado con el padrón ${padron}.`,
+  //         );
+  //       } else {
+  //         Alert.alert(
+  //           '¿Qué pasó?',
+  //           'No sabemos pero no pudimos agregar al alumno que pediste. ' +
+  //             'Volvé a intentar en unos minutos.',
+  //         );
+  //       }
+  //     });
+  // }
 
   return (
     <View style={style().listHeaderFooter}>
@@ -78,23 +78,23 @@ const ListFooter: React.FC<ListFooterProps> = ({
         style={style().button}
         enabled={!gradeLoading}
         onPress={async () => {
-          prompt(
-            'Padrón del alumno',
-            '',
-            [
-              {
-                text: 'Cancelar',
-                style: 'cancel',
-              },
-              {
-                text: 'Agregar',
-                onPress: async padron => {
-                  studentAdded(padron);
-                },
-              },
-            ],
-            {}
-          );
+          // prompt(
+          //   'Padrón del alumno',
+          //   '',
+          //   [
+          //     {
+          //       text: 'Cancelar',
+          //       style: 'cancel',
+          //     },
+          //     {
+          //       text: 'Agregar',
+          //       onPress: async padron => {
+          //         studentAdded(padron);
+          //       },
+          //     },
+          //   ],
+          //   {}
+          // );
         }}
         
       />

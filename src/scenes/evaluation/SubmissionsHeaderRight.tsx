@@ -29,7 +29,7 @@ export function SubmissionsHeaderRight({ evaluation }: Props) {
 
   const addStudentSubmission = async (student: Student) => {
     setModalVisible(false);
-    const result = await evaluationsRepository.addStudent(evaluation.id, student.padron, null)
+    const result = await evaluationsRepository.addSubmissionToEvaluation(evaluation.id, student.id)
     console.log(result);
   }
 

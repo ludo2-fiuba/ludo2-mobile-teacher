@@ -3,9 +3,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { teachersRepository } from '../repositories';
 import { TeacherTuple } from '../models/TeacherTuple';
 import { Teacher } from '../models/Teacher';
+import { RootState } from '../store';
 
 interface State {
-  chiefTeacher: Teacher | null;
   staffTeachers: TeacherTuple[];
   allTeachers: Teacher[];
   isLoading: boolean;
@@ -13,7 +13,6 @@ interface State {
 }
 
 const initialState: State = {
-  chiefTeacher: null,
   allTeachers: [],
   staffTeachers: [],
   isLoading: false,
@@ -82,8 +81,6 @@ export const teachersSlice = createSlice({
         state.isLoading = false;
         state.staffTeachers = action.payload.staffTeachers;
         state.allTeachers = action.payload.allTeachers;
-        // Assume `allTeachers` includes the chief teacher as well
-        // state.chiefTeacher = action.payload.allTeachers.find(teacher => teacher.isChief);
       })
       .addCase(fetchTeachers.rejected, (state, action) => {
         state.isLoading = false;
@@ -105,5 +102,8 @@ export const teachersSlice = createSlice({
 
 // Export any actions to use them in components
 export const { modifyTeacherRoleLocally } = teachersSlice.actions;
+
+export const selectStaffTeachers = (state: RootState) => state.teachers.staffTeachers;
+
 
 export default teachersSlice.reducer;
