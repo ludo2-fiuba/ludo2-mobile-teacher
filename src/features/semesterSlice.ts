@@ -47,7 +47,7 @@ export const fetchSemesterAttendances = createAsyncThunk(
       console.log("Sorted attendances", sortedAttendances.length, sortedAttendances);
       return { attendances: sortedAttendances }
     } catch (error) {
-      throw new Error('Failed to fetch semester data');
+      throw new Error('Failed to fetch semester attendances');
     }
   }
 )
@@ -87,6 +87,7 @@ const semesterSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchSemesterAttendances.fulfilled, (state, action) => {
+        state.loading = false;
         const { attendances } = action.payload
         state.attendances = attendances
       })

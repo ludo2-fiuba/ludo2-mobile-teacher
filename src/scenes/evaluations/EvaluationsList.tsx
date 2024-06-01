@@ -75,17 +75,6 @@ const EvaluationsList: React.FC<EvaluationsProps> = () => {
             : style().listView}
           data={evaluations}
           keyExtractor={evaluation => evaluation.id.toString()}
-          // ListHeaderComponent={() => (
-          //   <RoundedButton
-          //     text="Agregar evaluacion"
-          //     style={{ ...style().button, ...style().listHeaderFooter }}
-          //     onPress={() => {
-          //       navigation.navigate('AddEvaluation', {
-          //         semesterToBeAddedAnEvaluation: semester,
-          //       });
-          //     }}
-          //   />
-          // )}
           ListEmptyComponent={() => (
             <View style={style().emptyEvaluationsContainer}>
               <Text style={style().emptyEvaluationsText}>No hay evaluaciones registradas por el momento</Text>
