@@ -32,13 +32,8 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
       additionalParameters: {},
     };
     try {
-      // const { authorizationCode } = await authorize(config);
-      // const response = await authenticationRepository.login(authorizationCode, redirectUrl);
-      const response = {
-        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNzM1MDM1MiwiaWF0IjoxNzE3MjYzOTUyLCJqdGkiOiI1NjY5ZWFkZDRlMWE0OTA5OTNkMTQ2YmJlMGU1NzM0MSIsInVzZXJfaWQiOjEzfQ.motMPkpTIR36Ot2QOPtmSEuDtSYIfdE9BY_kC3tbBGU",
-        "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE3MjY0MjUyLCJpYXQiOjE3MTcyNjM5NTIsImp0aSI6IjNmZmJjNjM5NDUyMzQ3YTJhZDljMzc1NTAwYmQwOTQ1IiwidXNlcl9pZCI6MTN9.V6QyeNDR9NIGcOjHXTodFG2bgGjC9yjNwkWt0sfb9jw"
-      }
-
+      const { authorizationCode } = await authorize(config);
+      const response = await authenticationRepository.login(authorizationCode, redirectUrl);
     
       console.log('Using credentials', response);
       const sessionManager: SessionManager = await SessionManager.getInstance()!;
