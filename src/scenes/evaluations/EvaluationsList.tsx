@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, Button } from 'react-native';
 import { Loading, RoundedButton } from '../../components';
 import { evaluations as style } from '../../styles';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import { Semester } from '../../models/Semester';
 import { makeRequest } from '../../networking/makeRequest';
 import { evaluationsRepository } from '../../repositories';
 import { EvaluationsListHeaderRight } from './EvaluationsListHeaderRight';
+import { FontAwesome } from '@expo/vector-icons';
 
 interface EvaluationsProps {
   // No specific props if not needed
@@ -39,7 +40,7 @@ const EvaluationsList: React.FC<EvaluationsProps> = () => {
       setNavOptions();
     });
     return focusUnsubscribe;
-  }, [])
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -48,7 +49,7 @@ const EvaluationsList: React.FC<EvaluationsProps> = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log("Error", error);
+      console.log('Error', error);
       Alert.alert(
         '¿Qué pasó?',
         'No sabemos pero no pudimos buscar tus evaluaciones. ' +
@@ -77,7 +78,9 @@ const EvaluationsList: React.FC<EvaluationsProps> = () => {
           keyExtractor={evaluation => evaluation.id.toString()}
           ListEmptyComponent={() => (
             <View style={style().emptyEvaluationsContainer}>
+              <FontAwesome name="folder-open" size={50} color="#6c757d" style={style().emptyEvaluationsIcon} />
               <Text style={style().emptyEvaluationsText}>No hay evaluaciones registradas por el momento</Text>
+              <Text style={style().emptyEvaluationsSecondText}>Podés agregar una pulsando el '+' en la esquina superior derecha</Text>
             </View>
           )}
           renderItem={({ item }) => (

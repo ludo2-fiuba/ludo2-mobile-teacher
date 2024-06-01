@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, FlatList, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import { Loading, RoundedButton } from '../../components';
 import { getStyleSheet as style } from '../../styles';
 import { finalRepository } from '../../repositories';
@@ -7,6 +7,8 @@ import { Final } from '../../models';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { makeRequest } from '../../networking/makeRequest';
 import FinalsListItem from './FinalsListItem';
+import { FinalsListHeaderRight } from './FinalsListHeaderRight';
+import { FontAwesome } from '@expo/vector-icons';
 
 interface FinalsListRouteParams {
   subjectId: number;
@@ -25,8 +27,16 @@ const FinalsList: React.FC = () => {
 
   const navigation = useNavigation();
 
+  const setNavOptions = useCallback(() => {
+    navigation.setOptions({
+      title: 'Finales',
+      headerRight: () => <FinalsListHeaderRight subjectId={subjectId} subjectName={subjectName} />,
+    });
+  }, [navigation]);
+
   useFocusEffect(
     React.useCallback(() => {
+      setNavOptions();
       fetchData(hasDoneFirstLoad);
       return () => { }; // Return a cleanup function if necessary
     }, [])
@@ -57,28 +67,14 @@ const FinalsList: React.FC = () => {
     }
   };
 
-  const AddFinalButton = () => (
-    <RoundedButton
-      text="Agregar final"
-      style={style().button}
-      onPress={() => {
-        navigation.navigate('AddFinal', {
-          subjectId: subjectId,
-          subjectName: subjectName,
-        });
-      }}
-    />
-  );
-
   return (
-    <View style={style().view}>
+    <View style={styles.view}>
       {(loading || !hasDoneFirstLoad) && <Loading />}
       {hasDoneFirstLoad && !loading && !finals.length && (
-        <View style={style().containerView}>
-          <AddFinalButton />
-          <Text style={style().text}>
-            Esta comisión no tiene finales aún.
-          </Text>
+        <View style={styles.emptyEvaluationsContainer}>
+          <FontAwesome name="folder-open" size={50} color="#6c757d" style={styles.emptyEvaluationsIcon} />
+          <Text style={styles.emptyEvaluationsText}>Esta comisión no tiene finales aún.</Text>
+          <Text style={styles.emptyEvaluationsSecondText}>Podés agregar uno pulsando el '+' en la esquina superior derecha</Text>
         </View>
       )}
       {hasDoneFirstLoad && !loading && !!finals.length && (
@@ -88,9 +84,6 @@ const FinalsList: React.FC = () => {
           onRefresh={() => fetchData(true)}
           refreshing={refreshing}
           keyExtractor={final => final.id.toString()}
-          ListHeaderComponent={() => (
-            <AddFinalButton />
-          )}
           renderItem={({ item }) => (
             <FinalsListItem final={item} subjectId={subjectId} />
           )}
@@ -99,5 +92,48 @@ const FinalsList: React.FC = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  listView: {
+    padding: 16,
+    backgroundColor: '#f8f9fa',
+  },
+  emptyEvaluationsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#f8f9fa',
+  },
+  emptyEvaluationsText: {
+    fontSize: 18,
+    color: '#6c757d',
+    textAlign: 'center',
+  },
+  emptyEvaluationsSecondText: {
+    fontSize: 14,
+    color: '#6c757d',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  emptyEvaluationsIcon: {
+    marginBottom: 16,
+  },
+  reloadButton: {
+    marginTop: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+  },
+  reloadButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+});
 
 export default FinalsList;

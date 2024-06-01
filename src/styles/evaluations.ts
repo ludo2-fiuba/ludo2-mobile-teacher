@@ -8,18 +8,41 @@ export default function getStyleSheet() {
 
 const sharedStyle = StyleSheet.create({
   ...basic(),
+  listView: {
+    padding: 16,
+    backgroundColor: '#f8f9fa',
+  },
   emptyEvaluationsContainer: {
-    ...basic().view,
-    flex: 1, // Ensure it covers the entire screen
-    alignItems: 'center', // Center the content horizontally
-    backgroundColor: 'white', // Set the background color to white
-    padding: 15,
-    borderRadius: 10,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#f8f9fa',
   },
   emptyEvaluationsText: {
-    ...basic().text,
-    fontSize: 17,
-    color: 'grey'
+    fontSize: 18,
+    color: '#6c757d',
+    textAlign: 'center',
+  },
+  emptyEvaluationsSecondText: {
+    fontSize: 14,
+    color: '#6c757d',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  emptyEvaluationsIcon: {
+    marginBottom: 16,
+  },
+  reloadButton: {
+    marginTop: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+  },
+  reloadButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
