@@ -18,7 +18,7 @@ const TeacherCard = ({ teacher, role }: { teacher: Teacher, role: string }) => {
       <Image source={UserIcon} style={styles.image} />
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{teacher.firstName + ' ' + teacher.lastName} </Text>
-        <Text style={styles.role}>{teacherRoles.find(actualRole => actualRole.shortVersion === role)?.longVersion}</Text>
+        <Text style={styles.role}>{role}</Text>
         <Text style={styles.email}>{teacher.email}</Text>
       </View>
     </View>
