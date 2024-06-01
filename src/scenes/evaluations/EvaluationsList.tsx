@@ -8,6 +8,7 @@ import { Evaluation } from '../../models/Evaluation';
 import { Semester } from '../../models/Semester';
 import { makeRequest } from '../../networking/makeRequest';
 import { evaluationsRepository } from '../../repositories';
+import { EvaluationsListHeaderRight } from './EvaluationsListHeaderRight';
 
 interface EvaluationsProps {
   // No specific props if not needed
@@ -25,6 +26,20 @@ const EvaluationsList: React.FC<EvaluationsProps> = () => {
   const navigation = useNavigation();
 
   const [loading, setLoading] = useState(true);
+
+  const setNavOptions = useCallback(() => {
+    navigation.setOptions({
+      title: 'Evaluaciones',
+      headerRight: () => <EvaluationsListHeaderRight />,
+    });
+  }, [navigation]);
+
+  useEffect(() => {
+    const focusUnsubscribe = navigation.addListener('focus', () => {
+      setNavOptions();
+    });
+    return focusUnsubscribe;
+  }, [])
 
   const fetchData = async () => {
     try {
@@ -60,17 +75,17 @@ const EvaluationsList: React.FC<EvaluationsProps> = () => {
             : style().listView}
           data={evaluations}
           keyExtractor={evaluation => evaluation.id.toString()}
-          ListHeaderComponent={() => (
-            <RoundedButton
-              text="Agregar evaluacion"
-              style={{ ...style().button, ...style().listHeaderFooter }}
-              onPress={() => {
-                navigation.navigate('AddEvaluation', {
-                  semesterToBeAddedAnEvaluation: semester,
-                });
-              }}
-            />
-          )}
+          // ListHeaderComponent={() => (
+          //   <RoundedButton
+          //     text="Agregar evaluacion"
+          //     style={{ ...style().button, ...style().listHeaderFooter }}
+          //     onPress={() => {
+          //       navigation.navigate('AddEvaluation', {
+          //         semesterToBeAddedAnEvaluation: semester,
+          //       });
+          //     }}
+          //   />
+          // )}
           ListEmptyComponent={() => (
             <View style={style().emptyEvaluationsContainer}>
               <Text style={style().emptyEvaluationsText}>No hay evaluaciones registradas por el momento</Text>

@@ -12,18 +12,16 @@ import 'moment/locale/es';
 moment.locale('es');
 
 const SemesterAttendances: React.FC = () => {
-  const semesterData = useAppSelector(selectSemesterData)
   const attendances = useAppSelector(selectSemesterAttendances);
   const navigation = useNavigation();
 
   const onPressAddNewClass = () => {
-    navigation.navigate('QRAttendance', {
-      semester: semesterData,
-    });
+    navigation.navigate('SemesterAttendanceQR', {});
   } 
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      title: 'Asistencias del semestre',
       headerRight: () => (
         <TouchableOpacity style={styles.navButton} onPress={onPressAddNewClass}>
           <Icon name="add" style={styles.navButtonIcon} />

@@ -24,6 +24,8 @@ export function SemesterCard({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const commission = (route.params as RouteParams).commission;
+  console.log("Commission", commission);
+  
   const semesterData = useAppSelector(selectSemesterData);
   const isLoading = useAppSelector(selectSemesterLoading);
   const error = useAppSelector(selectSemesterError);
@@ -65,14 +67,6 @@ export function SemesterCard({ route }: Props) {
       },
       materialIcon: <MaterialIcon name="account-group" fontSize={24} />
     },
-    // {
-    //   name: "Generar QR de Asistencias", onPress: () => {
-    //     navigation.navigate('QRAttendance', {
-    //       semester: semesterData,
-    //     });
-    //   },
-    //   materialIcon: <MaterialIcon name="qrcode" fontSize={24} />
-    // },
     {
       name: "Ver asistencias por fecha", onPress: () => {
         navigation.navigate('SemesterAttendances', {

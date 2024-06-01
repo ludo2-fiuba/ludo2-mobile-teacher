@@ -11,12 +11,12 @@ import { Semester } from '../../models/Semester';
 import { QRAttendance } from '../../models/QRAttendance';
 import { makeRequest } from '../../networking/makeRequest';
 import { QRAttendanceRepository } from '../../repositories';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchSemesterAttendances, selectSemesterData } from '../../features/semesterSlice';
 
-interface RouteParams {
-  semester: Semester;
-}
 
 const SemesterAttendanceQR: React.FC = () => {
+  const dispatch = useAppDispatch()
   const [loading, setLoading] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
   const [qrSize, setQrSize] = useState<number>(300);
@@ -24,9 +24,8 @@ const SemesterAttendanceQR: React.FC = () => {
   const svgRef = useRef<any>(null);
 
   const navigation = useNavigation()
-  const route = useRoute();
-  const routeParams = route.params as RouteParams;
-  const semesterId = routeParams.semester.id;
+  const semesterData = useAppSelector(selectSemesterData)!
+  const semesterId = semesterData.id
 
   const fetchData = useCallback(async (isRefreshing: boolean = false) => {
     if (loading) {
@@ -34,6 +33,7 @@ const SemesterAttendanceQR: React.FC = () => {
     }
     try {
       const qrAttendanceData: QRAttendance = await makeRequest(() => QRAttendanceRepository.generateAttendanceQR(semesterId), navigation);
+      dispatch(fetchSemesterAttendances(semesterId))
       setQrValue(qrAttendanceData.qrid)
     } catch (error) {
       console.log("Error", error);

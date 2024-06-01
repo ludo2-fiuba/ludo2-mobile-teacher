@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, Button } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
 import 'moment/locale/es';
@@ -8,13 +8,16 @@ import { useAppSelector } from '../../hooks';
 import { selectSemesterData } from '../../features/semesterSlice';
 import { StudentAttendance } from '../../models/StudentAttendance';
 import { Semester } from '../../models/Semester';
+import { AttendanceDetailsHeaderRight } from './AttendanceDetailsHeaderRight';
+import { ClassAttendance } from '../../models/ClassAttendance';
 moment.locale('es');
 
 interface RouteParams {
-    classAttendance: any;
+    classAttendance: ClassAttendance;
 }
 
 const AttendanceDetails: React.FC = () => {
+    const navigation = useNavigation()
     const route = useRoute();
     const semesterData: Semester = useAppSelector(selectSemesterData)!;
     const { classAttendance } = route.params as RouteParams;
@@ -22,6 +25,28 @@ const AttendanceDetails: React.FC = () => {
     const [confirmModalVisible, setConfirmModalVisible] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
     const [newAttendance, setNewAttendance] = useState({ firstName: '', lastName: '', padron: '', submittedAt: '' });
+    
+    const setNavOptions = useCallback(() => {
+        navigation.setOptions({
+          title: 'Detalles de la clase',
+          headerRight: () => {
+            const now = new Date();
+            const lowerLimit = new Date(classAttendance.createdAt);
+            const upperLimit = new Date(classAttendance.expiresAt);
+            console.log("now", now, lowerLimit, upperLimit);
+            
+            if (now >= lowerLimit && now <= upperLimit)
+                return <AttendanceDetailsHeaderRight />},
+        });
+      }, [navigation]);
+
+    useEffect(() => {
+    const focusUnsubscribe = navigation.addListener('focus', () => {
+        setNavOptions();
+    });
+    return focusUnsubscribe;
+    }, [])
+    
 
     const renderAttendance = ({ item }: { item: any }) => {
         const attended = classAttendance.attendances.find((attendance: StudentAttendance) => attendance.student.padron === item.padron);
@@ -87,7 +112,7 @@ const AttendanceDetails: React.FC = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.sessionHeader}>
-                Detalles de la clase del {moment(new Date(classAttendance.createdAt)).format('DD/MM/YYYY')}
+                Fecha: {moment(new Date(classAttendance.createdAt)).format('DD/MM/YYYY')}
             </Text>
             <Text style={styles.subHeader}>
                 Horario: {moment(new Date(classAttendance.createdAt)).format('HH:mm')} - {moment(new Date(classAttendance.expiresAt)).format('HH:mm')}
@@ -163,8 +188,8 @@ const AttendanceDetails: React.FC = () => {
                             ¿Está seguro de que desea agregar asistencia para {selectedStudent?.firstName} {selectedStudent?.lastName}?
                         </Text>
                         <View style={styles.buttonContainer}>
-                            <Button title="Yes" onPress={handleAddManualAttendance} />
-                            <Button title="No" onPress={() => setConfirmModalVisible(false)} />
+                            <Button title="Cancelar" onPress={() => setConfirmModalVisible(false)} />
+                            <Button title="Confirmar" onPress={handleAddManualAttendance} />
                         </View>
                     </View>
                 </View>

@@ -16,14 +16,12 @@ import moment from 'moment';
 import 'moment/locale/es'
 import { Semester } from '../../models/Semester';
 import { evaluationsRepository } from '../../repositories';
+import { useAppSelector } from '../../hooks';
+import { selectSemesterData } from '../../features/semesterSlice';
 moment.locale('es');
 
 interface Props {
 
-}
-
-interface AddEvaluationRouteParams {
-  semesterToBeAddedAnEvaluation: Semester;
 }
 
 const AddEvaluation: React.FC<Props> = () => {
@@ -45,7 +43,7 @@ const AddEvaluation: React.FC<Props> = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const semester: Semester = (route.params as AddEvaluationRouteParams).semesterToBeAddedAnEvaluation
+  const semester: Semester = useAppSelector(selectSemesterData)!
   console.log('Semester from addevaluation', semester);
 
   const onStartDateChange = (event: any, selectedDate: any) => {
