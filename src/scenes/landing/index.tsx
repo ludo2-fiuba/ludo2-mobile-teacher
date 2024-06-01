@@ -35,11 +35,9 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
       const { authorizationCode } = await authorize(config);
       const response = await authenticationRepository.login(authorizationCode, redirectUrl);
     
-      console.log('Using credentials', response);
       const sessionManager: SessionManager = await SessionManager.getInstance()!;
 
       if (sessionManager) {
-        console.log('Entre al if');
         sessionManager.saveCredentials(response);
         const user = await usersRepository.getInfo();
         console.log('User info', user);

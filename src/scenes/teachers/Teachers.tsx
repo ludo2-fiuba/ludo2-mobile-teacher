@@ -4,7 +4,6 @@ import { SafeAreaView, View, Text, FlatList, Image, StyleSheet, Alert } from 're
 import { lightModeColors } from '../../styles/colorPalette';
 import TeachersHeaderRight from './TeachersHeaderRight';
 import { Loading } from '../../components';
-import teacherRoles from '../../models/TeacherRoles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchTeachers } from '../../features/teachersSlice';
 import { Teacher } from '../../models';
@@ -30,7 +29,7 @@ const TeacherCard = ({ teacher, role }: { teacher: Teacher, role: string }) => {
       <Image source={UserIcon} style={styles.image} />
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{teacher.firstName + ' ' + teacher.lastName} </Text>
-        <Text style={styles.role}>{teacherRoles.find(actualRole => actualRole.shortVersion === role)?.longVersion}</Text>
+        <Text style={styles.role}>{role}</Text>
         <Text style={styles.email}>{teacher.email}</Text>
       </View>
     </View>
