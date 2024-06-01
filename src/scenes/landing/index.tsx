@@ -35,8 +35,8 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
       // const { authorizationCode } = await authorize(config);
       // const response = await authenticationRepository.login(authorizationCode, redirectUrl);
       const response = {
-        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNjc0OTk1NSwiaWF0IjoxNzE2NjYzNTU1LCJqdGkiOiJiNmIzZWQxN2ViZWU0NzdhYjdiZGY2YTkzMzdiZmNkMCIsInVzZXJfaWQiOjEzfQ.QwPYCcl6CGwxBI0UJ2hCih_WCzKGW2JwXHpkL8h507c",
-        "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2NjYzODU1LCJpYXQiOjE3MTY2NjM1NTUsImp0aSI6ImU3ODE0NDc5MmQ0MzQyM2ZiNTQwNzIwYjdiM2JhOGJhIiwidXNlcl9pZCI6MTN9.6r3S377boyKO24sZRHQdEEPhbjIU6l_ATGmoA_DqFeE"
+        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNzM1MDM1MiwiaWF0IjoxNzE3MjYzOTUyLCJqdGkiOiI1NjY5ZWFkZDRlMWE0OTA5OTNkMTQ2YmJlMGU1NzM0MSIsInVzZXJfaWQiOjEzfQ.motMPkpTIR36Ot2QOPtmSEuDtSYIfdE9BY_kC3tbBGU",
+        "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE3MjY0MjUyLCJpYXQiOjE3MTcyNjM5NTIsImp0aSI6IjNmZmJjNjM5NDUyMzQ3YTJhZDljMzc1NTAwYmQwOTQ1IiwidXNlcl9pZCI6MTN9.V6QyeNDR9NIGcOjHXTodFG2bgGjC9yjNwkWt0sfb9jw"
       }
 
     

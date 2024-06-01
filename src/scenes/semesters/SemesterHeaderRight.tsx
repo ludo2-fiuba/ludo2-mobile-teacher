@@ -25,12 +25,19 @@ export function SemesterHeaderRight({ }: Props) {
 
   const handleAddStudent = async () => {
     setModalVisible(false);
+    setStudentPadron('')
 
     if (studentPadron) {
       try {
-        const studentData: Student = await studentsRepository.getStudentByPadron(studentPadron);
-        setStudent(studentData);
-        setConfirmVisible(true);
+        // Check that student is not already part of the semester
+        const foundStudentByPadron = semesterData.students.find(actual => actual.padron === studentPadron)
+        if (foundStudentByPadron) {
+          Alert.alert('Ocurrió un error', `${foundStudentByPadron.firstName} ${foundStudentByPadron.lastName} con padrón ${foundStudentByPadron.padron} ya es parte del semestre actual.`)
+        } else {
+          const studentData: Student = await studentsRepository.getStudentByPadron(studentPadron);
+          setStudent(studentData);
+          setConfirmVisible(true);
+        }
       } catch (error) {
         Alert.alert('Padrón no existente', `No pudimos encontrar al alumno de padrón ${studentPadron}`);
       }
@@ -42,6 +49,7 @@ export function SemesterHeaderRight({ }: Props) {
     if (student) {
       try {
         const addedStudentToSemester: AddedStudentToSemester = await semesterRepository.addStudentToSemester(student.id, semesterData.id)
+        console.log("Added students to semester", addedStudentToSemester);
         dispatch(modifyStudentsOfASemester(addedStudentToSemester.semester.students))
         Alert.alert('Éxito', 'Estudiante agregado exitosamente');
       } catch (error) {
@@ -49,6 +57,12 @@ export function SemesterHeaderRight({ }: Props) {
       }
     }
   };
+
+  const onPressCancel = () => {
+    setModalVisible(false); 
+    setStudentPadron('')
+  }
+  
 
   return (
     <View style={styles.navButtonsContainer}>
@@ -71,7 +85,7 @@ export function SemesterHeaderRight({ }: Props) {
               onChangeText={setStudentPadron}
             />
             <View style={styles.buttonContainer}>
-              <Button title="Cancel" onPress={() => setModalVisible(false)} />
+              <Button title="Cancel" onPress={onPressCancel}/>
               <Button title="OK" onPress={handleAddStudent} />
             </View>
           </View>

@@ -4,6 +4,7 @@ import { Semester } from '../models/Semester';
 import { RootState } from '../store';
 import { semesterRepository } from '../repositories';
 import { ClassAttendance } from '../models/ClassAttendance';
+import { Student } from '../models';
 
 interface SemesterState {
   data: Semester | null;
@@ -37,13 +38,29 @@ export const fetchSemesterDataAsync = createAsyncThunk(
   }
 );
 
+export const fetchSemesterAttendances = createAsyncThunk(
+  'semester/fetchSemesterAttendances',
+  async (semesterId: number) => {
+    try {
+      const attendances: ClassAttendance[] = await semesterRepository.getSemesterAttendances(semesterId)
+      const sortedAttendances = [...attendances].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      console.log("Sorted attendances", sortedAttendances.length, sortedAttendances);
+      return { attendances: sortedAttendances }
+    } catch (error) {
+      throw new Error('Failed to fetch semester data');
+    }
+  }
+)
+
 
 const semesterSlice = createSlice({
   name: 'semester',
   initialState,
   reducers: {
     modifyStudentsOfASemester: (state, action) => {
-      const { students } = action.payload;
+      const students: Student[] = action.payload;
+      console.log("Students to be added", students);
+      
       if (state.data) {
         state.data.students = students;
       }
@@ -64,7 +81,19 @@ const semesterSlice = createSlice({
       .addCase(fetchSemesterDataAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Error fetching semester data';
-      });
+      })
+      .addCase(fetchSemesterAttendances.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSemesterAttendances.fulfilled, (state, action) => {
+        const { attendances } = action.payload
+        state.attendances = attendances
+      })
+      .addCase(fetchSemesterAttendances.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Error fetching semester data';
+      })
   },
 });
 

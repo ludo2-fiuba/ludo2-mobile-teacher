@@ -45,7 +45,7 @@ export async function addStudentToSemester(studentId: number, semesterId: number
   console.log("About to add student to semester", bodyToSend);
   
   const addedStudent = await post(`api/teacher/commission_inscription/add_student`, bodyToSend) as AddedStudentToSemester
-  return addedStudent
+  return convertSnakeToCamelCase(addedStudent)
 }
 
 export default { fetchPresentSemesterFromCommissionId, createSemester, getSemesterAttendances, addStudentToSemester };

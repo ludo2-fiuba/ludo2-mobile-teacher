@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import { useAppSelector } from '../../hooks';
-import { Student } from '../../models/Student'; // Make sure this import reflects the actual path
+import { Student } from '../../models/Student';
 import { useNavigation } from '@react-navigation/native';
 import { SemesterHeaderRight } from './SemesterHeaderRight';
 const UserIcon = require('../img/usericon.jpg');
@@ -13,7 +13,7 @@ const SemesterStudents: React.FC = () => {
 
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
-      title: 'Alumnos del semestre', // Set the screen title
+      title: 'Alumnos del semestre',
       headerRight: () => <SemesterHeaderRight />,
     });
   }, [navigation]);
@@ -30,7 +30,7 @@ const SemesterStudents: React.FC = () => {
       <Image source={UserIcon} style={styles.image} />
       <View style={styles.infoContainer}>
         <Text style={styles.studentName}>{item.firstName} {item.lastName} </Text>
-        <Text style={styles.studentDetail}>Padrón: {item.legajo || 'Padrón faltante'}</Text>
+        <Text style={styles.studentDetail}>Padrón: {item.padron || 'Padrón faltante'}</Text>
       </View>
     </View>
   );

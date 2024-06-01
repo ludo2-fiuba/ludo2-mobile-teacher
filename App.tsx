@@ -210,12 +210,12 @@ const AllComponents: React.FC = () => {
             component={AttendanceDetails}
             options={({ route }) => ({
               headerShown: true,
-              title: 'Asistencias del semestre',
+              title: 'Detalles de la clase',
             })}
           />
 
           <Stack.Screen
-            name="QRAttendance"
+            name="SemesterAttendanceQR"
             component={SemesterAttendanceQR}
             options={({ route }) => ({
               headerShown: true,
