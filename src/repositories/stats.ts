@@ -1,10 +1,10 @@
-import { CommissionStats } from '../models';
+import { SemesterStats } from '../models';
 import { get } from './authenticatedRepository';
 
 const domainUrl = 'api/statistics';
 
-export async function fetchCommissionStats(): Promise<CommissionStats> {
-  return await get(`${domainUrl}/commission`) as CommissionStats;
+export async function fetchSemesterStats(semesterId: number): Promise<SemesterStats> {
+  return await get(`${domainUrl}/teacher`, [{ key: 'semester_id', value: semesterId }]) as SemesterStats;
 }
 
-export default { fetchCommissionStats };
+export default { fetchSemesterStats };

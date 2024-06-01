@@ -74,6 +74,14 @@ export function SemesterCard({ route }: Props) {
         });
       },
       materialIcon: <MaterialIcon name="account-check" fontSize={24} />
+    },
+    {
+      name: "Estadísticas", onPress: () => {
+        navigation.navigate('Stats', {
+          semester: semesterData,
+        });
+      },
+      materialIcon: <MaterialIcon name="chart-box" fontSize={24} />
     }
     // {
     //   name: "Ver Correlativas", onPress: () => {

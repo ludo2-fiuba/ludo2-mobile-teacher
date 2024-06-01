@@ -13,7 +13,6 @@ const Drawer = createDrawerNavigator()
 const DRAWER_MENU_SHOWN_SCREENS = [
   "Home",
   "CreateSemester",
-  "Stats"
 ]
 
 const FilteredDrawerContent = (props: DrawerContentComponentProps<DrawerContentOptions>) => {
@@ -58,12 +57,6 @@ const RootDrawer = () => {
         name="CreateSemester"
         component={CreateSemester}
         options={{ headerShown: true, title: 'Crear Semestre', drawerIcon: makeDrawerIcon('chart-box', 'chart-box-outline') }}
-      />
-      
-      <Drawer.Screen
-        name="Stats"
-        component={StatsScreen}
-        options={{ headerShown: true, title: 'Estadisticas', drawerIcon: makeDrawerIcon('chart-box', 'chart-box-outline') }}
       />
     </Drawer.Navigator>
   )
