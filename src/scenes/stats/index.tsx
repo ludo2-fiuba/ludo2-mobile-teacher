@@ -4,11 +4,9 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Loading } from '../../components';
 import * as Progress from 'react-native-progress';
 import { lightModeColors } from '../../styles/colorPalette';
-import { LineChart } from 'react-native-chart-kit';
+import { BarChart, LineChart } from 'react-native-chart-kit';
 import { SemesterStats } from '../../models';
 import { statsRepository } from '../../repositories';
-import MaterialIcon from '../../components/MaterialIcon';
-import BasicList from '../../components/basicList';
 import { Semester } from '../../models/Semester';
 
 interface StatsProps {
@@ -43,11 +41,26 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
     }
   };
 
-  const data = {
+  const semesterAverageData = {
     labels: semesterStats?.semester_average.map(item => item.date) || [],
     datasets: [
       {
         data: semesterStats?.semester_average.map(item => item.average) || [],
+        color: (opacity = 1) => lightModeColors.institutional,
+        strokeWidth: 2
+      }
+    ],
+    legend: ["Promedio (mes-año)"]
+  };
+
+  console.log(JSON.stringify(semesterAverageData));
+
+
+  const cummulativeDessertionsData = {
+    labels: semesterStats?.cummulative_dessertions.map(item => item.date) || [],
+    datasets: [
+      {
+        data: semesterStats?.cummulative_dessertions.map(item => item.cumulative_students_deserted) || [],
         color: (opacity = 1) => lightModeColors.institutional,
         strokeWidth: 2
       }
@@ -73,9 +86,9 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
       {loading && <Loading />}
       {!loading && semesterStats && (
         <>
-          {/* <View style={styles.card}>
+          <View style={styles.card}>
             <LineChart
-              data={data}
+              data={semesterAverageData}
               width={screenWidth}
               height={220}
               chartConfig={{
@@ -93,37 +106,47 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
                 borderRadius: 16
               }}
             />
-          </View> */}
+          </View>
+
+          <View style={styles.card}>
+            <BarChart
+              style={{
+                marginBottom: 18,
+                borderRadius: 16
+              }}
+              data={cummulativeDessertionsData}
+              width={screenWidth}
+              height={220}
+              chartConfig={{
+                backgroundGradientFrom: "#ffffff",
+                backgroundGradientTo: "#ffffff",
+                fillShadowGradientFrom: "#4D4D4D",
+                fillShadowGradientTo: "#FFFFFF",
+                decimalPlaces: 2,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              }}
+              verticalLabelRotation={15}
+            />
+          </View>
 
           <View style={styles.card}>
             <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 16, padding: 16 }}>
-                <Progress.Circle
-                  progress={semesterStats.attendance_rate}
-                  formatText={(a) => floatToFixedDecimal(semesterStats.attendance_rate * 100) + '%'}
-                  color={lightModeColors.institutional}
-                  unfilledColor='lightblue'
-                  strokeCap='round'
-                  size={120}
-                  thickness={10}
-                  showsText={true}
-                  borderWidth={0}
-                  textStyle={{ fontWeight: 'bold' }}
-                />
-                <Text style={styles.passingGradeLabel}>Tasa de Asistencia</Text>
+              <Progress.Circle
+                progress={semesterStats.attendance_rate}
+                formatText={(a) => floatToFixedDecimal(semesterStats.attendance_rate * 100) + '%'}
+                color={lightModeColors.institutional}
+                unfilledColor='lightblue'
+                strokeCap='round'
+                size={120}
+                thickness={10}
+                showsText={true}
+                borderWidth={0}
+                textStyle={{ fontWeight: 'bold' }}
+              />
+              <Text style={styles.passingGradeLabel}>Tasa de Asistencia</Text>
             </View>
           </View>
-
-          {/* <View style={[styles.card, { marginBottom: 120 }]}>
-            <View style={styles.cardItem}>
-              <MaterialIcon name="trophy" fontSize={24} color={lightModeColors.institutional} style={{ marginRight: 10 }} />
-              <View>
-                <Text style={styles.passingGradeText}>Top materias</Text>
-                <Text style={styles.passingGradeLabel}>Materias donde sacaste una mejor nota que el promedio global</Text>
-
-              </View>
-            </View>
-            <BasicList items={listItems} showSeparator={false} />
-          </View> */}
         </>
       )}
 
