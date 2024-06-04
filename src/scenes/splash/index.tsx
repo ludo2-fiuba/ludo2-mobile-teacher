@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import SessionManager from '../../managers/sessionManager';
+import { Loading } from '../../components';
 
 interface Props {
   navigation: any;
@@ -22,12 +23,7 @@ const Splash = ({ navigation }: Props) => {
 
   return (
     <View>
-      <Text>LUDO</Text>
-      <Text>
-        Libreta Universitaria
-        {'\n'}
-        Digital Oficial
-      </Text>
+      <Loading />
     </View>
   );
 };
