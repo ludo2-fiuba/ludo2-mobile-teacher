@@ -8,29 +8,29 @@ export async function fetchSemesterStats(semesterId: number): Promise<SemesterSt
   return {
     "semester_average": [
       {
-        "date": "2023-11-20T22:00:00Z",
-        "average": 7
+        "date": "2023-02-20T22:00:00Z",
+        "average": 6.2
       },
       {
-        "date": "2023-11-20T22:00:00Z",
-        "average": 7
+        "date": "2023-03-20T22:00:00Z",
+        "average": 5.2
       },
       {
-        "date": "2023-11-20T22:00:00Z",
-        "average": 7
+        "date": "2023-04-20T22:00:00Z",
+        "average": 5.7
       },
       {
-        "date": "2023-11-20T22:00:00Z",
-        "average": 7
+        "date": "2023-05-20T22:00:00Z",
+        "average": 6.1
       },
       {
-        "date": "2023-11-20T22:00:00Z",
-        "average": 7
+        "date": "2024-06-01T22:00:00Z",
+        "average": 6.4
       },
     ],
     "cummulative_dessertions": [
       {
-        "date": "2023-11-01T22:00:00Z",
+        "date": "2024-03-01T22:00:00Z",
         "cumulative_students_deserted": 2
       },
       {
