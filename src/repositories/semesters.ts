@@ -48,4 +48,15 @@ export async function addStudentToSemester(studentId: number, semesterId: number
   return convertSnakeToCamelCase(addedStudent)
 }
 
-export default { fetchPresentSemesterFromCommissionId, createSemester, getSemesterAttendances, addStudentToSemester };
+export async function updatedPresentStateToStudent(studentId: number, qrId: string) {
+  const bodyToSend = {
+    student: studentId,
+    qrid: qrId
+  }
+  console.log("About to update present state to student", bodyToSend);
+  const updatedStudent = await post(`api/teacher/semesters/attendance/add_student`, bodyToSend)
+  return convertSnakeToCamelCase(updatedStudent)
+
+}
+
+export default { fetchPresentSemesterFromCommissionId, createSemester, getSemesterAttendances, addStudentToSemester, updatedPresentStateToStudent };

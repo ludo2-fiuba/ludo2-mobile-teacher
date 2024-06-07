@@ -90,6 +90,8 @@ const semesterSlice = createSlice({
         state.loading = false;
         const { attendances } = action.payload
         state.attendances = attendances
+        console.log("Updated attendances with", attendances.length, attendances);
+        
       })
       .addCase(fetchSemesterAttendances.rejected, (state, action) => {
         state.loading = false;
