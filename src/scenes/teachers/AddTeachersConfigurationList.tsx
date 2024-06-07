@@ -1,14 +1,9 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
-import teacherRoles from '../../models/TeacherRoles';
 import { Teacher } from '../../models/TeacherTuple';
-import { lightModeColors } from '../../styles/colorPalette';
-import { Loading } from '../../components';
 import { useRoute } from '@react-navigation/native';
 import TeachersSearchBar from './TeachersSearchBar';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { increment, selectCount } from '../../features/counter/counterSlice';
+import { useAppSelector } from '../../hooks';
 
 const UserIcon = require('../img/usericon.jpg');
 
@@ -106,7 +101,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   headerContainer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },

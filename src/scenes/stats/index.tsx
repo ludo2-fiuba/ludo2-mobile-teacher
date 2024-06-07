@@ -4,12 +4,12 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Loading } from '../../components';
 import * as Progress from 'react-native-progress';
 import { lightModeColors } from '../../styles/colorPalette';
-import { LineChart } from 'react-native-chart-kit';
+import { ContributionGraph, LineChart } from 'react-native-chart-kit';
 import { SemesterStats } from '../../models';
 import { statsRepository } from '../../repositories';
-import MaterialIcon from '../../components/MaterialIcon';
-import BasicList from '../../components/basicList';
 import { Semester } from '../../models/Semester';
+import MaterialIcon from '../../components/MaterialIcon';
+import moment from 'moment';
 
 interface StatsProps {
   route: any
@@ -43,8 +43,8 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
     }
   };
 
-  const data = {
-    labels: semesterStats?.semester_average.map(item => item.date) || [],
+  const semesterAverageData = {
+    labels: semesterStats?.semester_average.map(item => getDayDashMonthDate(item.date)) || [],
     datasets: [
       {
         data: semesterStats?.semester_average.map(item => item.average) || [],
@@ -52,19 +52,15 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
         strokeWidth: 2
       }
     ],
-    legend: ["Promedio (mes-año)"]
+    legend: ["Promedio (dia-mes)"]
   };
-
-  // const listItems = semesterStats?.best_subjects.map(item => ({
-  //   name: item.subject,
-  //   materialIcon: <MaterialIcon name="trophy-award" fontSize={24} />,
-  //   rightItem: <Text style={[styles.percentText, styles.itemText]}>{percentToDisplayString(item)}</Text>,
-  //   onPress: buildTopSubjectOnPressAlert(item)
-  // })) || [];
 
   // TODO: make responsive
   const screenWidth = Dimensions.get("window").width - 41;
 
+  const contributionNumberOfDays = getNumDaysToShow(semesterStats?.cummulative_dessertions[0].date) || 1;
+
+  console.log(contributionNumberOfDays)
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Métricas del semestre actual</Text>
@@ -73,9 +69,16 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
       {loading && <Loading />}
       {!loading && semesterStats && (
         <>
-          {/* <View style={styles.card}>
+          <View style={styles.card}>
+            <View style={styles.cardItem}>
+              <MaterialIcon name="chart-line" fontSize={24} color={lightModeColors.institutional} style={{ marginRight: 10 }} />
+              <View>
+                <Text style={styles.passingGradeText}>Promedio del curso</Text>
+                <Text style={styles.passingGradeLabel}>Basado en las notas de evaluaciones parciales durante el semestre actual</Text>
+              </View>
+            </View>
             <LineChart
-              data={data}
+              data={semesterAverageData}
               width={screenWidth}
               height={220}
               chartConfig={{
@@ -93,37 +96,56 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
                 borderRadius: 16
               }}
             />
-          </View> */}
+          </View>
 
           <View style={styles.card}>
-            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 16, padding: 16 }}>
-                <Progress.Circle
-                  progress={semesterStats.attendance_rate}
-                  formatText={(a) => floatToFixedDecimal(semesterStats.attendance_rate * 100) + '%'}
-                  color={lightModeColors.institutional}
-                  unfilledColor='lightblue'
-                  strokeCap='round'
-                  size={120}
-                  thickness={10}
-                  showsText={true}
-                  borderWidth={0}
-                  textStyle={{ fontWeight: 'bold' }}
-                />
-                <Text style={styles.passingGradeLabel}>Tasa de Asistencia</Text>
+            <View style={styles.cardItem}>
+              <MaterialIcon name="account-arrow-down" fontSize={24} color={lightModeColors.institutional} style={{ marginRight: 10 }} />
+              <View>
+                <Text style={styles.passingGradeText}>Tendencias en ausencias</Text>
+                <Text style={styles.passingGradeLabel}>Momentos donde los alumnos dejan de asistir {`\n`}a las clases</Text>
+              </View>
+            </View>
+            <View style={{ alignItems: 'center', marginVertical: 10 }}>
+              <ContributionGraph
+                values={semesterStats?.cummulative_dessertions}
+                accessor='cumulative_students_deserted'
+                numDays={contributionNumberOfDays}
+                width={200}
+                horizontal={false}
+                height={contributionNumberOfDays * 3.5} // make height dependent on number of days
+                chartConfig={{
+                  backgroundGradientFrom: "#ffffff",
+                  backgroundGradientTo: "#ffffff",
+                  color: (opacity = 1) => `rgba(0, 136, 204, ${(opacity - 0.13) * 4})`, // la opacity es para acentuar los dias con datos
+                  labelColor: () => `black`,
+                  propsForLabels: {
+                    dx: -20 // shift month labels to the left
+                  }
+                }}
+                showMonthLabels={true}
+                getMonthLabel={(monthIndex: number) => moment().month(monthIndex).format('MMM')}
+              />
             </View>
           </View>
 
-          {/* <View style={[styles.card, { marginBottom: 120 }]}>
-            <View style={styles.cardItem}>
-              <MaterialIcon name="trophy" fontSize={24} color={lightModeColors.institutional} style={{ marginRight: 10 }} />
-              <View>
-                <Text style={styles.passingGradeText}>Top materias</Text>
-                <Text style={styles.passingGradeLabel}>Materias donde sacaste una mejor nota que el promedio global</Text>
-
-              </View>
+          <View style={[styles.card, { marginBottom: 120 }]}>
+            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 16, padding: 16 }}>
+              <Progress.Circle
+                progress={semesterStats.attendance_rate}
+                formatText={(a) => floatToFixedDecimal(semesterStats.attendance_rate * 100) + '%'}
+                color={lightModeColors.institutional}
+                unfilledColor='lightblue'
+                strokeCap='round'
+                size={120}
+                thickness={10}
+                showsText={true}
+                borderWidth={0}
+                textStyle={{ fontWeight: 'bold' }}
+              />
+              <Text style={styles.passingGradeLabel}>Tasa de Asistencia actual</Text>
             </View>
-            <BasicList items={listItems} showSeparator={false} />
-          </View> */}
+          </View>
         </>
       )}
 
@@ -132,6 +154,26 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
 };
 
 export default Stats;
+
+
+function getNumDaysToShow(date: string | undefined): number {
+  const MINIMUM_DAYS_TO_SHOW = 50; // show at least this amount of days
+  const EXTRA_STARTING_PADDING = 10; // add some extra days at the start to help visualization
+  return Math.max(getDaysFromToday(date), MINIMUM_DAYS_TO_SHOW) + EXTRA_STARTING_PADDING;
+}
+
+function getDaysFromToday(date: string | undefined): number {
+  const givenDate = moment(date);
+  const today = moment();
+  return today.diff(givenDate, 'days') + 2; // + 2 so that it includes the givenDate in the range
+}
+
+function getDayDashMonthDate(date: string): string {
+  const parsedDate = new Date(date);
+  const day = String(parsedDate.getDate()).padStart(2, '0');
+  const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  return `${day}-${month}`;
+}
 
 function floatToFixedDecimal(averageFloat: number): string {
   return averageFloat.toFixed(2);

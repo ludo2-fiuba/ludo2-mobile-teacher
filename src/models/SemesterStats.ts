@@ -5,7 +5,7 @@ export interface SemesterStats {
 }
 
 export interface CummulativeDessertion {
-    date: Date;
+    date: string;
     cumulative_students_deserted: number;
 }
 

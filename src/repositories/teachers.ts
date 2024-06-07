@@ -17,7 +17,8 @@ export async function modifyRoleOfTeacherInCommission(commissionId: number, teac
   const roleToBeCreatedInCommission = {
     commission: commissionId,
     teacher: teacherId,
-    role: role
+    role: role,
+    grader_weight: 1.0, // TODO: make configurable
   }
   const result = await put('api/commissions/teachers', roleToBeCreatedInCommission)
   return convertSnakeToCamelCase(result);

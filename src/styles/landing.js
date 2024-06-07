@@ -10,6 +10,7 @@ const sharedStyle = StyleSheet.create({
   ...basic(),
   view: {
     ...basic().view,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
   },
