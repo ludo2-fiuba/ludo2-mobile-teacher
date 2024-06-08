@@ -3,15 +3,14 @@ import { Teacher, TeacherSnakeCase } from "./Teacher";
 
 export interface TeacherTuple {
   commission: Commission;
-  teacher:    Teacher;
-  role:       string;
+  teacher: Teacher;
+  role: string;
+  graderWeight: number;
 }
 
 export interface TeacherTupleSnakeCase {
   commission: CommissionSnakeCase;
-  teacher:    TeacherSnakeCase;
-  role:       string;
+  teacher: TeacherSnakeCase;
+  role: string;
+  grader_weight: number;
 }
-
-
-
