@@ -16,7 +16,7 @@ interface IBasicListItem {
 
 const BasicList: React.FC<IProps> = ({ items, showSeparator = true }: IProps) => {
     return (
-        <View style={style().view}>
+        <View style={[style().view, { borderRadius: 8 }]}>
             {items.map((item, index) => (
                 <React.Fragment key={item.name}>
                     <TouchableOpacity onPress={item.onPress} style={style().touchableOpacity}>

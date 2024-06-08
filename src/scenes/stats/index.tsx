@@ -60,7 +60,6 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
 
   const contributionNumberOfDays = getNumDaysToShow(semesterStats?.cummulative_dessertions[0].date) || 1;
 
-  console.log(contributionNumberOfDays)
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Métricas del semestre actual</Text>
@@ -102,8 +101,8 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
             <View style={styles.cardItem}>
               <MaterialIcon name="account-arrow-down" fontSize={24} color={lightModeColors.institutional} style={{ marginRight: 10 }} />
               <View>
-                <Text style={styles.passingGradeText}>Tendencias en ausencias</Text>
-                <Text style={styles.passingGradeLabel}>Momentos donde los alumnos dejan de asistir {`\n`}a las clases</Text>
+                <Text style={styles.passingGradeText}>Estimación en deserciones</Text>
+                <Text style={styles.passingGradeLabel}>Para cada día se contabiliza la cantidad de alumnos que dejaron de asistir a clases</Text>
               </View>
             </View>
             <View style={{ alignItems: 'center', marginVertical: 10 }}>
