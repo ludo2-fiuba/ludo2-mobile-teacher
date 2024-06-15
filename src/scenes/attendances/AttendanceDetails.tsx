@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
 import 'moment/locale/es';
@@ -12,6 +12,7 @@ import { AttendanceDetailsHeaderRight } from './AttendanceDetailsHeaderRight';
 import { ClassAttendance } from '../../models/ClassAttendance';
 import { Student } from '../../models';
 import { semesterRepository } from '../../repositories';
+
 moment.locale('es');
 
 interface RouteParams {
@@ -19,11 +20,14 @@ interface RouteParams {
 }
 
 const AttendanceDetails: React.FC = () => {
-    const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch();
     const navigation = useNavigation();
-    const route = useRoute();
-    const semesterData: Semester = useAppSelector(selectSemesterData)!;
-    const { classAttendance } = route.params as RouteParams;
+    const route = useRoute<RouteProp<{ params: RouteParams }, 'params'>>();
+    const semesterData = useAppSelector(selectSemesterData)!;
+    const { classAttendance } = route.params;
+
+    const [presentStudents, setPresentStudents] = useState<Student[]>([]);
+    const [absentStudents, setAbsentStudents] = useState<Student[]>([]);
 
     const setNavOptions = useCallback(() => {
         navigation.setOptions({
@@ -32,37 +36,44 @@ const AttendanceDetails: React.FC = () => {
                 const now = new Date();
                 const lowerLimit = new Date(classAttendance.createdAt);
                 const upperLimit = new Date(classAttendance.expiresAt);
-                if (now >= lowerLimit && now <= upperLimit)
+                if (now >= lowerLimit && now <= upperLimit) {
                     return <AttendanceDetailsHeaderRight />;
+                }
+                return null;
             },
         });
-    }, [navigation]);
+    }, [navigation, classAttendance.createdAt, classAttendance.expiresAt]);
 
     useEffect(() => {
         const focusUnsubscribe = navigation.addListener('focus', () => {
             setNavOptions();
         });
         return focusUnsubscribe;
-    }, []);
+    }, [navigation, setNavOptions]);
 
-    const presentStudents = semesterData.students.filter(student =>
-        classAttendance.attendances.find((attendance: StudentAttendance) => attendance.student.padron === student.padron)
-    );
+    useEffect(() => {
+        const present = semesterData.students.filter(student =>
+            classAttendance.attendances.find((attendance: StudentAttendance) => attendance.student.padron === student.padron)
+        );
 
-    const absentStudents = semesterData.students.filter(student =>
-        !classAttendance.attendances.find((attendance: StudentAttendance) => attendance.student.padron === student.padron)
-    );
+        const absent = semesterData.students.filter(student =>
+            !classAttendance.attendances.find((attendance: StudentAttendance) => attendance.student.padron === student.padron)
+        );
 
-    const renderAttendance = ({ item }: { item: any }, isPresent: boolean) => (
+        setPresentStudents(present);
+        setAbsentStudents(absent);
+    }, [semesterData, classAttendance]);
+
+    const renderAttendance = ({ item }: { item: Student }, isPresent: boolean) => (
         <View style={styles.attendanceRow}>
             <Text style={styles.attendanceText}>
                 {item.firstName} {item.lastName} ({item.padron})
             </Text>
             {isPresent ? (
-                <View style={styles.attendanceButton}>
+                <TouchableOpacity style={styles.attendanceButton} onPress={() => handleConfirmRemoveAttendance(item)}>
                     <Ionicons name="checkmark-circle" size={24} color="green" />
                     <Text style={styles.attendanceButtonText}>Presente</Text>
-                </View>
+                </TouchableOpacity>
             ) : (
                 <TouchableOpacity style={styles.attendanceButtonAbsent} onPress={() => handleConfirmAttendance(item)}>
                     <Ionicons name="add-circle" size={24} color="orange" />
@@ -72,7 +83,7 @@ const AttendanceDetails: React.FC = () => {
         </View>
     );
 
-    const handleConfirmAttendance = (student: any) => {
+    const handleConfirmAttendance = (student: Student) => {
         Alert.alert(
             'Confirmar asistencia',
             `¿Está seguro de que desea agregar asistencia para ${student.firstName} ${student.lastName}?`,
@@ -90,14 +101,51 @@ const AttendanceDetails: React.FC = () => {
     };
 
     const handleAddManualAttendance = async (student: Student) => {
-        const data = await semesterRepository.updatedPresentStateToStudent(student.id, classAttendance.qrid)
-        dispatch(fetchSemesterAttendances(semesterData.id));
+        const data = await semesterRepository.updatedPresentStateToStudent(student.id, classAttendance.qrid);
         if (data) {
+            setPresentStudents(prevState => [...prevState, student]);
+            setAbsentStudents(prevState => prevState.filter(s => s.id !== student.id));
+            dispatch(fetchSemesterAttendances(semesterData.id));
             Alert.alert('Asistencia agregada', `Se ha agregado la asistencia de ${student.firstName} ${student.lastName}`);
         } else {
             Alert.alert('Error', 'No se pudo agregar la asistencia');
         }
     };
+
+    const handleConfirmRemoveAttendance = (student: Student) => {
+        Alert.alert(
+            'Confirmar remover asistencia',
+            `¿Está seguro de que desea remover la asistencia para ${student.firstName} ${student.lastName}?`,
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Confirmar',
+                    onPress: () => handleRemoveAttendance(student),
+                },
+            ]
+        );
+    };
+
+    const handleRemoveAttendance = async (student: Student) => {
+        // const data = await semesterRepository.removePresentStateFromStudent(student.id, classAttendance.qrid);
+        const data = 'still to be implemented'
+        if (data) {
+            setPresentStudents(prevState => prevState.filter(s => s.id !== student.id));
+            setAbsentStudents(prevState => [...prevState, student]);
+            dispatch(fetchSemesterAttendances(semesterData.id));
+            Alert.alert('Asistencia removida', `Se ha removido la asistencia de ${student.firstName} ${student.lastName}`);
+        } else {
+            Alert.alert('Error', 'No se pudo remover la asistencia');
+        }
+    };
+
+    const attendanceData = [
+        { key: 'present', header: 'Estudiantes Presentes', data: presentStudents },
+        { key: 'absent', header: 'Estudiantes Ausentes', data: absentStudents }
+    ];
 
     return (
         <View style={styles.container}>
@@ -109,24 +157,26 @@ const AttendanceDetails: React.FC = () => {
             </Text>
             {semesterData?.students?.length > 0 ? (
                 <FlatList
-                    data={[
-                        { header: `Estudiantes Presentes`, data: presentStudents },
-                        { header: `Estudiantes Ausentes`, data: absentStudents }
-                    ]}
+                    data={attendanceData}
                     renderItem={({ item }) => (
                         <View>
                             <Text style={styles.listHeader}>{item.header}</Text>
                             {item.data.length > 0 ? (
-                                item.data.map((student: any) => renderAttendance({ item: student }, item.header === 'Estudiantes Presentes'))
+                                item.data.map((student: Student) => (
+                                    <React.Fragment key={student.padron}>
+                                        {renderAttendance({ item: student }, item.key === 'present')}
+                                    </React.Fragment>
+                                ))
                             ) : (
                                 <Text style={styles.emptyListText}>
-                                    {item.header === 'Estudiantes Presentes'
+                                    {item.key === 'present'
                                         ? 'No hay estudiantes presentes.'
                                         : 'No hay estudiantes ausentes.'}
                                 </Text>
                             )}
                         </View>
                     )}
+                    keyExtractor={(item) => item.key}
                 />
             ) : (
                 <Text style={styles.noAttendanceText}>No hay estudiantes para este semestre</Text>
@@ -158,29 +208,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginVertical: 10,
     },
-    headerRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        backgroundColor: '#e0e0e0',
-        borderRadius: 5,
-        marginBottom: 5,
-    },
-    headerText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        flex: 1,
-    },
-    attendanceHeaderText: {
-        textAlign: 'right',
-    },
     attendanceRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center', // Ensure alignment vertically in the center
+        alignItems: 'center',
         paddingVertical: 10,
         paddingHorizontal: 15,
         borderBottomWidth: 1,
@@ -192,7 +223,6 @@ const styles = StyleSheet.create({
     attendanceText: {
         fontSize: 16,
         flex: 1,
-        textAlign: 'left', // Align the text to the left
     },
     noAttendanceText: {
         fontStyle: 'italic',
@@ -210,7 +240,6 @@ const styles = StyleSheet.create({
     attendanceButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center', // Center the contents horizontally
         backgroundColor: '#e0e0e0',
         padding: 8,
         borderRadius: 5,
@@ -222,7 +251,6 @@ const styles = StyleSheet.create({
     attendanceButtonAbsent: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center', // Center the contents horizontally
         backgroundColor: '#ffcccb',
         padding: 8,
         borderRadius: 5,

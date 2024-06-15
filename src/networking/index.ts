@@ -1,6 +1,8 @@
 import { API_URL } from "@env";
 
 export const baseUrl = API_URL;
+console.log("API URL", baseUrl);
+
 
 const logRequests = false;
 

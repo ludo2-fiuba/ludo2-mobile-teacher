@@ -43,8 +43,10 @@ export const fetchSemesterAttendances = createAsyncThunk(
   async (semesterId: number) => {
     try {
       const attendances: ClassAttendance[] = await semesterRepository.getSemesterAttendances(semesterId)
+      console.log("Attendances:", attendances);
+      
       const sortedAttendances = [...attendances].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      console.log("Sorted attendances", sortedAttendances.length, sortedAttendances);
+      console.log("Sorted attendances", sortedAttendances);
       return { attendances: sortedAttendances }
     } catch (error) {
       throw new Error('Failed to fetch semester attendances');
@@ -90,8 +92,6 @@ const semesterSlice = createSlice({
         state.loading = false;
         const { attendances } = action.payload
         state.attendances = attendances
-        console.log("Updated attendances with", attendances.length, attendances);
-        
       })
       .addCase(fetchSemesterAttendances.rejected, (state, action) => {
         state.loading = false;
