@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Alert, SafeAreaView, ScrollView, StyleSheet, ActivityIndicator, Button, TouchableOpacity } from 'react-native';
-import { Semester } from '../../models/Semester';
+import React, { useEffect } from 'react';
+import { View, Text, Alert, SafeAreaView, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { semesterRepository } from '../../repositories';
-// import { semesterCard as style } from '../../styles';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchSemesterDataAsync, selectSemesterData, selectSemesterError, selectSemesterLoading } from '../../features/semesterSlice';
+import { fetchTeachers } from '../../features/teachersSlice';
+import { SemesterHeaderRight } from './SemesterHeaderRight';
 import BasicList from '../../components/basicList';
 import { lightModeColors } from '../../styles/colorPalette';
-import { fetchSemesterDataAsync, selectSemesterData, selectSemesterError, selectSemesterLoading } from '../../features/semesterSlice';
-import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Commission } from '../../models';
 import MaterialIcon from '../../components/MaterialIcon';
-import { fetchTeachers } from '../../features/teachersSlice';
 
 interface Props {
   route: any;
@@ -24,7 +22,6 @@ export function SemesterCard({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const commission = (route.params as RouteParams).commission;
-  console.log("Commission", commission);
   
   const semesterData = useAppSelector(selectSemesterData);
   const isLoading = useAppSelector(selectSemesterLoading);
@@ -52,8 +49,8 @@ export function SemesterCard({ route }: Props) {
     {
       name: "Cuerpo Docente", onPress: () => {
         navigation.navigate('Teachers', {
-          commissionId: commission.id, // Used to get the staff teachers
-          chiefTeacher: semesterData?.commission.chiefTeacher, // pass the chief teacher from the semester
+          commissionId: commission.id,
+          chiefTeacher: semesterData?.commission.chiefTeacher,
         });
       },
       materialIcon: <MaterialIcon name="account-tie" fontSize={24} />
@@ -83,18 +80,11 @@ export function SemesterCard({ route }: Props) {
       },
       materialIcon: <MaterialIcon name="chart-box" fontSize={24} />
     }
-    // {
-    //   name: "Ver Correlativas", onPress: () => {
-    //     navigation.navigate('CorrelativeSubjects', {
-    //       id: semester.commission.subject_siu_id,
-    //     });
-    //   }
-    // },
-  ]
+  ];
 
   useEffect(() => {
     dispatch(fetchSemesterDataAsync(commission.id));
-    dispatch(fetchTeachers(commission.id))
+    dispatch(fetchTeachers(commission.id));
   }, [dispatch, commission]);
 
   useEffect(() => {
@@ -105,6 +95,13 @@ export function SemesterCard({ route }: Props) {
       );
     }
   }, [error]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <SemesterHeaderRight />,
+    });
+  }, [navigation]);
+
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -117,17 +114,16 @@ export function SemesterCard({ route }: Props) {
     return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>No hay datos disponibles</Text></View>;
   }
 
-
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>{commission.subjectName}</Text>
-      <Text style={styles.header2}>{commission.chiefTeacher.firstName} {commission.chiefTeacher.lastName}</Text>
+      <Text style={styles.header2}>{commission.chiefTeacher.firstName} {commission.chiefTeacher.lastName} {semesterData.classesAmount} {semesterData.minimumAttendance}</Text>
       <View style={styles.card}>
         <View style={styles.cardItem}>
           <BasicList items={listItems} />
         </View>
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }
 
@@ -150,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     elevation: 3,
-    gap: 18
+    gap: 18,
   },
   cardItem: {
     flexDirection: 'row',
@@ -174,3 +170,5 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
 });
+
+export default SemesterCard;

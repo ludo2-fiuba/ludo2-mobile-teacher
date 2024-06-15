@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import { useAppSelector } from '../../hooks';
 import { Student } from '../../models/Student';
 import { useNavigation } from '@react-navigation/native';
-import { SemesterHeaderRight } from './SemesterHeaderRight';
+import { SemesterStudentsHeaderRight } from './SemesterStudentsHeaderRight';
 const UserIcon = require('../img/usericon.jpg');
 
 const SemesterStudents: React.FC = () => {
@@ -14,7 +14,7 @@ const SemesterStudents: React.FC = () => {
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
       title: 'Alumnos del semestre',
-      headerRight: () => <SemesterHeaderRight />,
+      headerRight: () => <SemesterStudentsHeaderRight />,
     });
   }, [navigation]);
 

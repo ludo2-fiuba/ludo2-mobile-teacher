@@ -29,6 +29,7 @@ import FinalExamSubmissions from './src/scenes/finalExamsSubmissions/FinalExamSu
 import AddFinal from './src/scenes/finals/AddFinal';
 import SemesterAttendances from './src/scenes/attendances/SemesterAttendances';
 import AttendanceDetails from './src/scenes/attendances/AttendanceDetails';
+import SemesterEditScreen from './src/scenes/semesters/SemesterEditScreen';
 
 
 interface SubjectParams {
@@ -103,6 +104,14 @@ const AllComponents: React.FC = () => {
             component={SemesterStudents}
             options={({ route }) => ({ title: 'Estudiantes del semestre' })}
           />
+
+          <Stack.Screen
+            name='SemesterEditScreen'
+            component={SemesterEditScreen}
+            options={({ route }) => ({ title: 'Editar semestre' })}
+          />
+
+          
 
 
           {/* EVALUATIONS */}
