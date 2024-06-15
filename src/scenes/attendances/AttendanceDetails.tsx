@@ -127,7 +127,6 @@ const AttendanceDetails: React.FC = () => {
                             )}
                         </View>
                     )}
-                    keyExtractor={(item, index) => index.toString()}
                 />
             ) : (
                 <Text style={styles.noAttendanceText}>No hay estudiantes para este semestre</Text>
