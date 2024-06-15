@@ -85,7 +85,7 @@ export function SemesterHeaderRight({ }: Props) {
               onChangeText={setStudentPadron}
             />
             <View style={styles.buttonContainer}>
-              <Button title="Cancel" onPress={onPressCancel}/>
+              <Button title="Cancelar" onPress={onPressCancel}/>
               <Button title="OK" onPress={handleAddStudent} />
             </View>
           </View>

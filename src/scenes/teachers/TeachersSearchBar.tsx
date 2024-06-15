@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Modal, Button } from 'react-native';
-import { Teacher } from '../../models/TeacherTuple';
+import { Teacher } from '../../models';
 import ModalSelector from 'react-native-modal-selector';
 import ModalSelectorItem from './ModalSelectorItem';
 import teacherRoles, { TeacherRole } from '../../models/TeacherRoles';

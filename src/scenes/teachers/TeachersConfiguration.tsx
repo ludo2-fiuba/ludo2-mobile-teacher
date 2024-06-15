@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal, Alert } from 'react-native';
+import React, { useState, useEffect, useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
 import { TeacherTuple } from '../../models/TeacherTuple';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import { modifyTeacherRoleLocally, updateTeacherRoleInCommission } from '../../f
 import MaterialIcon from '../../components/MaterialIcon';
 import { lightModeColors } from '../../styles/colorPalette';
 import { RoundedButton } from '../../components';
+import { computeWeightsToPercentages } from '../../utils/computeWeightsToPercentages';
 
 interface RouteProps {
   staffTeachers: TeacherTuple[]
@@ -22,13 +23,9 @@ const TeachersConfiguration: React.FC = () => {
   const commissionId = (route.params as RouteProps).commissionId;
   const originalStaffTeachers = (route.params as RouteProps).staffTeachers;
   const staffTeachers = useAppSelector((state) => state.teachers.staffTeachers);
-  const [expandedTeacher, setExpandedTeacher] = useState<string | null>(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [teacherToDelete, setTeacherToDelete] = useState<TeacherTuple | null>(null);
+  const staffGraderWeightsToPercentages = useMemo(() => computeWeightsToPercentages(staffTeachers), [staffTeachers]);
 
-  useEffect(() => {
-
-  }, []);
+  const [expandedTeachers, setExpandedTeachers] = useState<string[]>([]);
 
   const handleRoleChange = (teacherDNI: string, newRole: string) => {
     dispatch(modifyTeacherRoleLocally({ teacherDNI: teacherDNI, newRole: newRole }));
@@ -44,33 +41,44 @@ const TeachersConfiguration: React.FC = () => {
     navigation.goBack();
   };
 
-  const deleteTeacherFromCommission = () => {
-    if (teacherToDelete) {
-      // Add your delete logic here
-      console.log('Deleting teacher:', teacherToDelete.teacher.firstName, teacherToDelete.teacher.lastName);
-      setIsModalVisible(false);
-    }
-  };
-
   const toggleAccordion = (teacherDNI: string) => {
-    setExpandedTeacher(prev => (prev === teacherDNI ? null : teacherDNI));
+    setExpandedTeachers(prev => 
+      prev.includes(teacherDNI) 
+        ? prev.filter(dni => dni !== teacherDNI) 
+        : [...prev, teacherDNI]
+    );
   };
 
   const confirmDeleteTeacher = (teacherTuple: TeacherTuple) => {
-    setTeacherToDelete(teacherTuple);
-    setIsModalVisible(true);
+    if (teacherTuple) {
+      Alert.alert(
+        'Confirmar eliminación',
+        `¿Está seguro de que desea eliminar a ${teacherTuple.teacher.firstName} ${teacherTuple.teacher.lastName} del cuerpo docente?`,
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+          },
+          {
+            text: 'Eliminar',
+            onPress: () => console.log("TODO: API endpoint para eliminar profesor"),
+          },
+        ]
+      )
+    }
+
   };
 
   return (
     <ScrollView style={styles.container}>
-      {staffTeachers.map(teacherTuple => (
+      {staffTeachers.map((teacherTuple, index) => (
         <View key={teacherTuple.teacher.dni} style={styles.card}>
           <TouchableOpacity onPress={() => toggleAccordion(teacherTuple.teacher.dni)} style={styles.cardItem}>
             <MaterialIcon name="account" fontSize={24} color={lightModeColors.institutional} style={{ marginRight: 10 }} />
             <Text style={styles.passingGradeText}>{teacherTuple.teacher.firstName} {teacherTuple.teacher.lastName}</Text>
-            <MaterialIcon name={expandedTeacher === teacherTuple.teacher.dni ? "chevron-up" : "chevron-down"} fontSize={24} color='black' />
+            <MaterialIcon name={expandedTeachers.includes(teacherTuple.teacher.dni) ? "chevron-up" : "chevron-down"} fontSize={24} color='black' />
           </TouchableOpacity>
-          {expandedTeacher === teacherTuple.teacher.dni && (
+          {expandedTeachers.includes(teacherTuple.teacher.dni) && (
             <View>
               <View style={styles.cardBlock}>
                 <Text style={styles.passingGradeLabel}>Rol</Text>
@@ -86,13 +94,13 @@ const TeachersConfiguration: React.FC = () => {
                 </View>
               </View>
               <View style={styles.cardBlock}>
-                <Text style={styles.passingGradeLabel}>Porcentaje auto-asignado para corrección</Text>
+                <Text style={styles.passingGradeLabel}>Porcentaje (%) auto-asignado para correcciones</Text>
                 <TextInput
                   style={styles.input}
                   keyboardType='numeric'
-                  value={teacherTuple.graderWeight + ''}
+                  value={staffGraderWeightsToPercentages[index]}
                   // onChangeText={}
-                  placeholder="Ingrese la cantidad de clases"
+                  placeholder="Ingrese el porcentaje deseado a auto-asignar"
                 />
               </View>
               <TouchableOpacity
@@ -107,29 +115,6 @@ const TeachersConfiguration: React.FC = () => {
         </View>
       ))}
       <RoundedButton text="Guardar cambios" onPress={saveChanges} style={{ MainContainer: { marginBottom: 100 } }} />
-
-      <Modal
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Confirmar eliminación</Text>
-            <Text style={styles.modalMessage}>
-              ¿Está seguro de que desea eliminar a {teacherToDelete?.teacher.firstName} {teacherToDelete?.teacher.lastName}?
-            </Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={[styles.modalButton, styles.cancelButton]}>
-                <Text style={styles.modalButtonText}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={deleteTeacherFromCommission} style={[styles.modalButton, styles.confirmButton]}>
-                <Text style={styles.modalButtonText}>Eliminar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </ScrollView>
   );
 };
@@ -153,11 +138,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   cardBlock: { paddingHorizontal: 15, paddingBottom: 15 },
-  cardTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 2,
-  },
   passingGradeText: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -177,12 +157,13 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     padding: 10,
-    borderRadius: 8
+    borderRadius: 8,
+    height: 55, // match Picker height
   },
   deleteButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'red',
+    backgroundColor: '#e74c3c',
     padding: 10,
     borderRadius: 8,
     alignSelf: 'flex-end',
@@ -192,51 +173,6 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: 'white',
     marginLeft: 5,
-    fontWeight: 'bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    width: 300,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  modalMessage: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  modalButton: {
-    flex: 1,
-    padding: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginHorizontal: 5,
-  },
-  cancelButton: {
-    backgroundColor: '#ccc',
-  },
-  confirmButton: {
-    backgroundColor: 'red',
-  },
-  modalButtonText: {
-    color: 'white',
     fontWeight: 'bold',
   },
 });
