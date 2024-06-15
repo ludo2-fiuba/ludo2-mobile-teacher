@@ -27,6 +27,14 @@ const EditableText = ({ value, onChange }: { value: string, onChange: (text: str
 
   const handleBlur = () => {
     setIsEditing(false);
+    
+    const grade = Number(text);
+    if (text && (isNaN(grade) || grade < 1 || grade > 10)) {
+      Alert.alert('Error', 'La nota debe ser un número entre 1 y 10.');
+      setText(value); // reset to original value
+      return;
+    }
+
     onChange(text);
   };
 
@@ -62,11 +70,11 @@ export default function SubmissionsList({ route }: Props) {
   const { evaluation } = route.params as RouteParams;
 
   const teachersTuples: TeacherTuple[] = useAppSelector(selectStaffTeachers)
-  
+
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
       title: 'Entregas', // Set the screen title
-      headerRight: () => <SubmissionsHeaderRight evaluation={evaluation} />,
+      headerRight: () => <SubmissionsHeaderRight evaluation={evaluation} fetchData={fetchData} />,
     });
   }, [navigation, evaluation]);
 
@@ -107,19 +115,21 @@ export default function SubmissionsList({ route }: Props) {
 
     try {
       await submissionsRepository.assignGraderToSubmission(student.id, evaluation.id, newCorrector.id);
-      setSubmissions(prevSubmissions =>
-        prevSubmissions.map(submission =>
-          submission.student.id === student.id
-            ? { ...submission, corrector: `${newCorrector.firstName} ${newCorrector.lastName}` }
-            : submission
-        )
-      );
+      // force-refresh
+      fetchData();
     } catch (error) {
       Alert.alert("Error", "Hubo un error al agregar el corrector")
     }
   };
 
   const updateSubmissionGrade = async (student: Student, newGrade: string) => {
+    // const grade = Number(newGrade);
+
+    // if (isNaN(grade) || grade < 1 || grade > 10) {
+    //   Alert.alert('Error', 'La nota debe ser un número entre 1 y 10.');
+    //   return;
+    // }
+
     setSubmissions(prevSubmissions =>
       prevSubmissions.map(submission =>
         submission.student.id === student.id
@@ -186,7 +196,7 @@ export default function SubmissionsList({ route }: Props) {
           }
         }}
         onClose={() => setShowTeacherSelectionModal(false)}
-        title="Profesores de la comisión"
+        title="Asignar corrector"
       />
     </View>
   );

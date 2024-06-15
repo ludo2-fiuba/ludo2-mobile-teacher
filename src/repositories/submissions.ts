@@ -8,6 +8,7 @@ const domainUrl = 'api/teacher/evaluations/submissions';
 const GET_SUBMISSIONS_ENDPOINT = `${domainUrl}/get_submissions`;
 const GRADE_SUBMISSION_ENDPOINT = `${domainUrl}/grade`;
 const ASSIGN_GRADER_TO_SUBMISSION_ENDPOINT = `${domainUrl}/assign_grader`
+const AUTO_ASSIGN_GRADERS_ENDPOINT = `${domainUrl}/auto_assign_graders`
 
 
 // Get submissions
@@ -41,4 +42,15 @@ async function assignGraderToSubmission(studentId: number, evaluationId: number,
   return convertSnakeToCamelCase(assignedGraderResponse) as AssignGrader
 }
 
-export default { getSubmissions, gradeSubmission, assignGraderToSubmission };
+async function autoAssignGraders(evaluationId: number) {
+  const snakeCaseBody = {
+    "evaluation": evaluationId,
+  }
+  
+  const assignedGradersResponse: AssignGraderCamelCase[] = await put(AUTO_ASSIGN_GRADERS_ENDPOINT, snakeCaseBody) as AssignGraderCamelCase[]
+  console.log("Response:", assignedGradersResponse);
+  
+  return convertSnakeToCamelCase(assignedGradersResponse) as AssignGrader[]
+}
+
+export default { getSubmissions, gradeSubmission, assignGraderToSubmission, autoAssignGraders };

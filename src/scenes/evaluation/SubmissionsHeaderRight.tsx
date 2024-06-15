@@ -1,36 +1,52 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useAppSelector } from '../../hooks';
 import { selectSemesterData } from '../../features/semesterSlice';
 import EntitySelectionModal from './EntitySelectionModal';
 import { Student } from '../../models';
-import { evaluationsRepository } from '../../repositories';
+import { evaluationsRepository, submissionsRepository } from '../../repositories';
 import { Evaluation } from '../../models/Evaluation';
+import MaterialIcon from '../../components/MaterialIcon';
 
 interface Props {
-  evaluation: Evaluation
+  evaluation: Evaluation;
+  fetchData: () => Promise<void>
 }
 
 
-export function SubmissionsHeaderRight({ evaluation }: Props) {
+export function SubmissionsHeaderRight({ evaluation, fetchData }: Props) {
   const semesterData = useAppSelector(selectSemesterData);
   const [modalVisible, setModalVisible] = useState(false);
-  const navigation = useNavigation();
-
-  const saveChanges = () => {
-    console.log('Saving changes');
-  };
-
-  const generateFinalExamQR = () => {
-    navigation.navigate('QRFinalExam', { final: { date: new Date() } });
-  }
 
   const addStudentSubmission = async (student: Student) => {
     setModalVisible(false);
     const result = await evaluationsRepository.addSubmissionToEvaluation(evaluation.id, student.id)
     console.log(result);
+    // force-refresh
+    fetchData();
+  }
+
+  const autoAssignGraders = async () => {
+    await submissionsRepository.autoAssignGraders(evaluation.id);
+    // force-refresh
+    fetchData();
+  };
+
+  const showConfirmAutoAssignGraders = () => {
+    Alert.alert(
+      'Auto-asignar correctores',
+      `¿Está seguro de que desea auto-asignar correctores para las entregas? Se sobreescribirán los correctores ya asignados \n\nPara ajustar los porcentajes diríjase a Cuerpo Docente > Editar`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: autoAssignGraders,
+        },
+      ]
+    );
   }
 
   return (
@@ -38,17 +54,17 @@ export function SubmissionsHeaderRight({ evaluation }: Props) {
       <EntitySelectionModal
         visible={modalVisible}
         entities={semesterData?.students || []}
-        onSelect={(student: any) =>  addStudentSubmission(student)}
+        onSelect={(student: any) => addStudentSubmission(student)}
         onClose={() => setModalVisible(false)}
-        title="Estudiantes del semestre"
+        title="Agregar entrega manualmente"
       />
 
-      <TouchableOpacity style={styles.navButton} onPress={() => {setModalVisible(true)}}>
-        <Icon name="add" style={styles.navButtonIcon} />
+      <TouchableOpacity style={styles.navButton} onPress={showConfirmAutoAssignGraders}>
+        <MaterialIcon name="auto-fix" fontSize={24} color='gray' />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.navButton} onPress={saveChanges}>
-        <Icon name="save" style={styles.navButtonIcon} />
+      <TouchableOpacity style={styles.navButton} onPress={() => { setModalVisible(true) }}>
+        <MaterialIcon name="plus" fontSize={24} color='gray' />
       </TouchableOpacity>
     </View>
   );
@@ -67,8 +83,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     opacity: 1,
     marginTop: 5,
-  },
-  navButtonIcon: {
-    fontSize: 20,
   },
 });
