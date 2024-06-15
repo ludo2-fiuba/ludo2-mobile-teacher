@@ -117,7 +117,7 @@ export function SemesterCard({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>{commission.subjectName}</Text>
-      <Text style={styles.header2}>{commission.chiefTeacher.firstName} {commission.chiefTeacher.lastName} {semesterData.classesAmount} {semesterData.minimumAttendance}</Text>
+      <Text style={styles.header2}>{commission.chiefTeacher.firstName} {commission.chiefTeacher.lastName}</Text>
       <View style={styles.card}>
         <View style={styles.cardItem}>
           <BasicList items={listItems} />
