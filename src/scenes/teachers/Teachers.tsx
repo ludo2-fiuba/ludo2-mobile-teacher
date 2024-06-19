@@ -16,7 +16,7 @@ const ChiefCard = ({ firstName, lastName, email }: Teacher) => {
       <Image source={UserIcon} style={styles.leaderImage} />
       <View style={styles.leaderInfoContainer}>
         <Text style={styles.leaderName}>{firstName} {lastName}</Text>
-        <Text style={styles.leaderRole}>{'Jefe de cátedra'}</Text>
+        <Text style={styles.leaderRole}>{'Profesor Titular'}</Text>
       </View>
     </View>
   );

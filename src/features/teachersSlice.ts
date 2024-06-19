@@ -76,6 +76,12 @@ export const teachersSlice = createSlice({
       state.staffTeachers = state.staffTeachers.map(teacher =>
         teacher.teacher.dni === teacherDNI ? { ...teacher, graderWeight: newWeight } : teacher
       );
+    },
+    modifyChiefTeacherWeightLocally: (state, action) => {
+      const { newWeight } = action.payload;
+      state.staffTeachers = state.staffTeachers.map(teacher =>
+        ({ ...teacher, commission: { ...teacher.commission, chiefTeacherGraderWeight: newWeight } })
+      );
     }
   },
   extraReducers: (builder) => {
@@ -108,7 +114,7 @@ export const teachersSlice = createSlice({
 });
 
 // Export any actions to use them in components
-export const { modifyTeacherRoleLocally, modifyTeacherWeightLocally } = teachersSlice.actions;
+export const { modifyTeacherRoleLocally, modifyTeacherWeightLocally, modifyChiefTeacherWeightLocally } = teachersSlice.actions;
 
 export const selectStaffTeachers = (state: RootState) => state.teachers.staffTeachers;
 

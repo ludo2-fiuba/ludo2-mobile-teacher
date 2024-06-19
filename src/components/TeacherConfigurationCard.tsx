@@ -10,8 +10,9 @@ import PercentageInput from './PercentageInput';
 interface TeacherConfigurationCardProps {
     teacherTuple: TeacherTuple;
     teacherGraderWeightAsPercentage: string;
-    handleRoleChange: (dni: string, newRole: string) => void;
-    handleWeightChange: (dni: string, newPercentageInput: number) => void;
+    handleRoleChange: (newRole: string, teacherDNI: string) => void;
+    handleWeightChange: (newPercentageInput: number, teacherDNI: string) => void;
+    isChiefTeacher?: boolean
 }
 
 const TeacherConfigurationCard: React.FC<TeacherConfigurationCardProps> = ({
@@ -19,6 +20,7 @@ const TeacherConfigurationCard: React.FC<TeacherConfigurationCardProps> = ({
     teacherGraderWeightAsPercentage,
     handleRoleChange,
     handleWeightChange,
+    isChiefTeacher = false
 }) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
@@ -40,7 +42,7 @@ const TeacherConfigurationCard: React.FC<TeacherConfigurationCardProps> = ({
     };
 
     return (
-        <View key={teacherTuple.teacher.dni} style={styles.card}>
+        <View style={styles.card}>
             <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)} style={styles.cardItem}>
                 <MaterialIcon name="account" fontSize={24} color={lightModeColors.institutional} style={{ marginRight: 10 }} />
                 <Text style={styles.passingGradeText}>{teacherTuple.teacher.firstName} {teacherTuple.teacher.lastName}</Text>
@@ -52,8 +54,9 @@ const TeacherConfigurationCard: React.FC<TeacherConfigurationCardProps> = ({
                         <Text style={styles.passingGradeLabel}>Rol</Text>
                         <View style={styles.pickerContainer}>
                             <Picker
+                                enabled={!isChiefTeacher}
                                 selectedValue={teacherTuple.role}
-                                onValueChange={(itemValue) => handleRoleChange(teacherTuple.teacher.dni, itemValue)}>
+                                onValueChange={(itemValue) => handleRoleChange(itemValue, teacherTuple.teacher.dni)}>
                                 {teacherRoles.map(role => (
                                     <Picker.Item key={role.id} label={role.longVersion} value={role.shortVersion} />
                                 ))}
@@ -64,16 +67,16 @@ const TeacherConfigurationCard: React.FC<TeacherConfigurationCardProps> = ({
                         <Text style={styles.passingGradeLabel}>Porcentaje (%) auto-asignado para correcciones</Text>
                         <PercentageInput
                             initialValue={teacherGraderWeightAsPercentage}
-                            onBlur={(value) => handleWeightChange(teacherTuple.teacher.dni, value)}
+                            onBlur={(value) => handleWeightChange(value, teacherTuple.teacher.dni)}
                         />
                     </View>
-                    <TouchableOpacity
+                    {!isChiefTeacher && <TouchableOpacity
                         onPress={() => confirmDeleteTeacher(teacherTuple)}
                         style={styles.deleteButton}
                     >
                         <MaterialIcon name="delete" fontSize={24} color='white' />
                         <Text style={styles.deleteButtonText}>Eliminar</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
                 </View>
             )}
         </View>
