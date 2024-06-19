@@ -1,23 +1,21 @@
 import { TeacherTuple } from '../models/TeacherTuple';
 
-export function computeWeightsToPercentages(staffTeachers: TeacherTuple[]): string[] {
-  if (!staffTeachers) {
-    return [];
+export function mapWeightToPercentage(teacherDNI: string, staffTeachers: TeacherTuple[]): string {
+  const selectedTeacher = staffTeachers.find((teacherRole) => teacherRole.teacher.dni === teacherDNI);
+  if (!staffTeachers || !selectedTeacher) {
+    return '';
   }
 
   const totalWeight = getTotalWeight(staffTeachers);
-
-  return staffTeachers.map(teacher => {
-    const percentage = (teacher.graderWeight / totalWeight) * 100;
-    return percentage.toFixed(2);
-  });
+  const percentage = (selectedTeacher.graderWeight / totalWeight) * 100;
+  return percentage.toFixed(2);
 }
 
 export function mapPercentageToWeight(teacherDNI: string, percentage: number, staffTeachers: TeacherTuple[]): number {
   if (!staffTeachers) {
     return NaN;
   }
-  
+
   const staffTeachersWithoutCurrent = staffTeachers.filter((teacherRole) => teacherRole.teacher.dni !== teacherDNI)
   const totalWeightWithoutCurrent = getTotalWeight(staffTeachersWithoutCurrent);
   return percentage * totalWeightWithoutCurrent / (1 - percentage);
