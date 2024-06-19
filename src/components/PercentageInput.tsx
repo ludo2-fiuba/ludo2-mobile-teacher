@@ -1,0 +1,50 @@
+import { clamp } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { TextInput, StyleSheet, NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
+
+interface Props {
+    initialValue: string;
+    onBlur: (value: number) => void;
+}
+
+const PercentageInput: React.FC<Props> = ({ initialValue, onBlur }) => {
+    const [tempValue, setTempValue] = useState(initialValue);
+
+    useEffect(() => {
+        setTempValue(initialValue);
+    }, [initialValue]);
+
+    const handleBlur = (text: string) => {
+        const floatValue = parseFloat(text);
+        let newValue = initialValue
+        if (floatValue) {
+            const clampedValue = clamp(floatValue, 0.01, 99.0);
+            newValue = String(clampedValue);
+            onBlur(clampedValue);
+        }
+        setTempValue(newValue);
+    };
+
+    return (
+        <TextInput
+            style={styles.input}
+            keyboardType='numeric'
+            value={tempValue}
+            onChangeText={setTempValue}
+            onBlur={() => handleBlur(tempValue)}
+            placeholder="Ingrese el porcentaje deseado a auto-asignar"
+        />
+    );
+};
+
+const styles = StyleSheet.create({
+    input: {
+        borderColor: 'gray',
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 8,
+        height: 55,
+    },
+});
+
+export default PercentageInput;

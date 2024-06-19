@@ -1,4 +1,5 @@
-import { Teacher, TeacherSnakeCase, TeacherTuple, TeacherTupleSnakeCase } from '../models/TeacherTuple.ts';
+import { TeacherTuple, TeacherTupleSnakeCase } from '../models/TeacherTuple.ts';
+import { TeacherSnakeCase, Teacher } from '../models/Teacher.ts';
 import { convertSnakeToCamelCase } from '../utils/convertSnakeToCamelCase.ts';
 import { get, post, put } from './authenticatedRepository.ts';
 
@@ -13,12 +14,12 @@ export async function fetchTeachersOfCommission(commissionId: number): Promise<T
   return convertSnakeToCamelCase(parsedTeachersList)
 }
 
-export async function modifyRoleOfTeacherInCommission(commissionId: number, teacherId: number, role: string) {
+export async function modifyRoleOfTeacherInCommission(commissionId: number, teacherId: number, role: string, graderWeight: number) {
   const roleToBeCreatedInCommission = {
     commission: commissionId,
     teacher: teacherId,
     role: role,
-    grader_weight: 1.0, // TODO: make configurable
+    grader_weight: graderWeight,
   }
   const result = await put('api/commissions/teachers', roleToBeCreatedInCommission)
   return convertSnakeToCamelCase(result);
@@ -29,7 +30,7 @@ export async function createRoleForTeacherInCommission(commissionId: number, tea
     commission: commissionId,
     teacher: teacherId,
     role: role,
-    grader_weight: 1,
+    grader_weight: 1.0,
   }
 
   console.log('roleToBeCreatedInCommission')

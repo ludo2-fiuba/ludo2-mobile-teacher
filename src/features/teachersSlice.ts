@@ -20,12 +20,12 @@ const initialState: State = {
 };
 
 // Async thunk for updating a teacher's role in a commission
-export const updateTeacherRoleInCommission = createAsyncThunk(
+export const updateTeacherInCommission = createAsyncThunk(
   'teachers/updateRole',
-  async ({ commissionId, teacherId, newRole }: any, { rejectWithValue }) => {
+  async ({ commissionId, teacherId, newRole, newWeight }: any, { rejectWithValue }) => {
     try {
-      const response = await teachersRepository.modifyRoleOfTeacherInCommission(commissionId, teacherId, newRole);
-      return { teacherId, newRole };
+      const response = await teachersRepository.modifyRoleOfTeacherInCommission(commissionId, teacherId, newRole, newWeight);
+      return { teacherId, newRole, newWeight };
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -37,7 +37,7 @@ export const fetchTeachers = createAsyncThunk(
   'teachers/fetchTeachers',
   async (commissionId: number, { rejectWithValue }) => {
     try {
-      const allTeachers: Teacher[]  = await teachersRepository.fetchAllTeachers();
+      const allTeachers: Teacher[] = await teachersRepository.fetchAllTeachers();
       const staffTeachers: TeacherTuple[] = await teachersRepository.fetchTeachersOfCommission(commissionId);
       return { allTeachers, staffTeachers };
     } catch (error: any) {
@@ -67,8 +67,14 @@ export const teachersSlice = createSlice({
     // Define any synchronous actions here
     modifyTeacherRoleLocally: (state, action) => {
       const { teacherDNI, newRole } = action.payload;
-      state.staffTeachers = state.staffTeachers.map(teacher => 
+      state.staffTeachers = state.staffTeachers.map(teacher =>
         teacher.teacher.dni === teacherDNI ? { ...teacher, role: newRole } : teacher
+      );
+    },
+    modifyTeacherWeightLocally: (state, action) => {
+      const { teacherDNI, newWeight } = action.payload;
+      state.staffTeachers = state.staffTeachers.map(teacher =>
+        teacher.teacher.dni === teacherDNI ? { ...teacher, graderWeight: newWeight } : teacher
       );
     }
   },
@@ -90,18 +96,19 @@ export const teachersSlice = createSlice({
         console.log('Teacher role added to commission', action.payload);
         state.staffTeachers.push(action.payload as TeacherTuple);
       })
-      .addCase(updateTeacherRoleInCommission.fulfilled, (state, action) => {
-        const { teacherId, newRole } = action.payload;
+      .addCase(updateTeacherInCommission.fulfilled, (state, action) => {
+        const { teacherId, newRole, newWeight } = action.payload;
         const index = state.staffTeachers.findIndex(teacher => teacher.teacher.id === teacherId);
         if (index !== -1) {
           state.staffTeachers[index].role = newRole;
+          state.staffTeachers[index].graderWeight = newWeight;
         }
       });
   },
 });
 
 // Export any actions to use them in components
-export const { modifyTeacherRoleLocally } = teachersSlice.actions;
+export const { modifyTeacherRoleLocally, modifyTeacherWeightLocally } = teachersSlice.actions;
 
 export const selectStaffTeachers = (state: RootState) => state.teachers.staffTeachers;
 

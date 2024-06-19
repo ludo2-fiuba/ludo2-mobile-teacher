@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { TeacherTuple } from '../../models/TeacherTuple';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import teacherRoles from '../../models/TeacherRoles';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { modifyTeacherRoleLocally, updateTeacherRoleInCommission } from '../../features/teachersSlice';
+import { modifyTeacherRoleLocally, modifyTeacherWeightLocally, updateTeacherInCommission } from '../../features/teachersSlice';
 import MaterialIcon from '../../components/MaterialIcon';
 import { lightModeColors } from '../../styles/colorPalette';
-import { RoundedButton } from '../../components';
-import { computeWeightsToPercentages } from '../../utils/computeWeightsToPercentages';
+import { PercentageInput, RoundedButton } from '../../components';
+import { computeWeightsToPercentages, mapPercentageToWeight } from '../../utils/graderWeightConversions';
 
 interface RouteProps {
   staffTeachers: TeacherTuple[]
@@ -31,20 +31,34 @@ const TeachersConfiguration: React.FC = () => {
     dispatch(modifyTeacherRoleLocally({ teacherDNI: teacherDNI, newRole: newRole }));
   };
 
+  const handleWeightChange = (teacherDNI: string, newPercentageInput: number) => {
+    const asPercentage = newPercentageInput / 100;
+    if (asPercentage) {
+      const newWeight = mapPercentageToWeight(teacherDNI, asPercentage, staffTeachers);
+      dispatch(modifyTeacherWeightLocally({ teacherDNI, newWeight }));
+    }
+  };
+
   const saveChanges = () => {
     for (const teacherTuple of staffTeachers) {
       const originalTuple = originalStaffTeachers.find(originalTuple => originalTuple.teacher.dni === teacherTuple.teacher.dni);
-      if (originalTuple?.role !== teacherTuple.role) {
-        dispatch(updateTeacherRoleInCommission({ commissionId: commissionId, teacherId: teacherTuple.teacher.id, newRole: teacherTuple.role }));
+      if (originalTuple?.role !== teacherTuple.role || originalTuple?.graderWeight !== teacherTuple.graderWeight) {
+        dispatch(updateTeacherInCommission(
+          {
+            commissionId: commissionId,
+            teacherId: teacherTuple.teacher.id,
+            newRole: teacherTuple.role,
+            newWeight: teacherTuple.graderWeight
+          }));
       }
     }
     navigation.goBack();
   };
 
   const toggleAccordion = (teacherDNI: string) => {
-    setExpandedTeachers(prev => 
-      prev.includes(teacherDNI) 
-        ? prev.filter(dni => dni !== teacherDNI) 
+    setExpandedTeachers(prev =>
+      prev.includes(teacherDNI)
+        ? prev.filter(dni => dni !== teacherDNI)
         : [...prev, teacherDNI]
     );
   };
@@ -95,12 +109,9 @@ const TeachersConfiguration: React.FC = () => {
               </View>
               <View style={styles.cardBlock}>
                 <Text style={styles.passingGradeLabel}>Porcentaje (%) auto-asignado para correcciones</Text>
-                <TextInput
-                  style={styles.input}
-                  keyboardType='numeric'
-                  value={staffGraderWeightsToPercentages[index]}
-                  // onChangeText={}
-                  placeholder="Ingrese el porcentaje deseado a auto-asignar"
+                <PercentageInput
+                  initialValue={staffGraderWeightsToPercentages[index]}
+                  onBlur={(value) => handleWeightChange(teacherTuple.teacher.dni, value)}
                 />
               </View>
               <TouchableOpacity
@@ -146,6 +157,7 @@ const styles = StyleSheet.create({
   passingGradeLabel: {
     fontSize: 14,
     color: 'black',
+    marginBottom: 4,
   },
   pickerContainer: {
     borderWidth: 1,
