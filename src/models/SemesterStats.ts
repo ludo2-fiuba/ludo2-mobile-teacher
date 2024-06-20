@@ -1,15 +1,16 @@
 export interface SemesterStats {
     semester_average: SemesterAverage[];
-    cummulative_dessertions: CummulativeDessertion[];
-    attendance_rate: number;
+    desertions: Dessertion[];
+    attendance_rate?: number;
 }
 
-export interface CummulativeDessertion {
+export interface Dessertion {
     date: string;
-    cumulative_students_deserted: number;
+    students_deserted: number;
 }
 
 interface SemesterAverage {
-    date: string;
+    year: number;
+    year_moment: string;
     average: number;
 }
