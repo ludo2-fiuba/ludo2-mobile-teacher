@@ -11,10 +11,11 @@ import MaterialIcon from '../../components/MaterialIcon';
 interface Props {
   evaluation: Evaluation;
   fetchData: () => Promise<void>
+  isActualUserChiefTeacher: boolean;
 }
 
 
-export function SubmissionsHeaderRight({ evaluation, fetchData }: Props) {
+export function SubmissionsHeaderRight({ evaluation, fetchData, isActualUserChiefTeacher }: Props) {
   const semesterData = useAppSelector(selectSemesterData);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -59,10 +60,13 @@ export function SubmissionsHeaderRight({ evaluation, fetchData }: Props) {
         title="Agregar entrega manualmente"
       />
 
-      <TouchableOpacity style={styles.navButton} onPress={showConfirmAutoAssignGraders}>
-        <MaterialIcon name="auto-fix" fontSize={24} color='gray' />
-      </TouchableOpacity>
-
+      {
+        isActualUserChiefTeacher && (
+          <TouchableOpacity style={styles.navButton} onPress={showConfirmAutoAssignGraders}>
+            <MaterialIcon name="auto-fix" fontSize={24} color='gray' />
+          </TouchableOpacity>
+        )
+      }
       <TouchableOpacity style={styles.navButton} onPress={() => { setModalVisible(true) }}>
         <MaterialIcon name="plus" fontSize={24} color='gray' />
       </TouchableOpacity>

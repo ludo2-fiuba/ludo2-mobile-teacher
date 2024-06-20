@@ -82,7 +82,7 @@ export default function SubmissionsList({ route }: Props) {
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
       title: 'Entregas', // Set the screen title
-      headerRight: () => <SubmissionsHeaderRight evaluation={evaluation} fetchData={fetchData} />,
+      headerRight: () => <SubmissionsHeaderRight evaluation={evaluation} fetchData={fetchData} isActualUserChiefTeacher={isActualUserChiefTeacher}/>,
     });
   }, [navigation, evaluation]);
 
@@ -113,8 +113,10 @@ export default function SubmissionsList({ route }: Props) {
   }, [evaluation.id, isLoading]);
 
   const updateCorrector = (student: Student) => {
-    setSelectedStudent(student);
-    setShowTeacherSelectionModal(true);
+    if (isActualUserChiefTeacher) {
+      setSelectedStudent(student);
+      setShowTeacherSelectionModal(true);
+    }
   };
 
   const assignCorrectorToStudent = async (student: Student, newCorrector: Teacher) => {
@@ -175,7 +177,7 @@ export default function SubmissionsList({ route }: Props) {
               <View style={[styles.row, !isEditable && styles.nonEditableRow]}>
                 <Text style={styles.cell}>{`${submission.student.firstName} ${submission.student.lastName}`}</Text>
                 <View style={styles.divider} />
-                <TouchableOpacity style={styles.cell} onPress={() => updateCorrector(submission.student)}>
+                <TouchableOpacity style={styles.cell} disabled={!isActualUserChiefTeacher} onPress={() => updateCorrector(submission.student)}>
                   <Text style={styles.text}>{submission.grader?.lastName}</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />
