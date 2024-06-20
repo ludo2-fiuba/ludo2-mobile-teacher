@@ -106,7 +106,6 @@ const AttendanceDetails: React.FC = () => {
             setPresentStudents(prevState => [...prevState, student]);
             setAbsentStudents(prevState => prevState.filter(s => s.id !== student.id));
             dispatch(fetchSemesterAttendances(semesterData.id));
-            Alert.alert('Asistencia agregada', `Se ha agregado la asistencia de ${student.firstName} ${student.lastName}`);
         } else {
             Alert.alert('Error', 'No se pudo agregar la asistencia');
         }
@@ -130,13 +129,11 @@ const AttendanceDetails: React.FC = () => {
     };
 
     const handleRemoveAttendance = async (student: Student) => {
-        // const data = await semesterRepository.removePresentStateFromStudent(student.id, classAttendance.qrid);
-        const data = 'still to be implemented'
+        const data = await semesterRepository.removePresentStateFromStudent(student.id, classAttendance.qrid);
         if (data) {
             setPresentStudents(prevState => prevState.filter(s => s.id !== student.id));
             setAbsentStudents(prevState => [...prevState, student]);
             dispatch(fetchSemesterAttendances(semesterData.id));
-            Alert.alert('Asistencia removida', `Se ha removido la asistencia de ${student.firstName} ${student.lastName}`);
         } else {
             Alert.alert('Error', 'No se pudo remover la asistencia');
         }
