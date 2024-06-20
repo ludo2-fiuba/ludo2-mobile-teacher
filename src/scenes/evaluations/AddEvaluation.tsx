@@ -4,9 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Button,
   TextInput,
-  StyleSheet,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Loading, RoundedButton } from '../../components';

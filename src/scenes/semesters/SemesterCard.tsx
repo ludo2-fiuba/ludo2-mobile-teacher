@@ -9,6 +9,7 @@ import BasicList from '../../components/basicList';
 import { lightModeColors } from '../../styles/colorPalette';
 import { Commission } from '../../models';
 import MaterialIcon from '../../components/MaterialIcon';
+import { selectUserData } from '../../features/userDataSlice';
 
 interface Props {
   route: any;
@@ -26,6 +27,9 @@ export function SemesterCard({ route }: Props) {
   const semesterData = useAppSelector(selectSemesterData);
   const isLoading = useAppSelector(selectSemesterLoading);
   const error = useAppSelector(selectSemesterError);
+
+  const userData = useAppSelector(selectUserData)
+  const isActualUserChiefTeacher = userData?.id === commission.chiefTeacher.id;
 
   const listItems = [
     {

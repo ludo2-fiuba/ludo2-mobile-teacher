@@ -19,7 +19,7 @@ const EvaluationsListElement = ({ evaluation }: Props) => {
   return (
     <View style={style().view}>
       <Text style={style().evaluationName}>
-        {evaluation.evaluationName} (id: {evaluation.id})
+        {evaluation.evaluationName}
       </Text>
       <Text style={style().startDate}>
         Fecha de inicio: { evaluation && evaluation.startDate ? getDateStringFormat(evaluation.startDate) : "no disponible"}

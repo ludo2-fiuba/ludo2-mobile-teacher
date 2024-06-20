@@ -6,6 +6,8 @@ import { semesterRepository } from '../../repositories';
 import moment from 'moment';
 import { UpdateSemesterDetails } from '../../models/UpdateSemesterDetails';
 import { modifySemesterDetails } from '../../features/semesterSlice';
+import SquaredButton from '../../components/SquaredButton';
+import { RoundedButton } from '../../components';
 
 const SemesterEditScreen: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -26,10 +28,10 @@ const SemesterEditScreen: React.FC = () => {
             const parsedTotalClasses = parseInt(totalClasses);
             const parsedMinAttendance = parseFloat(minAttendance);
             setAttendanceError(null);
-    
+
             const formattedDate = moment(semesterData.startDate).toISOString(true);
             console.log("Formatted date", formattedDate);
-    
+
             const response: UpdateSemesterDetails = await semesterRepository.updateSemesterDetails(
                 semesterData.commission.id,
                 semesterData.yearMoment,
@@ -37,7 +39,7 @@ const SemesterEditScreen: React.FC = () => {
                 parsedTotalClasses,
                 parsedMinAttendance
             );
-    
+
             dispatch(modifySemesterDetails({ classesAmount: response.classesAmount, minimumAttendance: response.minimumAttendance }));
             Alert.alert('Éxito', 'Semestre actualizado correctamente', [
                 { text: 'OK', onPress: () => navigation.navigate("SemesterCard") },
@@ -74,7 +76,12 @@ const SemesterEditScreen: React.FC = () => {
                 keyboardType="numeric"
             />
             {attendanceError && <Text style={styles.errorText}>{attendanceError}</Text>}
-            <Button title="Guardar Cambios" disabled={dataNotValid()} onPress={handleUpdateSemester} />
+            {/* <SquaredButton text="Guardar Cambios" disabled={dataNotValid()} onPress={handleUpdateSemester} /> */}
+            <RoundedButton
+                text='Guardar Cambios'
+                onPress={handleUpdateSemester}
+                style={{ }} // TODO: move this to the src/styles collection
+            />
         </View>
     );
 };
@@ -91,12 +98,14 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     input: {
-        height: 40,
+        height: 55,
         borderColor: '#ccc',
         borderWidth: 1,
         marginBottom: 20,
-        paddingHorizontal: 10,
+        paddingHorizontal: 15,
         backgroundColor: '#fff',
+        borderRadius: 8,
+        fontSize: 16,
     },
     errorText: {
         color: 'red',

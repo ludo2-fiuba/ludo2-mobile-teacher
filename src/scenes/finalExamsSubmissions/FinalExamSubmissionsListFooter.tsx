@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet, Button, Alert } from 'react-native'
+import { View, Text, Modal, StyleSheet, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { RoundedButton } from '../../components'
 import { finalExamSubmissions as style } from '../../styles';
@@ -6,6 +6,7 @@ import prompt from 'react-native-prompt-android';
 import { studentsRepository } from '../../repositories';
 import { Student } from '../../models';
 import { FinalExamSubmissionStudentCard } from '../../components/FinalExamSubmissionStudentCard';
+import SquaredButton from '../../components/SquaredButton';
 
 
 const FinalExamSubmissionsListFooter = () => {
@@ -70,13 +71,13 @@ const FinalExamSubmissionsListFooter = () => {
               ¿Desea agregar el siguiente alumno a la entrega?
             </Text>
             <View style={{ maxHeight: 50 }}>
-              <FinalExamSubmissionStudentCard student={studentToAddManually} />
+              <FinalExamSubmissionStudentCard student={studentToAddManually!} />
             </View>
 
             <View style={styles.modalSelectorButtons}>
-              <Button title="Cancelar" onPress={cancelStudentAddition} />
+              <SquaredButton text="Cancelar" onPress={cancelStudentAddition} />
               <View style={styles.modalSelectorConfirmButton}>
-                <Button title="Confirmar" />
+                <SquaredButton text="Confirmar" />
               </View>
             </View>
           </View>

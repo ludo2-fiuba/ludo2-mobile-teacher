@@ -66,6 +66,14 @@ export function SubmissionsHeaderRight({ evaluation, fetchData, isActualUserChie
     return semesterStudentsThatHaveNotSubmitted;
   };
 
+  const getTitleIfThereAreStudentsToBeAdded = () => {
+    const students = semesterStudentsThatHaveNotSubmitted();
+    if (students.length > 0) {
+      return 'Seleccione un alumno para agregar a la entrega';
+    }
+    return 'No hay alumnos para agregar a la entrega';
+  }
+
   return (
     <View style={styles.navButtonsContainer}>
       <EntitySelectionModal
@@ -73,7 +81,7 @@ export function SubmissionsHeaderRight({ evaluation, fetchData, isActualUserChie
         entities={semesterStudentsThatHaveNotSubmitted()}
         onSelect={(student: any) => addStudentSubmission(student)}
         onClose={() => setModalVisible(false)}
-        title="Agregar entrega manualmente"
+        title={getTitleIfThereAreStudentsToBeAdded()}
       />
 
       {isActualUserChiefTeacher && (

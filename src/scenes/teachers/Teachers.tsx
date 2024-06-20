@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchTeachers } from '../../features/teachersSlice';
 import { Teacher } from '../../models';
 import { mapWeightToPercentage } from '../../utils/graderWeightConversions';
+import { selectUserData } from '../../features/userDataSlice';
 const UserIcon = require('../img/usericon.jpg');
 
 
@@ -59,15 +60,18 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
   const { staffTeachers, allTeachers, isLoading, error } = useAppSelector((state) => state.teachers);
   const chiefTeacherGraderWeight = staffTeachers[0]?.commission.chiefTeacherGraderWeight;
 
+  const userData = useAppSelector(selectUserData)
+  const isActualUserChiefTeacher = userData?.id === chiefTeacher?.id;
 
   useEffect(() => {
     const navOptions = {
       headerRight: () => (
-        <TeachersHeaderRight
-          staffTeachers={staffTeachers}
-          allTeachers={allTeachers}
-          commissionId={commissionId}
-        />
+        isActualUserChiefTeacher ?
+          (<TeachersHeaderRight
+            staffTeachers={staffTeachers}
+            allTeachers={allTeachers}
+            commissionId={commissionId}
+          />) : null
       ),
     };
     navigation.setOptions(navOptions);
