@@ -75,9 +75,9 @@ const AttendanceDetails: React.FC = () => {
                     <Text style={styles.attendanceButtonText}>Presente</Text>
                 </TouchableOpacity>
             ) : (
-                <TouchableOpacity style={styles.attendanceButtonAbsent} onPress={() => handleConfirmAttendance(item)}>
+                <TouchableOpacity style={styles.attendanceButton} onPress={() => handleConfirmAttendance(item)}>
                     <Ionicons name="add-circle" size={24} color="orange" />
-                    <Text style={styles.attendanceButtonTextAbsent}>Agregar Asistencia</Text>
+                    <Text style={styles.attendanceButtonText}>Agregar Asistencia</Text>
                 </TouchableOpacity>
             )}
         </View>
@@ -244,18 +244,6 @@ const styles = StyleSheet.create({
     attendanceButtonText: {
         marginLeft: 8,
         fontSize: 16,
-    },
-    attendanceButtonAbsent: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#ffcccb',
-        padding: 8,
-        borderRadius: 5,
-    },
-    attendanceButtonTextAbsent: {
-        marginLeft: 8,
-        fontSize: 16,
-        color: 'red',
     },
 });
 
