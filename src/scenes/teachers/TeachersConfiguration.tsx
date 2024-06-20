@@ -7,6 +7,9 @@ import { modifyChiefTeacherWeightLocally, modifyTeacherRoleLocally, modifyTeache
 import { RoundedButton, TeacherConfigurationCard } from '../../components';
 import { mapChiefPercentageToWeight, mapPercentageToWeight, mapWeightToPercentage } from '../../utils/graderWeightConversions';
 import { commissionRepository } from '../../repositories';
+import { modifyChiefTeacherWeightInSemester, selectSemesterData } from '../../features/semesterSlice';
+import { Semester } from '../../models/Semester';
+import { Commission } from '../../models';
 
 interface RouteProps {
   staffTeachers: TeacherTuple[]
@@ -20,7 +23,9 @@ const TeachersConfiguration: React.FC = () => {
   const commissionId = (route.params as RouteProps).commissionId;
   const originalStaffTeachers = (route.params as RouteProps).staffTeachers;
   const staffTeachers = useAppSelector((state) => state.teachers.staffTeachers);
-  const chiefTeacherTuple = getVirtualChiefTeacherTuple(staffTeachers);
+  const semester: Semester = useAppSelector(selectSemesterData)!;
+  const commission = semester.commission;
+  const chiefTeacherTuple = getVirtualChiefTeacherTuple(commission);
 
   const handleRoleChange = (newRole: string, teacherDNI: string) => {
     dispatch(modifyTeacherRoleLocally({ teacherDNI: teacherDNI, newRole: newRole }));
@@ -29,7 +34,7 @@ const TeachersConfiguration: React.FC = () => {
   const handleWeightChange = (newPercentageInput: number, teacherDNI: string) => {
     const asPercentage = newPercentageInput / 100;
     if (asPercentage) {
-      const newWeight = mapPercentageToWeight(teacherDNI, asPercentage, staffTeachers);
+      const newWeight = mapPercentageToWeight(teacherDNI, asPercentage, staffTeachers, chiefTeacherTuple.graderWeight);
       dispatch(modifyTeacherWeightLocally({ teacherDNI, newWeight }));
     }
   };
@@ -39,11 +44,12 @@ const TeachersConfiguration: React.FC = () => {
     if (newPercentage) {
       const newWeight = mapChiefPercentageToWeight(newPercentage, staffTeachers);
       dispatch(modifyChiefTeacherWeightLocally({ newWeight }));
+      dispatch(modifyChiefTeacherWeightInSemester({ newWeight }));
     }
   };
 
   const saveChanges = () => {
-    const originalChiefWeight = originalStaffTeachers[0].commission.chiefTeacherGraderWeight
+    const originalChiefWeight = originalStaffTeachers[0]?.commission.chiefTeacherGraderWeight
     if (originalChiefWeight !== chiefTeacherTuple.graderWeight) {
       commissionRepository.modifyChiefTeacherWeight(commissionId, chiefTeacherTuple.graderWeight);
     }
@@ -67,7 +73,7 @@ const TeachersConfiguration: React.FC = () => {
     <ScrollView style={styles.container}>
       <TeacherConfigurationCard
         teacherTuple={chiefTeacherTuple}
-        teacherGraderWeightAsPercentage={mapWeightToPercentage(chiefTeacherTuple.graderWeight, staffTeachers)}
+        teacherGraderWeightAsPercentage={mapWeightToPercentage(chiefTeacherTuple.graderWeight, staffTeachers, chiefTeacherTuple.graderWeight)}
         handleWeightChange={handleChiefWeightChange}
         handleRoleChange={handleRoleChange}
         isChiefTeacher
@@ -76,7 +82,7 @@ const TeachersConfiguration: React.FC = () => {
         <TeacherConfigurationCard
           key={teacherTuple.teacher.dni}
           teacherTuple={teacherTuple}
-          teacherGraderWeightAsPercentage={mapWeightToPercentage(teacherTuple.graderWeight, staffTeachers)}
+          teacherGraderWeightAsPercentage={mapWeightToPercentage(teacherTuple.graderWeight, staffTeachers, chiefTeacherTuple.graderWeight)}
           handleWeightChange={handleWeightChange}
           handleRoleChange={handleRoleChange}
         />
@@ -95,8 +101,7 @@ const styles = StyleSheet.create({
 
 export default TeachersConfiguration;
 
-function getVirtualChiefTeacherTuple(staffTeachers: TeacherTuple[]): TeacherTuple {
-  const commission = staffTeachers[0].commission;
+function getVirtualChiefTeacherTuple(commission: Commission): TeacherTuple {
   return {
     commission: commission,
     role: "Profesor Titular",

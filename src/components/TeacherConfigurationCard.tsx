@@ -49,6 +49,7 @@ const TeacherConfigurationCard: React.FC<TeacherConfigurationCardProps> = ({
                     <View style={styles.cardBlock}>
                         <Text style={styles.passingGradeLabel}>Ponderación (%) para correcciones</Text>
                         <PercentageInput
+                            enabled={teacherGraderWeightAsPercentage !== '100.00'} // if there is only one teacher, don't allow modifications
                             initialValue={teacherGraderWeightAsPercentage}
                             onBlur={(value) => handleWeightChange(value, teacherTuple.teacher.dni)}
                         />

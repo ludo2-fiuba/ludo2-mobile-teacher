@@ -5,9 +5,10 @@ import { TextInput, StyleSheet, NativeSyntheticEvent, TextInputFocusEventData } 
 interface Props {
     initialValue: string;
     onBlur: (value: number) => void;
+    enabled: boolean
 }
 
-const PercentageInput: React.FC<Props> = ({ initialValue, onBlur }) => {
+const PercentageInput: React.FC<Props> = ({ initialValue, onBlur, enabled = true }) => {
     const [tempValue, setTempValue] = useState(initialValue);
 
     useEffect(() => {
@@ -27,6 +28,7 @@ const PercentageInput: React.FC<Props> = ({ initialValue, onBlur }) => {
 
     return (
         <TextInput
+            editable={enabled}
             style={styles.input}
             keyboardType='numeric'
             value={tempValue}

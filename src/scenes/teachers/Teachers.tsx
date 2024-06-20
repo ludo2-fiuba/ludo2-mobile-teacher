@@ -8,6 +8,8 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchTeachers } from '../../features/teachersSlice';
 import { Teacher } from '../../models';
 import { mapWeightToPercentage } from '../../utils/graderWeightConversions';
+import { selectSemesterData } from '../../features/semesterSlice';
+import { Semester } from '../../models/Semester';
 const UserIcon = require('../img/usericon.jpg');
 
 
@@ -57,8 +59,10 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
   const chiefTeacher = (route.params as TeachersRouteParams).chiefTeacher;
 
   const { staffTeachers, allTeachers, isLoading, error } = useAppSelector((state) => state.teachers);
-  const chiefTeacherGraderWeight = staffTeachers[0]?.commission.chiefTeacherGraderWeight;
-
+  const semester: Semester = useAppSelector(selectSemesterData)!
+  const chiefTeacherGraderWeight = semester.commission.chiefTeacherGraderWeight;
+  console.log(chiefTeacherGraderWeight, staffTeachers);
+  
 
   useEffect(() => {
     const navOptions = {
@@ -102,7 +106,7 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
         <ChiefCard
           firstName={chiefTeacher.firstName}
           lastName={chiefTeacher.lastName}
-          graderPercentage={mapWeightToPercentage(chiefTeacherGraderWeight, staffTeachers)}
+          graderPercentage={mapWeightToPercentage(chiefTeacherGraderWeight, staffTeachers, chiefTeacherGraderWeight)}
         />}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Cuerpo docente</Text>
@@ -115,7 +119,7 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
             <TeacherCard
               teacher={item.teacher}
               role={item.role}
-              graderPercentage={mapWeightToPercentage(item.graderWeight, staffTeachers)}
+              graderPercentage={mapWeightToPercentage(item.graderWeight, staffTeachers, chiefTeacherGraderWeight)}
             />}
           keyExtractor={item => item.teacher.dni}
           style={styles.list}

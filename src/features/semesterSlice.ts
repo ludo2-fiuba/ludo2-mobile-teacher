@@ -65,6 +65,12 @@ const semesterSlice = createSlice({
         state.data.classesAmount = classesAmount;
         state.data.minimumAttendance = minimumAttendance;
       }
+    },
+    modifyChiefTeacherWeightInSemester: (state, action) => {
+      const { newWeight } = action.payload;
+      if (state.data) {
+        state.data.commission.chiefTeacherGraderWeight = newWeight;
+      }
     }
   },
   extraReducers: (builder) => {
@@ -99,7 +105,7 @@ const semesterSlice = createSlice({
   },
 });
 
-export const { modifyStudentsOfASemester, modifySemesterDetails } = semesterSlice.actions;
+export const { modifyStudentsOfASemester, modifySemesterDetails, modifyChiefTeacherWeightInSemester } = semesterSlice.actions;
 
 export const selectSemesterData = (state: RootState) => state.semester.data;
 export const selectSemesterAttendances = (state: RootState) => state.semester.attendances;
