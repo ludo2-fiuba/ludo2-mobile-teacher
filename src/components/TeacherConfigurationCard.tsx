@@ -47,7 +47,7 @@ const TeacherConfigurationCard: React.FC<TeacherConfigurationCardProps> = ({
                         </View>
                     </View>
                     <View style={styles.cardBlock}>
-                        <Text style={styles.passingGradeLabel}>Porcentaje (%) auto-asignado para correcciones</Text>
+                        <Text style={styles.passingGradeLabel}>Ponderación (%) para correcciones</Text>
                         <PercentageInput
                             initialValue={teacherGraderWeightAsPercentage}
                             onBlur={(value) => handleWeightChange(value, teacherTuple.teacher.dni)}

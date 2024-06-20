@@ -7,23 +7,25 @@ import { Loading } from '../../components';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchTeachers } from '../../features/teachersSlice';
 import { Teacher } from '../../models';
+import { mapWeightToPercentage } from '../../utils/graderWeightConversions';
 const UserIcon = require('../img/usericon.jpg');
 
 
-const ChiefCard = ({ firstName, lastName, email }: Teacher) => {
+const ChiefCard = ({ firstName, lastName, graderPercentage }: { firstName: string, lastName: string, graderPercentage: string }) => {
   return (
     <View style={styles.leaderCardContainer}>
       <Image source={UserIcon} style={styles.leaderImage} />
       <View style={styles.leaderInfoContainer}>
         <Text style={styles.leaderName}>{firstName} {lastName}</Text>
         <Text style={styles.leaderRole}>{'Profesor Titular'}</Text>
+        <Text style={styles.graderPercentage}>Ponderación para correcciones: {graderPercentage}%</Text>
       </View>
     </View>
   );
 };
 
 
-const TeacherCard = ({ teacher, role }: { teacher: Teacher, role: string }) => {
+const TeacherCard = ({ teacher, role, graderPercentage }: { teacher: Teacher, role: string, graderPercentage: string }) => {
   return (
     <View style={styles.cardContainer}>
       <Image source={UserIcon} style={styles.image} />
@@ -31,6 +33,7 @@ const TeacherCard = ({ teacher, role }: { teacher: Teacher, role: string }) => {
         <Text style={styles.name}>{teacher.firstName + ' ' + teacher.lastName} </Text>
         <Text style={styles.role}>{role}</Text>
         <Text style={styles.email}>{teacher.email}</Text>
+        <Text style={styles.graderPercentage}>Ponderación para correcciones: {graderPercentage}%</Text>
       </View>
     </View>
   );
@@ -52,8 +55,9 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
 
   const commissionId = (route.params as TeachersRouteParams).commissionId;
   const chiefTeacher = (route.params as TeachersRouteParams).chiefTeacher;
-  
+
   const { staffTeachers, allTeachers, isLoading, error } = useAppSelector((state) => state.teachers);
+  const chiefTeacherGraderWeight = staffTeachers[0]?.commission.chiefTeacherGraderWeight;
 
 
   useEffect(() => {
@@ -72,7 +76,7 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
 
   const fetchData = useCallback(async () => {
     if (isLoading) return;
-    
+
     try {
       dispatch(fetchTeachers(commissionId))
     } catch (error) {
@@ -94,7 +98,12 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {chiefTeacher && <ChiefCard {...chiefTeacher} />}
+      {chiefTeacher &&
+        <ChiefCard
+          firstName={chiefTeacher.firstName}
+          lastName={chiefTeacher.lastName}
+          graderPercentage={mapWeightToPercentage(chiefTeacherGraderWeight, staffTeachers)}
+        />}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Cuerpo docente</Text>
       </View>
@@ -102,7 +111,12 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
       {!isLoading &&
         <FlatList
           data={staffTeachers}
-          renderItem={({ item }) => <TeacherCard teacher={item.teacher} role={item.role} />}
+          renderItem={({ item }) =>
+            <TeacherCard
+              teacher={item.teacher}
+              role={item.role}
+              graderPercentage={mapWeightToPercentage(item.graderWeight, staffTeachers)}
+            />}
           keyExtractor={item => item.teacher.dni}
           style={styles.list}
           ListEmptyComponent={() => <Text style={styles.emptyStaffTeachersList}>No hay docentes auxiliares</Text>}
@@ -115,13 +129,6 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  searchBar: {
-    margin: 10,
-    padding: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
   },
   list: {
     margin: 10,
@@ -175,11 +182,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  teacherCount: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'grey',
-  },
   leaderCardContainer: {
     flexDirection: 'row',
     padding: 20,
@@ -209,7 +211,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     fontSize: 18
-  }
+  },
+  graderPercentage: {
+    color: 'gray',
+    fontStyle: 'italic',
+    fontSize: 14,
+  },
 });
 
 export default TeachersScreen;
