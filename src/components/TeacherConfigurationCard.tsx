@@ -24,23 +24,6 @@ const TeacherConfigurationCard: React.FC<TeacherConfigurationCardProps> = ({
 }) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-    const confirmDeleteTeacher = (teacherTuple: TeacherTuple) => {
-        Alert.alert(
-            'Confirmar eliminación',
-            `¿Está seguro de que desea eliminar a ${teacherTuple.teacher.firstName} ${teacherTuple.teacher.lastName} del cuerpo docente?`,
-            [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Eliminar',
-                    onPress: () => console.log("TODO: API endpoint para eliminar profesor"),
-                },
-            ]
-        )
-    };
-
     return (
         <View style={styles.card}>
             <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)} style={styles.cardItem}>
@@ -70,13 +53,6 @@ const TeacherConfigurationCard: React.FC<TeacherConfigurationCardProps> = ({
                             onBlur={(value) => handleWeightChange(value, teacherTuple.teacher.dni)}
                         />
                     </View>
-                    {!isChiefTeacher && <TouchableOpacity
-                        onPress={() => confirmDeleteTeacher(teacherTuple)}
-                        style={styles.deleteButton}
-                    >
-                        <MaterialIcon name="delete" fontSize={24} color='white' />
-                        <Text style={styles.deleteButtonText}>Eliminar</Text>
-                    </TouchableOpacity>}
                 </View>
             )}
         </View>
@@ -113,21 +89,6 @@ const styles = StyleSheet.create({
         borderColor: 'grey',
         borderRadius: 8,
         overflow: 'hidden', // Ensures the picker doesn't overlap the rounded corners
-    },
-    deleteButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#e74c3c',
-        padding: 10,
-        borderRadius: 8,
-        alignSelf: 'flex-end',
-        marginRight: 15,
-        marginBottom: 10,
-    },
-    deleteButtonText: {
-        color: 'white',
-        marginLeft: 5,
-        fontWeight: 'bold',
     },
 });
 
