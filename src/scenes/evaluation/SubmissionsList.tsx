@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, Alert, FlatList, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { Submission } from '../../models/Submission';
-import { submissionsRepository, teachersRepository } from '../../repositories';
+import { submissionsRepository } from '../../repositories';
 import { useNavigation } from '@react-navigation/native';
 import { Evaluation } from '../../models/Evaluation';
 import { SubmissionsHeaderRight } from './SubmissionsHeaderRight';
@@ -79,13 +79,6 @@ export default function SubmissionsList({ route }: Props) {
 
   const isActualUserChiefTeacher = semester?.commission.chiefTeacher.id === userData?.id;
 
-  const setNavOptions = useCallback(() => {
-    navigation.setOptions({
-      title: 'Entregas', // Set the screen title
-      headerRight: () => <SubmissionsHeaderRight evaluation={evaluation} fetchData={fetchData} isActualUserChiefTeacher={isActualUserChiefTeacher}/>,
-    });
-  }, [navigation, evaluation]);
-
   const fetchData = useCallback(async () => {
     if (isLoading) return;
     setIsLoading(true);
@@ -111,6 +104,20 @@ export default function SubmissionsList({ route }: Props) {
       setIsLoading(false);
     }
   }, [evaluation.id, isLoading]);
+
+  const setNavOptions = useCallback(() => {
+    navigation.setOptions({
+      title: 'Entregas', // Set the screen title
+      headerRight: () => (
+        <SubmissionsHeaderRight 
+          evaluation={evaluation} 
+          fetchData={fetchData}
+          submissions={submissions} 
+          isActualUserChiefTeacher={isActualUserChiefTeacher}
+        />
+      ),
+    });
+  }, [navigation, evaluation, fetchData, submissions, isActualUserChiefTeacher]);
 
   const updateCorrectorToSubmission = (submission: Submission) => {
     if (submission.grade) {
@@ -151,11 +158,14 @@ export default function SubmissionsList({ route }: Props) {
 
   useEffect(() => {
     const focusUnsubscribe = navigation.addListener('focus', () => {
-      setNavOptions();
       fetchData();
     });
     return focusUnsubscribe;
-  }, [navigation, setNavOptions, fetchData]);
+  }, [navigation, fetchData]);
+
+  useEffect(() => {
+    setNavOptions();
+  }, [setNavOptions]);
 
   const renderHeader = () => (
     <View style={styles.header}>

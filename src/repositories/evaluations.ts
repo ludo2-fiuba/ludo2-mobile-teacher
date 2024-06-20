@@ -36,8 +36,6 @@ async function addSubmissionToEvaluation(evaluationId: number, studentId: number
     grade: null,
   }
 
-  console.log("Student to be added", studentToAdd);
-  
   const data: any = await post(`${domainUrl}/submissions/add_evaluation_submission`, studentToAdd);
   return data;
 }
