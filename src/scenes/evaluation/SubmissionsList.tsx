@@ -112,10 +112,16 @@ export default function SubmissionsList({ route }: Props) {
     }
   }, [evaluation.id, isLoading]);
 
-  const updateCorrector = (student: Student) => {
-    if (isActualUserChiefTeacher) {
-      setSelectedStudent(student);
+  const updateCorrectorToSubmission = (submission: Submission) => {
+    if (submission.grade) {
+      Alert.alert('Error', 'No se puede cambiar el corrector de una entrega ya calificada.');
+      return;
+    } else if (isActualUserChiefTeacher) {
+      setSelectedStudent(submission.student);
       setShowTeacherSelectionModal(true);
+    } else {
+      // You should never get here
+      Alert.alert('Error', 'No tiene permisos para cambiar el corrector de esta entrega.');
     }
   };
 
@@ -177,7 +183,11 @@ export default function SubmissionsList({ route }: Props) {
               <View style={[styles.row, !isEditable && styles.nonEditableRow]}>
                 <Text style={styles.cell}>{`${submission.student.firstName} ${submission.student.lastName}`}</Text>
                 <View style={styles.divider} />
-                <TouchableOpacity style={styles.cell} disabled={!isActualUserChiefTeacher} onPress={() => updateCorrector(submission.student)}>
+                <TouchableOpacity 
+                  style={styles.cell} 
+                  disabled={!isActualUserChiefTeacher} 
+                  onPress={() => updateCorrectorToSubmission(submission)}
+                >
                   <Text style={styles.text}>{submission.grader?.lastName}</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />
