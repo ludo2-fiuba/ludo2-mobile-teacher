@@ -27,9 +27,12 @@ const EditableText = ({ value, onChange }: { value: string, onChange: (text: str
 
   const handleBlur = () => {
     setIsEditing(false);
-    
     const grade = Number(text);
-    if (text && (isNaN(grade) || grade < 1 || grade > 10)) {
+    if (text === '') {
+      return;
+    }
+
+    if (isNaN(grade) || grade < 1 || grade > 10) {
       Alert.alert('Error', 'La nota debe ser un número entre 1 y 10.');
       setText(value); // reset to original value
       return;
@@ -123,21 +126,14 @@ export default function SubmissionsList({ route }: Props) {
   };
 
   const updateSubmissionGrade = async (student: Student, newGrade: string) => {
-    // const grade = Number(newGrade);
-
-    // if (isNaN(grade) || grade < 1 || grade > 10) {
-    //   Alert.alert('Error', 'La nota debe ser un número entre 1 y 10.');
-    //   return;
-    // }
-
+    const res = await submissionsRepository.gradeSubmission(student.id, evaluation.id, +newGrade);
     setSubmissions(prevSubmissions =>
       prevSubmissions.map(submission =>
         submission.student.id === student.id
-          ? { ...submission, grade: newGrade }
+          ? { ...submission, grade: newGrade, grader: res.grader }
           : submission
       )
     );
-    await submissionsRepository.gradeSubmission(student.id, evaluation.id, +newGrade);
   };
 
   useEffect(() => {
