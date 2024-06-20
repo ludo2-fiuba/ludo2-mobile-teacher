@@ -10,6 +10,7 @@ import { Teacher } from '../../models';
 import { mapWeightToPercentage } from '../../utils/graderWeightConversions';
 import { selectSemesterData } from '../../features/semesterSlice';
 import { Semester } from '../../models/Semester';
+import { selectUserData } from '../../features/userDataSlice';
 const UserIcon = require('../img/usericon.jpg');
 
 
@@ -61,17 +62,19 @@ const TeachersScreen = ({ route }: TeachersScreenProps) => {
   const { staffTeachers, allTeachers, isLoading, error } = useAppSelector((state) => state.teachers);
   const semester: Semester = useAppSelector(selectSemesterData)!
   const chiefTeacherGraderWeight = semester.commission.chiefTeacherGraderWeight;
-  console.log(chiefTeacherGraderWeight, staffTeachers);
-  
+
+  const userData = useAppSelector(selectUserData)
+  const isActualUserChiefTeacher = userData?.id === chiefTeacher?.id;
 
   useEffect(() => {
     const navOptions = {
       headerRight: () => (
-        <TeachersHeaderRight
-          staffTeachers={staffTeachers}
-          allTeachers={allTeachers}
-          commissionId={commissionId}
-        />
+        isActualUserChiefTeacher ?
+          (<TeachersHeaderRight
+            staffTeachers={staffTeachers}
+            allTeachers={allTeachers}
+            commissionId={commissionId}
+          />) : null
       ),
     };
     navigation.setOptions(navOptions);

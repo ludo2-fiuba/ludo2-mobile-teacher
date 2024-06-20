@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal, View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { Student, Teacher } from '../../models';
+import SquaredButton from '../../components/SquaredButton';
+import { lightModeColors } from '../../styles/colorPalette';
 
 // Define your props interface
 interface StudentSelectionModalProps {
@@ -32,9 +34,10 @@ const EntitySelectionModal: React.FC<StudentSelectionModalProps> = ({
               </TouchableOpacity>
             )}
           />
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>Cerrar</Text>
-          </TouchableOpacity>
+
+          <View style={{ marginTop: 8 }}>
+            <SquaredButton text="Cancelar" onPress={onClose} />
+          </View>
         </View>
       </View>
     </Modal>
@@ -66,7 +69,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
     textAlign: 'center',
     color: '#333',
   },

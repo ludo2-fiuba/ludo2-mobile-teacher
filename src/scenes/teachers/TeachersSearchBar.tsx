@@ -6,6 +6,7 @@ import ModalSelectorItem from './ModalSelectorItem';
 import teacherRoles, { TeacherRole } from '../../models/TeacherRoles';
 import { useAppDispatch } from '../../hooks';
 import { addTeacherRoleToCommission } from '../../features/teachersSlice';
+import SquaredButton from '../../components/SquaredButton';
 
 interface RecommendationItemProps {
   teacher: Teacher
@@ -129,9 +130,9 @@ const TeachersSearchBar: React.FC<Props> = ({ allTeachers, commissionId }) => {
                 value={selectedRole?.longVersion} />
             </ModalSelector>
             <View style={styles.modalSelectorButtons}>
-              <Button title="Cancelar" onPress={cancelTeacherAddition} />
+              <SquaredButton text="Cancelar" onPress={cancelTeacherAddition} />
               <View style={styles.modalSelectorConfirmButton}>
-                <Button title="Confirmar" onPress={confirmAddition} disabled={!selectedRole} />
+                <SquaredButton text="Confirmar" onPress={confirmAddition} disabled={!selectedRole} />
               </View>
             </View>
           </View>

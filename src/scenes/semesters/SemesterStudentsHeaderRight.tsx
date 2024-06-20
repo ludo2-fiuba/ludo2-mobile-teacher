@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { semesterRepository, studentsRepository } from '../../repositories';
 import { Student } from '../../models';
 import { AddedStudentToSemester } from '../../models/AddedStudentToSemester';
+import SquaredButton from '../../components/SquaredButton';
+import { lightModeColors } from '../../styles/colorPalette';
 
 interface Props {}
 
@@ -85,8 +87,8 @@ export function SemesterStudentsHeaderRight({ }: Props) {
               onChangeText={setStudentPadron}
             />
             <View style={styles.buttonContainer}>
-              <Button title="Cancelar" onPress={onPressCancel}/>
-              <Button title="OK" onPress={handleAddStudent} />
+              <SquaredButton text="Cancelar" onPress={onPressCancel} color={lightModeColors.institutional}/>
+              <SquaredButton text="Confirmar" onPress={handleAddStudent} color={lightModeColors.institutional} />
             </View>
           </View>
         </View>
@@ -108,8 +110,8 @@ export function SemesterStudentsHeaderRight({ }: Props) {
                 <Text style={styles.studentText}>Email: {student.email}</Text>
                 <Text style={styles.studentText}>Padron: {student.padron}</Text>
                 <View style={{...styles.buttonContainer, marginTop: 10}}>
-                  <Button title="Cancelar" onPress={() => setConfirmVisible(false)} />
-                  <Button title="Agregar" onPress={confirmAddStudent} />
+                  <SquaredButton text="Cancelar" onPress={() => setConfirmVisible(false)} />
+                  <SquaredButton text="Agregar" onPress={confirmAddStudent} />
                 </View>
               </>
             )}
@@ -160,7 +162,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   input: {
-    height: 40,
+    height: 55,
+    fontSize: 16,
+    borderRadius: 8,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 10,
