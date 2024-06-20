@@ -12,6 +12,7 @@ import { selectSemesterData } from '../../features/semesterSlice';
 import { TeacherTuple } from '../../models/TeacherTuple';
 import EntitySelectionModal from './EntitySelectionModal';
 import { selectStaffTeachers } from '../../features/teachersSlice';
+import { selectUserData } from '../../features/userDataSlice';
 
 interface Props {
   route: any;
@@ -21,7 +22,7 @@ interface RouteParams {
   evaluation: Evaluation;
 }
 
-const EditableText = ({ value, onChange }: { value: string, onChange: (text: string) => void }) => {
+const EditableText = ({ value, onChange, editable }: { value: string, onChange: (text: string) => void, editable: boolean }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(value);
 
@@ -50,9 +51,10 @@ const EditableText = ({ value, onChange }: { value: string, onChange: (text: str
           onChangeText={setText}
           onBlur={handleBlur}
           autoFocus
+          editable={editable}
         />
       ) : (
-        <Text style={styles.text} onPress={() => setIsEditing(true)}>
+        <Text style={styles.text} onPress={() => editable && setIsEditing(true)}>
           {value}
         </Text>
       )}
@@ -72,7 +74,10 @@ export default function SubmissionsList({ route }: Props) {
 
   const { evaluation } = route.params as RouteParams;
 
-  const teachersTuples: TeacherTuple[] = useAppSelector(selectStaffTeachers)
+  const teachersTuples: TeacherTuple[] = useAppSelector(selectStaffTeachers);
+  const userData = useAppSelector(selectUserData);
+
+  const isActualUserChiefTeacher = semester?.commission.chiefTeacher.id === userData?.id;
 
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
@@ -121,7 +126,7 @@ export default function SubmissionsList({ route }: Props) {
       // force-refresh
       fetchData();
     } catch (error) {
-      Alert.alert("Error", "Hubo un error al agregar el corrector")
+      Alert.alert("Error", "Hubo un error al agregar el corrector");
     }
   };
 
@@ -152,6 +157,10 @@ export default function SubmissionsList({ route }: Props) {
     </View>
   );
 
+  const editingCondition = (submission: Submission): boolean => {
+    return isActualUserChiefTeacher || submission.grader?.id === userData?.id || !submission.grader;
+  };
+
   return (
     <View style={styles.view}>
       {isLoading && <Loading />}
@@ -160,20 +169,24 @@ export default function SubmissionsList({ route }: Props) {
           data={submissions}
           keyExtractor={submission => submission.student.dni}
           ListHeaderComponent={renderHeader}
-          renderItem={({ item: submission }) => (
-            <View style={styles.row}>
-              <Text style={styles.cell}>{`${submission.student.firstName} ${submission.student.lastName}`}</Text>
-              <View style={styles.divider} />
-              <TouchableOpacity style={styles.cell} onPress={() => updateCorrector(submission.student)}>
-                <Text style={styles.text}>{submission.grader?.lastName}</Text>
-              </TouchableOpacity>
-              <View style={styles.divider} />
-              <EditableText
-                value={submission.grade || ''}
-                onChange={text => updateSubmissionGrade(submission.student, text)}
-              />
-            </View>
-          )}
+          renderItem={({ item: submission }) => {
+            const isEditable = editingCondition(submission);
+            return (
+              <View style={[styles.row, !isEditable && styles.nonEditableRow]}>
+                <Text style={styles.cell}>{`${submission.student.firstName} ${submission.student.lastName}`}</Text>
+                <View style={styles.divider} />
+                <TouchableOpacity style={styles.cell} onPress={() => updateCorrector(submission.student)}>
+                  <Text style={styles.text}>{submission.grader?.lastName}</Text>
+                </TouchableOpacity>
+                <View style={styles.divider} />
+                <EditableText
+                  value={submission.grade || ''}
+                  onChange={text => updateSubmissionGrade(submission.student, text)}
+                  editable={isEditable}
+                />
+              </View>
+            );
+          }}
           ListEmptyComponent={() => (
             <View style={styles.containerView}>
               <Text style={styles.text}>
@@ -245,6 +258,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     alignItems: 'center',
+  },
+  nonEditableRow: {
+    backgroundColor: '#e0e0e0', // Light gray color for non-editable rows
   },
   cell: {
     flex: 1,

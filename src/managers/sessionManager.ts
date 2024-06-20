@@ -1,10 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { decodeJWT } from '../utils/decodeJWT';
 
 export default class SessionManager {
   static myInstance: SessionManager | null = null;
 
-  _access = null;
-  _refresh = null;
+  _access: string | null = null;
+  _refresh: string | null = null;
 
   static getInstance() {
     if (SessionManager.myInstance == null) {
