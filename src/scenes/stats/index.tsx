@@ -44,21 +44,21 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
   };
 
   const semesterAverageData = {
-    labels: semesterStats?.semester_average.map(item => getDayDashMonthDate(item.date)) || [],
+    labels: semesterStats?.semester_average.map(item => getYearDashMoment(item.year, item.year_moment)),
     datasets: [
       {
-        data: semesterStats?.semester_average.map(item => item.average) || [],
+        data: semesterStats?.semester_average.map(item => item.average),
         color: (opacity = 1) => lightModeColors.institutional,
         strokeWidth: 2
       }
     ],
-    legend: ["Promedio (dia-mes)"]
+    legend: ["Promedio (año-cuatrimestre)"]
   };
 
   // TODO: make responsive
   const screenWidth = Dimensions.get("window").width - 41;
 
-  const contributionNumberOfDays = getNumDaysToShow(semesterStats?.cummulative_dessertions[0].date) || 1;
+  const contributionNumberOfDays = getNumDaysToShow(semesterStats?.desertions[0]?.date) || 1;
 
   return (
     <ScrollView style={styles.container}>
@@ -73,10 +73,10 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
               <MaterialIcon name="chart-line" fontSize={24} color={lightModeColors.institutional} style={{ marginRight: 10 }} />
               <View>
                 <Text style={styles.passingGradeText}>Promedio del curso</Text>
-                <Text style={styles.passingGradeLabel}>Basado en las notas de evaluaciones parciales durante el semestre actual</Text>
+                <Text style={styles.passingGradeLabel}>Basado en las notas de evaluaciones {`\n`}parciales de los últimos semestres</Text>
               </View>
             </View>
-            <LineChart
+            {semesterStats?.semester_average.length ? <LineChart
               data={semesterAverageData}
               width={screenWidth}
               height={220}
@@ -90,11 +90,8 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
                 labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
               }}
               bezier
-              style={{
-                marginBottom: 18,
-                borderRadius: 16
-              }}
-            />
+              style={styles.semesterAverageData}
+            /> : <Text style={[styles.noDataText, styles.semesterAverageData]}>Aún no hay datos de evaluaciones</Text>}
           </View>
 
           <View style={styles.card}>
@@ -107,8 +104,8 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
             </View>
             <View style={{ alignItems: 'center', marginVertical: 10 }}>
               <ContributionGraph
-                values={semesterStats?.cummulative_dessertions}
-                accessor='cumulative_students_deserted'
+                values={semesterStats?.desertions}
+                accessor='students_deserted'
                 numDays={contributionNumberOfDays}
                 width={200}
                 horizontal={false}
@@ -132,7 +129,7 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
             <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 16, padding: 16 }}>
               <Progress.Circle
                 progress={semesterStats.attendance_rate}
-                formatText={(a) => floatToFixedDecimal(semesterStats.attendance_rate * 100) + '%'}
+                formatText={(a) => getAttendancePercentage(semesterStats.attendance_rate) + '%'}
                 color={lightModeColors.institutional}
                 unfilledColor='lightblue'
                 strokeCap='round'
@@ -167,15 +164,28 @@ function getDaysFromToday(date: string | undefined): number {
   return today.diff(givenDate, 'days') + 2; // + 2 so that it includes the givenDate in the range
 }
 
-function getDayDashMonthDate(date: string): string {
-  const parsedDate = new Date(date);
-  const day = String(parsedDate.getDate()).padStart(2, '0');
-  const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-  return `${day}-${month}`;
+function getYearDashMoment(year: number, yearMoment: string): string {
+  const lastYearDigits = year % 100;
+  let cuatrimestre = ''
+  switch (yearMoment) {
+    case 'FS': {
+      cuatrimestre = '1C'
+      break;
+    }
+    case 'SS': {
+      cuatrimestre = '2C'
+      break;
+    }
+  }
+  return `${lastYearDigits}-${cuatrimestre}`;
 }
 
-function floatToFixedDecimal(averageFloat: number): string {
-  return averageFloat.toFixed(2);
+function getAttendancePercentage(averageFloat?: number): string {
+  if (!averageFloat) {
+    return '—'
+  }
+
+  return (averageFloat * 100).toFixed(2);
 }
 
 const styles = StyleSheet.create({
@@ -223,4 +233,13 @@ const styles = StyleSheet.create({
   separator: { borderWidth: 0.25, opacity: 0.5 },
   itemText: { fontSize: 18 },
   percentText: { color: 'green' },
+  noDataText: {
+    fontStyle: 'italic',
+    color: '#666',
+    textAlign: 'center',
+  },
+  semesterAverageData: {
+    marginBottom: 18,
+    borderRadius: 16
+  }
 });
