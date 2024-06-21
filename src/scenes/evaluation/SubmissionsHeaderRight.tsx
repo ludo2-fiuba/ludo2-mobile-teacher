@@ -99,15 +99,11 @@ export function SubmissionsHeaderRight({ evaluation, fetchData, isActualUserChie
 const styles = StyleSheet.create({
   navButtonsContainer: {
     flexDirection: 'row',
-    marginRight: 10,
   },
   navButton: {
+    marginRight: 15,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
-    marginHorizontal: 5,
-    opacity: 1,
-    marginTop: 5,
   },
 });
