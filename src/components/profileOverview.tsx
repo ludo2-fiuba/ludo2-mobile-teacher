@@ -5,6 +5,7 @@ import { usersRepository } from '../repositories';
 import { User } from '../models';
 import { profileOverview as style } from '../styles';
 import { SessionManager } from '../managers';
+import MaterialIcon from './MaterialIcon';
 
 Icon.loadFont()
 
@@ -27,7 +28,7 @@ export default function ProfileOverview() {
 
     return (
         <View style={style().view}>
-            <Icon name='account-circle' style={style().icon} />
+            <MaterialIcon name="account-circle" fontSize={92} color="black" />
             <Text style={style().text}>{user?.firstName}</Text>
             <Text style={style().text}>{user?.lastName}</Text>
         </View>

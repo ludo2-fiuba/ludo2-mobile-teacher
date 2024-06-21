@@ -46,6 +46,7 @@ const EditableText = ({ value, onChange, editable }: { value: string, onChange: 
     <View style={styles.editableTextContainer}>
       {isEditing ? (
         <TextInput
+          inputMode='numeric'
           style={styles.input}
           value={text}
           onChangeText={setText}

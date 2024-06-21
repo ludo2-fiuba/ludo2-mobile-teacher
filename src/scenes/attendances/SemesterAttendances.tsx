@@ -1,11 +1,11 @@
 import React, { useLayoutEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useAppSelector } from '../../hooks';
-import { selectSemesterAttendances, selectSemesterData } from '../../features/semesterSlice';
+import { selectSemesterAttendances } from '../../features/semesterSlice';
 import { ClassAttendance } from '../../models/ClassAttendance';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Ionicons } from '@expo/vector-icons';
+import MaterialIcon from '../../components/MaterialIcon';
+import { lightModeColors } from '../../styles/colorPalette';
 
 import moment from 'moment';
 
@@ -22,7 +22,7 @@ const SemesterAttendances: React.FC = () => {
       title: 'Asistencias del semestre',
       headerRight: () => (
         <TouchableOpacity style={styles.navButton} onPress={onPressAddNewClass}>
-          <Icon name="add" style={styles.navButtonIcon} />
+          <MaterialIcon name="plus" fontSize={24} color='gray' />
         </TouchableOpacity>
       ),
     });
@@ -32,7 +32,7 @@ const SemesterAttendances: React.FC = () => {
     <TouchableOpacity onPress={() => navigation.navigate('AttendanceDetails', { classAttendance: item })}>
       <View style={styles.sessionContainer}>
         <View style={styles.headerRow}>
-          <Ionicons name="calendar" size={24} color="#007BFF" />
+          <MaterialIcon name="calendar" fontSize={24} color={lightModeColors.institutional} />
           <Text style={styles.sessionHeader}>
             {moment(new Date(item.createdAt)).format('DD/MM/YYYY')}
           </Text>
@@ -43,7 +43,6 @@ const SemesterAttendances: React.FC = () => {
         <Text style={styles.dateText}>
           Cantidad de asistencias: {item.attendances.length}
         </Text>
-        {/* <Text style={styles.viewDetailsText}>Ver detalle</Text> */}
       </View>
     </TouchableOpacity>
   );
@@ -71,14 +70,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 8,
     borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 3,
   },
   headerRow: {
     flexDirection: 'row',
@@ -108,13 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
-    marginHorizontal: 5,
-    opacity: 1,
-    marginTop: 5,
-  },
-  navButtonIcon: {
-    fontSize: 20,
+    marginRight: 15
   },
 });
 

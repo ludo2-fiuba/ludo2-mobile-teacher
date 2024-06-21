@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import MaterialIcon from '../../components/MaterialIcon';
 import moment from 'moment';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchSemesterAttendances, selectSemesterData } from '../../features/semesterSlice';
@@ -67,12 +67,12 @@ const AttendanceDetails: React.FC = () => {
             </Text>
             {isPresent ? (
                 <TouchableOpacity style={styles.attendanceButton} onPress={() => handleConfirmRemoveAttendance(item)}>
-                    <Ionicons name="checkmark-circle" size={24} color="green" />
+                    <MaterialIcon name="check-circle" fontSize={24} color="green" />
                     <Text style={styles.attendanceButtonText}>Presente</Text>
                 </TouchableOpacity>
             ) : (
                 <TouchableOpacity style={styles.attendanceButton} onPress={() => handleConfirmAttendance(item)}>
-                    <Ionicons name="add-circle" size={24} color="orange" />
+                    <MaterialIcon name="plus-circle" fontSize={24} color="orange" />
                     <Text style={styles.attendanceButtonText}>Agregar Asistencia</Text>
                 </TouchableOpacity>
             )}

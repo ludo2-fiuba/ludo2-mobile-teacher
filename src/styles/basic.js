@@ -52,6 +52,7 @@ const sharedStyle = StyleSheet.create({
     fontFamily: 'HelveticaNeue',
   },
   loading: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',

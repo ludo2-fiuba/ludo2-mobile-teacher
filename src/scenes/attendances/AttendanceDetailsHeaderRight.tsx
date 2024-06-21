@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from '../../components/MaterialIcon';
 
 interface Props {}
 
@@ -15,7 +15,7 @@ export function AttendanceDetailsHeaderRight({ }: Props) {
   return (
     <View style={styles.navButtonsContainer}>
       <TouchableOpacity style={styles.navButton} onPress={navigateToQrScreen}>
-        <Icon name="qr-code" style={styles.navButtonIcon} />
+        <MaterialIcon name="qrcode" fontSize={24} color='gray' />
       </TouchableOpacity>
     </View>
   );
@@ -24,18 +24,11 @@ export function AttendanceDetailsHeaderRight({ }: Props) {
 const styles = StyleSheet.create({
   navButtonsContainer: {
     flexDirection: 'row',
-    marginRight: 10,
+    marginRight: 15,
   },
   navButton: {
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
-    marginHorizontal: 5,
-    opacity: 1,
-    marginTop: 5,
-  },
-  navButtonIcon: {
-    fontSize: 20,
   },
 });

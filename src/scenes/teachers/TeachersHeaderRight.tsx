@@ -1,8 +1,8 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { Teacher, TeacherTuple } from '../../models/TeacherTuple';
+import MaterialIcon from '../../components/MaterialIcon';
 
 interface Props {
   staffTeachers: TeacherTuple[];
@@ -42,13 +42,13 @@ export default function TeachersHeaderRight({ staffTeachers, allTeachers, commis
         style={saveOpacityStyle}
         // disabled={!showSave}
         onPress={() => addNewTeacherToCommission()}>
-        <Icon style={styles.navButtonIcon} name="add" />
+        <MaterialIcon name="plus" fontSize={24} style={styles.navButtonIcon} color='gray' />
       </TouchableOpacity>
       <TouchableOpacity
         style={saveOpacityStyle}
         // disabled={!showSave}
         onPress={() => navigateToTeachersConfiguration()}>
-        <Icon style={styles.navButtonIcon} name="edit" />
+        <MaterialIcon name="pencil" fontSize={24} style={styles.navButtonIcon} color='gray' />
       </TouchableOpacity>
     </View>
   )
@@ -60,19 +60,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-  navButton: {
-    width: 50,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   navButtonIcon: {
-    fontSize: 25,
-    marginRight: 10,
+    marginRight: 15,
   },
   iconsContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    gap: 8
   },
 })

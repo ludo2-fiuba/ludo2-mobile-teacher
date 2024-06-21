@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Alert, TextInput, Modal, Button, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { modifyStudentsOfASemester, selectSemesterData } from '../../features/semesterSlice';
 import { useNavigation } from '@react-navigation/native';
@@ -9,6 +8,7 @@ import { Student } from '../../models';
 import { AddedStudentToSemester } from '../../models/AddedStudentToSemester';
 import SquaredButton from '../../components/SquaredButton';
 import { lightModeColors } from '../../styles/colorPalette';
+import MaterialIcon from '../../components/MaterialIcon';
 
 interface Props {}
 
@@ -69,7 +69,7 @@ export function SemesterStudentsHeaderRight({ }: Props) {
   return (
     <View style={styles.navButtonsContainer}>
       <TouchableOpacity style={styles.navButton} onPress={openAddStudentPrompt}>
-        <Icon name="add" style={styles.navButtonIcon} />
+        <MaterialIcon name="plus" fontSize={24} color='gray' />
       </TouchableOpacity>
 
       <Modal
@@ -125,19 +125,12 @@ export function SemesterStudentsHeaderRight({ }: Props) {
 const styles = StyleSheet.create({
   navButtonsContainer: {
     flexDirection: 'row',
-    marginRight: 10,
+    marginRight: 15,
   },
   navButton: {
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
-    marginHorizontal: 5,
-    opacity: 1,
-    marginTop: 5,
-  },
-  navButtonIcon: {
-    fontSize: 20,
   },
   modalContainer: {
     flex: 1,

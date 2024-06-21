@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useAppSelector } from '../../hooks';
-import { selectSemesterData } from '../../features/semesterSlice';
 import { useNavigation } from '@react-navigation/native';
+import MaterialIcon from '../../components/MaterialIcon';
 
 interface Props {}
 
@@ -17,7 +15,7 @@ export function SemesterHeaderRight({ }: Props) {
   return (
     <View style={styles.navButtonsContainer}>
       <TouchableOpacity style={styles.navButton} onPress={redirectToSemesterEditScreen}>
-        <Icon name="edit" style={styles.navButtonIcon} />
+        <MaterialIcon name="pencil" fontSize={24} color='gray' />
       </TouchableOpacity>
     </View>
   );
@@ -26,18 +24,11 @@ export function SemesterHeaderRight({ }: Props) {
 const styles = StyleSheet.create({
   navButtonsContainer: {
     flexDirection: 'row',
-    marginRight: 10,
+    marginRight: 15,
   },
   navButton: {
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
-    marginHorizontal: 5,
-    opacity: 1,
-    marginTop: 5,
   },
-  navButtonIcon: {
-    fontSize: 20,
-  }
 });
