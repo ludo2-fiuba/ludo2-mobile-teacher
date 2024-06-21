@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Alert, FlatList, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Alert, FlatList, StyleSheet, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Submission } from '../../models/Submission';
 import { submissionsRepository } from '../../repositories';
 import { useNavigation } from '@react-navigation/native';
@@ -148,6 +148,7 @@ export default function SubmissionsList({ route }: Props) {
 
   const updateSubmissionGrade = async (student: Student, newGrade: string) => {
     const res = await submissionsRepository.gradeSubmission(student.id, evaluation.id, +newGrade);
+    ToastAndroid.show(`La calificación de ${student.firstName} ${student.lastName} ha sido guardada exitosamente`, ToastAndroid.SHORT);
     setSubmissions(prevSubmissions =>
       prevSubmissions.map(submission =>
         submission.student.id === student.id

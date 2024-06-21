@@ -36,7 +36,7 @@ export function SubmissionsHeaderRight({ evaluation, fetchData, isActualUserChie
   const showConfirmAutoAssignGraders = () => {
     Alert.alert(
       'Auto-asignar correctores',
-      `¿Está seguro de que desea auto-asignar correctores para las entregas? Se sobreescribirán los correctores ya asignados \n\nPara ajustar los porcentajes diríjase a Cuerpo Docente > Editar`,
+      `¿Está seguro de que desea auto-asignar correctores para las entregas aún no calificadas? Se sobreescribirán los correctores ya asignados \n\nPara ajustar las ponderaciones diríjase a Cuerpo Docente > Editar`,
       [
         {
           text: 'Cancelar',
