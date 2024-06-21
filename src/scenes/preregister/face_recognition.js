@@ -18,11 +18,10 @@ export default class FacePictureConfiguration extends TakePictureStepConfigurati
       await authenticationRepository
         .preregister(this.dni, this.mail, image)
         .then(() => {
-          disableLoading();
           navigation.navigate('PreRegisterDone');
+          disableLoading();
         })
         .catch(error => {
-          disableLoading();
           if (error instanceof authenticationRepository.InvalidImage) {
             Alert.alert(
               'Imagen inválida',
@@ -50,6 +49,7 @@ export default class FacePictureConfiguration extends TakePictureStepConfigurati
               },
             );
           }
+          disableLoading();
         });
     } else {
       navigation.push('TakePicture', {

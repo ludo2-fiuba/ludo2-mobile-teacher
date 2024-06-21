@@ -58,6 +58,7 @@ const sharedStyle = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'transparent',
+    zIndex: 999
   },
   navButtonsContainer: {
     flexDirection: 'row',

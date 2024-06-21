@@ -89,7 +89,7 @@ const PreRegister: React.FC<PreRegisterProps> = ({ navigation }) => {
               const dni = firstTextInput.current.state.value;
               const email = secondTextInput.current.state.value;
               const configuration = new FacePictureConfiguration(
-                ['Tomate una foto de frente'],
+                ['Tomate una foto de frente para facilitar la verificación de identidad'],
                 dni,
                 email,
               );
