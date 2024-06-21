@@ -11,7 +11,7 @@ import { lightModeColors } from '../../styles/colorPalette';
 import { decodeJWT } from '../../utils/decodeJWT';
 import { useAppDispatch } from '../../hooks';
 import { addUserData } from '../../features/userDataSlice';
-const LudoIcon = require('../../assets/ludo_icon.png');
+const LudoIcon = require('../../assets/lodu_icon.png');
 
 type LandingProps = {
   navigation: StackNavigationProp<any, 'Landing'>;
