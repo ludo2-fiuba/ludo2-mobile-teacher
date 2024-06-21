@@ -73,7 +73,7 @@ const EvaluationsList: React.FC<EvaluationsProps> = () => {
           style={{ flex: 1, height: '100%' }}
           contentContainerStyle={evaluations.length === 0
             ? { flexGrow: 1, backgroundColor: 'white' }
-            : style().listView}
+            : { marginTop: 5 }}
           data={evaluations}
           keyExtractor={evaluation => evaluation.id.toString()}
           ListEmptyComponent={() => (

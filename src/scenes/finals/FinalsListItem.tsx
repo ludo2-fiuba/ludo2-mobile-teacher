@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     flex: 1,
     justifyContent: 'space-between',
-    marginVertical: 10,
-    marginHorizontal: 20,
+    marginVertical: 5,
+    marginHorizontal: 10,
     padding: 15,
   },
   date: {

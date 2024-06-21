@@ -79,7 +79,7 @@ const FinalsList: React.FC = () => {
       )}
       {hasDoneFirstLoad && !loading && !!finals.length && (
         <FlatList
-          contentContainerStyle={style().listView}
+          contentContainerStyle={{ marginTop: 5 }}
           data={finals}
           onRefresh={() => fetchData(true)}
           refreshing={refreshing}
