@@ -11,10 +11,8 @@ import { Loading, RoundedButton } from '../../components';
 import { getStyleSheet as style } from '../../styles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import moment from 'moment';
-import 'moment/locale/es'
 import { Semester } from '../../models/Semester';
 import { evaluationsRepository } from '../../repositories';
-moment.locale('es');
 
 interface Props {
 

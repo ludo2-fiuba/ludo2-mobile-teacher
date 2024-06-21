@@ -8,8 +8,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Ionicons } from '@expo/vector-icons';
 
 import moment from 'moment';
-import 'moment/locale/es';
-moment.locale('es');
 
 const SemesterAttendances: React.FC = () => {
   const attendances = useAppSelector(selectSemesterAttendances);

@@ -3,17 +3,13 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
-import 'moment/locale/es';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchSemesterAttendances, selectSemesterData } from '../../features/semesterSlice';
 import { StudentAttendance } from '../../models/StudentAttendance';
-import { Semester } from '../../models/Semester';
 import { AttendanceDetailsHeaderRight } from './AttendanceDetailsHeaderRight';
 import { ClassAttendance } from '../../models/ClassAttendance';
 import { Student } from '../../models';
 import { semesterRepository } from '../../repositories';
-
-moment.locale('es');
 
 interface RouteParams {
     classAttendance: ClassAttendance;

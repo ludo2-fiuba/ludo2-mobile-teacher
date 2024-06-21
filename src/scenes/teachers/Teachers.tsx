@@ -193,7 +193,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 20,
     alignItems: 'center',
-    backgroundColor: '#f0f0f0', // You can change the color as per your UI design
   },
   leaderImage: {
     width: 120,
