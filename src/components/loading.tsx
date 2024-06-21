@@ -1,11 +1,15 @@
-import React, { FC } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import { getStyleSheet as style } from '../styles';
+import React from 'react';
+import { View, ActivityIndicator, ViewStyle } from 'react-native';
+import { getStyleSheet as defaultStyle } from '../styles';
 
-const Loading: FC = () => {
+interface Props {
+  style?: ViewStyle;
+}
+
+const Loading: React.FC<Props> = ({ style }) => {
   return (
-    <View style={style().loading}>
-      <ActivityIndicator size="large" color={style().loading.color} />
+    <View style={[defaultStyle().loading, style]}>
+      <ActivityIndicator size="large" color={defaultStyle().loading.color} />
     </View>
   );
 };

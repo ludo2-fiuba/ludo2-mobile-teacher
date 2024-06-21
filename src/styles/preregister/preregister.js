@@ -14,9 +14,11 @@ const sharedStyle = StyleSheet.create({
     flex: 1,
   },
   textInput: {
-    ...basic().textInput,
-    paddingHorizontal: 10,
-    marginVertical: 15,
+    height: 40,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    borderColor: 'grey',
   },
   button: {
     ...basic().button,

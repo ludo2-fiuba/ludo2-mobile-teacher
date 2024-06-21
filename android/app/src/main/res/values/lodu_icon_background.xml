@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_lodu_launcher_background">#FFFFFF</color>
+    <color name="lodu_icon_background">#FFFFFF</color>
 </resources>
