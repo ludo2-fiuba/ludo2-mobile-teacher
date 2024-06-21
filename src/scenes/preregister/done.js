@@ -20,7 +20,7 @@ export default class PreRegisterLastInstructions extends Component {
             </Text>
           </ScrollView>
           <RoundedButton
-            text="LISTO"
+            text="Listo"
             style={style().button}
             onPress={() =>
               navigation.reset({
