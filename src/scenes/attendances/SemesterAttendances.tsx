@@ -15,7 +15,7 @@ const SemesterAttendances: React.FC = () => {
 
   const onPressAddNewClass = () => {
     navigation.navigate('SemesterAttendanceQR', {});
-  } 
+  }
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -29,21 +29,19 @@ const SemesterAttendances: React.FC = () => {
   }, [navigation]);
 
   const renderClassAttendance = ({ item }: { item: ClassAttendance }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('AttendanceDetails', { classAttendance: item })}>
-      <View style={styles.sessionContainer}>
-        <View style={styles.headerRow}>
-          <MaterialIcon name="calendar" fontSize={24} color={lightModeColors.institutional} />
-          <Text style={styles.sessionHeader}>
-            {moment(new Date(item.createdAt)).format('DD/MM/YYYY')}
-          </Text>
-        </View>
-        <Text style={styles.dateText}>
-          Horario de validez del QR: {moment(new Date(item.createdAt)).format('HH:mm')} - {moment(new Date(item.expiresAt)).format('HH:mm')}
-        </Text>
-        <Text style={styles.dateText}>
-          Cantidad de asistencias: {item.attendances.length}
+    <TouchableOpacity onPress={() => navigation.navigate('AttendanceDetails', { classAttendance: item })} style={styles.sessionContainer}>
+      <View style={styles.headerRow}>
+        <MaterialIcon name="calendar" fontSize={24} color={lightModeColors.institutional} />
+        <Text style={styles.sessionHeader}>
+          {moment(new Date(item.createdAt)).format('DD/MM/YYYY')}
         </Text>
       </View>
+      <Text style={styles.dateText}>
+        Horario de validez del QR: {moment(new Date(item.createdAt)).format('HH:mm')} - {moment(new Date(item.expiresAt)).format('HH:mm')}
+      </Text>
+      <Text style={styles.dateText}>
+        Cantidad de asistencias: {item.attendances.length}
+      </Text>
     </TouchableOpacity>
   );
 
