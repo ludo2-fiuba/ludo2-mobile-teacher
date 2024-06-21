@@ -148,7 +148,7 @@ export default function SubmissionsList({ route }: Props) {
 
   const updateSubmissionGrade = async (student: Student, newGrade: string) => {
     const res = await submissionsRepository.gradeSubmission(student.id, evaluation.id, +newGrade);
-    ToastAndroid.show(`La calificación de ${student.firstName} ${student.lastName} ha sido guardada exitosamente`, ToastAndroid.SHORT);
+    ToastAndroid.show(`La calificación de ${student.firstName} ${student.lastName} ha sido guardada exitosamente`, ToastAndroid.LONG);
     setSubmissions(prevSubmissions =>
       prevSubmissions.map(submission =>
         submission.student.id === student.id
