@@ -18,7 +18,9 @@ const sharedStyle = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
-    alignItems: 'stretch',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 30,
   },
   text: {
     ...basic().text,

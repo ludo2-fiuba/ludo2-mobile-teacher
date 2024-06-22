@@ -82,8 +82,7 @@ const PreRegister: React.FC<PreRegisterProps> = ({ navigation }) => {
           </View>
           <RoundedButton
             text="Siguiente"
-            // enabled={shouldEnableSignUp()} # TODO: reenable
-            enabled={true}
+            enabled={shouldEnableSignUp()}
             style={style().button}
             onPress={() => {
               const dni = firstTextInput.current.state.value;
