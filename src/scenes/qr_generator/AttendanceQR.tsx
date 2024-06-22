@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Alert, View, Platform, LayoutChangeEvent } from 'react-native';
+import { Alert, View, LayoutChangeEvent } from 'react-native';
 import RNFS from 'react-native-fs';
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
-import Permissions, { PERMISSIONS } from 'react-native-permissions';
 import { Loading, RoundedButton } from '../../components';
 import { getStyleSheet as style } from '../../styles';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import QRCode from 'react-native-qrcode-svg';
-import { Semester } from '../../models/Semester';
 import { QRAttendance } from '../../models/QRAttendance';
 import { makeRequest } from '../../networking/makeRequest';
 import { QRAttendanceRepository } from '../../repositories';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchSemesterAttendances, selectSemesterData } from '../../features/semesterSlice';
+import { selectSemesterData } from '../../features/semesterSlice';
+import { getQrAttendanceStringFromQrId } from '../../utils/qrCodeStringFactory';
 
 
 const SemesterAttendanceQR: React.FC = () => {
@@ -33,8 +32,9 @@ const SemesterAttendanceQR: React.FC = () => {
     }
     try {
       const qrAttendanceData: QRAttendance = await makeRequest(() => QRAttendanceRepository.generateAttendanceQR(semesterId), navigation);
-      dispatch(fetchSemesterAttendances(semesterId))
-      setQrValue(qrAttendanceData.qrid)
+      // dispatch(fetchSemesterAttendances(semesterId)) // TODO: check why this was here
+      const qrAttendanceString = getQrAttendanceStringFromQrId(qrAttendanceData.qrid)
+      setQrValue(qrAttendanceString)
     } catch (error) {
       console.log("Error", error);
 

@@ -38,13 +38,13 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
     try {
       const { authorizationCode } = await authorize(config);
       const response = await authenticationRepository.login(authorizationCode, redirectUrl);
-      
-      
+
+
       const sessionManager: SessionManager = await SessionManager.getInstance()!;
-      
+
       if (sessionManager) {
         sessionManager.saveCredentials(response);
-        
+
         // Save user information
         const user: any = await usersRepository.getInfo() as any;
         const accessToken = (response as any)["access"]
@@ -52,7 +52,7 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
         user.userId = decoded["user_id"];
         const serializableData = JSON.parse(JSON.stringify(user));
         dispatch(addUserData(serializableData));
-        
+
 
         if (!user.isTeacher()) {
           sessionManager.clearCredentials();
@@ -89,20 +89,16 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
           </View>
         </View>
       </View>
-      <View style={{ width: '90%', marginBottom: 8 }}>
-        <RoundedButton
-          text="Pre-registro"
-          enabled={!loginInProgress}
-          onPress={() => navigation.navigate('PreRegister')}
-        />
-      </View>
-      <View style={{ width: '90%' }}>
-        <RoundedButton
-          text="Iniciar sesión"
-          enabled={!loginInProgress}
-          onPress={onPressLogin}
-        />
-      </View>
+      <RoundedButton
+        text="Pre-registro"
+        enabled={!loginInProgress}
+        onPress={() => navigation.navigate('PreRegister')}
+      />
+      <RoundedButton
+        text="Iniciar sesión"
+        enabled={!loginInProgress}
+        onPress={onPressLogin}
+      />
     </View>
   );
 };

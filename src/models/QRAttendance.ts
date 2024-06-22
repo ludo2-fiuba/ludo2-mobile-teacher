@@ -16,6 +16,3 @@ export interface QRAttendanceSnakeCase {
   expires_at:     Date;
   qrid:           string;
 }
-
-
-
