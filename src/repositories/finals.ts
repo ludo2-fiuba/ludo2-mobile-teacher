@@ -57,44 +57,28 @@ export async function addStudent(
   })
   
   return convertSnakeToCamelCase(finalExam) as FinalExam;
-  // then(data =>
-  //   Promise.resolve(
-  //     new FinalExam(
-  //       data.id,
-  //       finalId,
-  //       new Student(
-  //         data.student.padron,
-  //         data.student.first_name,
-  //         data.student.last_name,
-  //         data.student.dni,
-  //         data.student.email,
-  //       ),
-  //       data.grade,
-  //       data.correlatives_approved,
-  //     ),
-  //   ),
-  // );
 }
 
 export async function close(finalId: number, image: string): Promise<boolean> {
-  await post(`${domainUrl}/${finalId}/close`, '')
+  const response = await post(`${domainUrl}/${finalId}/close`, '')
   return true
 }
 
-export function sendAct(finalId: number, image: string): Promise<boolean> {
-  return post(`${domainUrl}/${finalId}/send_act`, {
-    image: `'${image}'`,
-  })
-    .catch(error => {
-      if (
-        error instanceof StatusCodeError &&
-        error.isBecauseOf('invalid_image')
-      ) {
-        return Promise.reject(new IdentityFail());
-      }
-      return Promise.reject(error);
+export async function sendAct(finalId: number, image: string): Promise<boolean> {
+  try {
+    const response = await post(`${domainUrl}/${finalId}/send_act`, {
+      image: `'${image}'`,
     })
-    .then(json => Promise.resolve(true));
+    return true
+  } catch (error) {
+    if (
+      error instanceof StatusCodeError &&
+      error.isBecauseOf('invalid_image')
+    ) {
+      return Promise.reject(new IdentityFail());
+    }
+    return Promise.reject(error);
+  }
 }
 
 export async function createFinal(subjectId: number, subjectName: string, date: Date): Promise<Final> {
@@ -119,7 +103,7 @@ export default {
   getDetail,
   grade,
   // deleteExam,
-  // addStudent,
+  addStudent,
   close,
   sendAct,
   createFinal,

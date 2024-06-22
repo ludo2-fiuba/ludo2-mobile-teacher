@@ -13,6 +13,7 @@ import { TeacherTuple } from '../../models/TeacherTuple';
 import EntitySelectionModal from './EntitySelectionModal';
 import { selectStaffTeachers } from '../../features/teachersSlice';
 import { selectUserData } from '../../features/userDataSlice';
+import EditableText from '../../components/EditableText';
 
 interface Props {
   route: any;
@@ -22,46 +23,6 @@ interface RouteParams {
   evaluation: Evaluation;
 }
 
-const EditableText = ({ value, onChange, editable }: { value: string, onChange: (text: string) => void, editable: boolean }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState(value);
-
-  const handleBlur = () => {
-    setIsEditing(false);
-    const grade = Number(text);
-    if (text === '') {
-      return;
-    }
-
-    if (isNaN(grade) || grade < 1 || grade > 10) {
-      Alert.alert('Error', 'La nota debe ser un número entre 1 y 10.');
-      setText(value); // reset to original value
-      return;
-    }
-
-    onChange(text);
-  };
-
-  return (
-    <View style={styles.editableTextContainer}>
-      {isEditing ? (
-        <TextInput
-          inputMode='numeric'
-          style={styles.input}
-          value={text}
-          onChangeText={setText}
-          onBlur={handleBlur}
-          autoFocus
-          editable={editable}
-        />
-      ) : (
-        <Text style={styles.text} onPress={() => editable && setIsEditing(true)}>
-          {value}
-        </Text>
-      )}
-    </View>
-  );
-};
 
 export default function SubmissionsList({ route }: Props) {
   const navigation = useNavigation();
@@ -296,10 +257,6 @@ const styles = StyleSheet.create({
     height: '100%',
     width: 1,
     backgroundColor: '#ccc',
-  },
-  editableTextContainer: {
-    flex: 1,
-    marginHorizontal: 5,
   },
   input: {
     height: 40,

@@ -49,6 +49,9 @@ const FinalsListItem: React.FC<FinalsListItemProps> = ({ final, subjectId }) => 
 
   const getStatusText = () => {
     const finalCurrentStatus = calculateFinalCurrentStatus(final)
+
+    console.log('Final', final, ' status:', finalCurrentStatus);
+    
     
     switch (finalCurrentStatus) {
       case FinalStatus.Future:
@@ -76,7 +79,7 @@ const FinalsListItem: React.FC<FinalsListItemProps> = ({ final, subjectId }) => 
         <Text style={styles.date}>
           {moment(final.date).format('dddd Do MMMM, YYYY')}
         </Text>
-        <Text style={styles.hour}>{moment(final.date).format('HH:mm')}</Text>
+        <Text style={styles.hour}>{moment(final.date).format('HH:mm')} (id: {final.id})</Text>
         <Text style={styles.status}>{getStatusText()}</Text>
       </View>
     </TouchableOpacity>
