@@ -12,7 +12,7 @@ const Splash = ({ navigation }: Props) => {
     const init = async () => {
       const sessionInstance: SessionManager = await SessionManager.getInstance()! 
       if (sessionInstance) {
-        sessionInstance.getCredentials();
+        await sessionInstance.getCredentials();
         const loggedIn = sessionInstance.isLoggedIn();
         navigation.replace(loggedIn ? 'RootDrawer' : 'Landing');
       }
