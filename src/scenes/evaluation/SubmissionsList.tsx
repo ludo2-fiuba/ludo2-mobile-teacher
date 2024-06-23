@@ -175,7 +175,10 @@ export default function SubmissionsList({ route }: Props) {
           ListEmptyComponent={() => (
             <View style={styles.containerView}>
               <Text style={styles.text}>
-                Aún no hay entregas para esta evaluación
+                Aún no hay entregas para esta evaluación.
+              </Text>
+              <Text style={styles.text}>
+                Podés agregar entregas manualmente o compartir el QR con tus alumnos localizado en la esquina superior derecha.
               </Text>
             </View>
           )}
@@ -206,6 +209,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: 20,
+    gap: 18
   },
   text: {
     fontSize: 16,

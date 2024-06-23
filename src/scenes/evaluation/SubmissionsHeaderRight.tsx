@@ -8,6 +8,7 @@ import { evaluationsRepository, submissionsRepository } from '../../repositories
 import { Evaluation } from '../../models/Evaluation';
 import MaterialIcon from '../../components/MaterialIcon';
 import { Submission } from '../../models/Submission';
+import { useNavigation } from '@react-navigation/native';
 
 interface Props {
   evaluation: Evaluation;
@@ -19,6 +20,11 @@ interface Props {
 export function SubmissionsHeaderRight({ evaluation, fetchData, isActualUserChiefTeacher, submissions }: Props) {
   const semesterData = useAppSelector(selectSemesterData);
   const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
+
+  const showEvaluationQR = () => {
+    navigation.navigate('EvaluationQR', { evaluation });
+  }
 
   const addStudentSubmission = async (student: Student) => {
     setModalVisible(false);
@@ -89,6 +95,9 @@ export function SubmissionsHeaderRight({ evaluation, fetchData, isActualUserChie
           <MaterialIcon name="auto-fix" fontSize={24} color="gray" />
         </TouchableOpacity>
       )}
+      <TouchableOpacity style={styles.navButton} onPress={showEvaluationQR}>
+        <MaterialIcon name="qrcode" fontSize={24} color="gray" />
+      </TouchableOpacity>
       <TouchableOpacity style={styles.navButton} onPress={() => setModalVisible(true)}>
         <MaterialIcon name="plus" fontSize={24} color="gray" />
       </TouchableOpacity>
@@ -102,8 +111,5 @@ const styles = StyleSheet.create({
   },
   navButton: {
     marginRight: 15,
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

@@ -1,40 +1,39 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
-  Platform,
   View,
   LayoutChangeEvent,
 } from 'react-native';
 import RNFS from 'react-native-fs';
 // Check if CameraRoll is necessary and add it to the package.jsojn
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
-import { Loading, RoundedButton } from '../../components';
+import { RoundedButton } from '../../components';
 import { Final } from '../../models';
 import { finalRepository } from '../../repositories';
 import { getStyleSheet as style } from '../../styles';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import QRCode from 'react-native-qrcode-svg';
-import { StackActions } from '@react-navigation/native';
 import { calculateFinalCurrentStatus } from '../../models/Final';
 import { FinalStatus } from '../../models/FinalStatus';
+import { getQrFinalExamStringFromQrId } from '../../utils/qrCodeStringFactory';
 
 // Aux function to format the filename
 function addDateToSubjectName(dateParam: Date | string, originalFilename: string): string {
   // Parse the date
   const date = new Date(dateParam);
-  
+
   // Format the date as "dd-mm-yy"
   const formattedDate = [
     ('0' + date.getUTCDate()).slice(-2),         // day
     ('0' + (date.getUTCMonth() + 1)).slice(-2),  // month
     date.getUTCFullYear().toString().slice(-2),  // year
   ].join('-');
-  
+
   // Combine the formatted date and original filename
   return `${formattedDate}-${originalFilename}`;
 }
 
-function replaceTildes(str: string) : string {
+function replaceTildes(str: string): string {
   const accents: { [key: string]: string } = {
     'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
     'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U',
@@ -47,33 +46,16 @@ interface FinalExamQRRouteProps {
 }
 
 const FinalExamQR: React.FC = () => {
-  const [loading, setLoading] = useState(false);
   const [closing, setClosing] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  
+
   const [qrSize, setQrSize] = useState(300);
-  
+
   const navigation = useNavigation();
-  
+
   const route = useRoute();
   const final = (route.params as FinalExamQRRouteProps).final;
-
-  // const fetchData = useCallback(async () => {
-  //   if (loading) return;
-  //   setLoading(true);
-  //   try {
-  //     setQrId(final.qrId as string);
-  //     setLoading(false);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     Alert.alert(
-  //       '¿Qué pasó?',
-  //       'No sabemos pero no pudimos obtener la información del final. ' +
-  //       'Volvé a intentar en unos minutos.'
-  //     );
-  //     navigation.goBack();
-  //   }
-  // }, [loading, final, navigation]);
+  const qrValue = getQrFinalExamStringFromQrId(final.qrid);
 
   const handleLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -111,57 +93,53 @@ const FinalExamQR: React.FC = () => {
 
   return (
     <View style={style().view} onLayout={handleLayout}>
-      {loading && <Loading />}
       <QRCode
-        value={final.qrId as string}
+        value={qrValue}
         size={qrSize}
         getRef={(c) => (setSvgRef(c))}
         quietZone={20}
       />
-      {!loading && (
-        <View style={style().containerView}>
+      <View style={style().containerView}>
+        <RoundedButton
+          text="Descargar QR"
+          style={style().button}
+          enabled={!downloading}
+          onPress={() => { downloadQR() }}
+        />
+        <View style={{ marginTop: 10 }}>
           <RoundedButton
-            text="Descargar QR"
-            style={style().button}
-            enabled={!downloading}
-            onPress={() => { downloadQR() }}
+            text="Finalizar entrega"
+            style={{ ...style().button }}
+            enabled={!closing}
+            onPress={async () => {
+              const finalCurrentStatus = calculateFinalCurrentStatus(final)
+              if (finalCurrentStatus === FinalStatus.SoonToStart) {
+                Alert.alert('Bajá esa ansiedad. Todavía ni empezó el final');
+                return;
+              }
+              setClosing(true);
+              try {
+                console.log("FINAL", final);
+
+                await finalRepository.close(final.id, '');
+
+                navigation.goBack()
+                setClosing(false);
+              } catch (error) {
+                setClosing(false);
+                console.log("error", error);
+
+                Alert.alert(
+                  '¿Qué pasó?',
+                  'No sabemos pero no pudimos cerrar el examen. ' +
+                  'Volvé a intentar en un minuto o sacale a los alumnos ' +
+                  'el acceso al QR.'
+                );
+              }
+            }}
           />
-          <View style={{ marginTop: 10}}>
-            <RoundedButton
-              text="Finalizar entrega"
-              style={{...style().button}}
-              enabled={!closing}
-              onPress={async () => {
-                const finalCurrentStatus = calculateFinalCurrentStatus(final)
-                if (finalCurrentStatus === FinalStatus.SoonToStart) {
-                  Alert.alert('Bajá esa ansiedad. Todavía ni empezó el final');
-                  return;
-                }
-                setClosing(true);
-                try {
-                  console.log("FINAL", final);
-                  
-                  await finalRepository.close(final.id, '');
-
-                  navigation.goBack()
-                  setClosing(false);
-                } catch (error) {
-                  setClosing(false);
-                  console.log("error", error);
-                  
-                  Alert.alert(
-                    '¿Qué pasó?',
-                    'No sabemos pero no pudimos cerrar el examen. ' +
-                    'Volvé a intentar en un minuto o sacale a los alumnos ' +
-                    'el acceso al QR.'
-                  );
-                }
-              }}
-            />
-          </View>
-
         </View>
-      )}
+      </View>
     </View>
   );
 };

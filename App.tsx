@@ -30,6 +30,7 @@ import AddFinal from './src/scenes/finals/AddFinal';
 import SemesterAttendances from './src/scenes/attendances/SemesterAttendances';
 import AttendanceDetails from './src/scenes/attendances/AttendanceDetails';
 import SemesterEditScreen from './src/scenes/semesters/SemesterEditScreen';
+import EvaluationQR from './src/scenes/qr_generator/EvaluationQR';
 
 
 interface SubjectParams {
@@ -111,7 +112,7 @@ const AllComponents: React.FC = () => {
             options={({ route }) => ({ title: 'Editar semestre' })}
           />
 
-          
+
 
 
           {/* EVALUATIONS */}
@@ -226,10 +227,19 @@ const AllComponents: React.FC = () => {
           <Stack.Screen
             name="SemesterAttendanceQR"
             component={SemesterAttendanceQR}
-            options={({ route }) => ({
+            options={{
               headerShown: true,
-              title: 'Generar QR de Asistencias',
-            })}
+              title: 'QR de Asistencias',
+            }}
+          />
+
+          <Stack.Screen
+            name="EvaluationQR"
+            component={EvaluationQR}
+            options={{
+              headerShown: true,
+              title: 'QR de Evaluación',
+            }}
           />
 
           <Stack.Screen
