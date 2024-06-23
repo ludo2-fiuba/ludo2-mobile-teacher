@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: '#333',
 		textAlign: 'center',
+		minWidth: 80,
 	},
 	input: {
 		fontSize: 16,
