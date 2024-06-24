@@ -8,9 +8,8 @@ import { landing as style } from '../../styles';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { lightModeColors } from '../../styles/colorPalette';
-import { decodeJWT } from '../../utils/decodeJWT';
 import { useAppDispatch } from '../../hooks';
-import { addUserData } from '../../features/userDataSlice';
+import { fetchUserDataAsync } from '../../features/userDataSlice';
 const LudoIcon = require('../../assets/lodu_icon.png');
 
 type LandingProps = {
@@ -44,20 +43,13 @@ const Landing: React.FC<LandingProps> = ({ navigation }) => {
 
       if (sessionManager) {
         sessionManager.saveCredentials(response);
-
-        // Save user information
         const user: any = await usersRepository.getInfo() as any;
-        const accessToken = (response as any)["access"]
-        const decoded = decodeJWT(accessToken);
-        user.userId = decoded["user_id"];
-        const serializableData = JSON.parse(JSON.stringify(user));
-        dispatch(addUserData(serializableData));
-
-
         if (!user.isTeacher()) {
           sessionManager.clearCredentials();
           throw new authenticationRepository.NotATeacher();
         }
+
+        dispatch(fetchUserDataAsync(user));
         setLoginInProgress(false);
         navigation.reset({
           index: 0,

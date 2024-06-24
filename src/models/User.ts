@@ -26,4 +26,14 @@ export default class User {
   isTeacher(): boolean {
     return this.teacherId !== null;
   }
+
+  toObject() {
+    return {
+      dni: this.dni,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      teacherId: this.teacherId,
+    }
+  }
 }
