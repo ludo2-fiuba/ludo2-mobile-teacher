@@ -79,7 +79,7 @@ const FinalsListItem: React.FC<FinalsListItemProps> = ({ final, subjectId }) => 
         <Text style={styles.date}>
           {moment(final.date).format('dddd Do MMMM, YYYY')}
         </Text>
-        <Text style={styles.hour}>{moment(final.date).format('HH:mm')} (id: {final.id})</Text>
+        <Text style={styles.hour}>{moment(final.date).format('HH:mm')}</Text>
         <Text style={styles.status}>{getStatusText()}</Text>
       </View>
     </TouchableOpacity>

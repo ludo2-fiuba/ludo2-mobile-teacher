@@ -10,7 +10,7 @@ import { QRAttendance } from '../../models/QRAttendance';
 import { makeRequest } from '../../networking/makeRequest';
 import { QRAttendanceRepository } from '../../repositories';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectSemesterData } from '../../features/semesterSlice';
+import { fetchSemesterAttendances, selectSemesterData } from '../../features/semesterSlice';
 import { getQrAttendanceStringFromQrId } from '../../utils/qrCodeStringFactory';
 
 
@@ -32,7 +32,7 @@ const SemesterAttendanceQR: React.FC = () => {
     }
     try {
       const qrAttendanceData: QRAttendance = await makeRequest(() => QRAttendanceRepository.generateAttendanceQR(semesterId), navigation);
-      // dispatch(fetchSemesterAttendances(semesterId)) // TODO: check why this was here
+      dispatch(fetchSemesterAttendances(semesterId));
       const qrAttendanceString = getQrAttendanceStringFromQrId(qrAttendanceData.qrid)
       setQrValue(qrAttendanceString)
     } catch (error) {

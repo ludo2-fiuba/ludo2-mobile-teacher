@@ -80,6 +80,7 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
               data={semesterAverageData}
               width={screenWidth}
               height={220}
+              fromZero
               chartConfig={{
                 backgroundGradientFrom: "#ffffff",
                 backgroundGradientTo: "#ffffff",
