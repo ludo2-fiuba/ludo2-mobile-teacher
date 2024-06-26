@@ -56,6 +56,23 @@ export function SubmissionsHeaderRight({ evaluation, fetchData, isActualUserChie
     );
   };
 
+  const showConfirmNotifyStudents = () => {
+    Alert.alert(
+      'Notificar estudiantes',
+      `¿Está seguro de que desea notificar a los estudiantes de sus notas? Se enviará una notificación a todos los estudiantes que hayan recibido una nota`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: async () => evaluationsRepository.notifyStudents(evaluation.id)
+        },
+      ]
+    );
+  };
+
   const semesterStudentsThatHaveNotSubmitted = () => {
     const submissionsStudents = submissions.map(sub => sub.student);
     const students = semesterData?.students || [];
@@ -89,11 +106,15 @@ export function SubmissionsHeaderRight({ evaluation, fetchData, isActualUserChie
         onClose={() => setModalVisible(false)}
         title={getTitleIfThereAreStudentsToBeAdded()}
       />
-
       {isActualUserChiefTeacher && (
-        <TouchableOpacity style={styles.navButton} onPress={showConfirmAutoAssignGraders}>
-          <MaterialIcon name="auto-fix" fontSize={24} color="gray" />
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity style={styles.navButton} onPress={showConfirmNotifyStudents}>
+            <MaterialIcon name="bell-ring" fontSize={24} color="gray" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navButton} onPress={showConfirmAutoAssignGraders}>
+            <MaterialIcon name="auto-fix" fontSize={24} color="gray" />
+          </TouchableOpacity>
+        </>
       )}
       <TouchableOpacity style={styles.navButton} onPress={showEvaluationQR}>
         <MaterialIcon name="qrcode" fontSize={24} color="gray" />

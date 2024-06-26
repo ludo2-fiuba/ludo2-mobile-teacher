@@ -16,7 +16,7 @@ async function create(semester: Semester, evaluationName: string, startDate: Dat
     start_date: startDate,
     end_date: finishDate
   }
-  
+
   const response = await post(`${domainUrl}/add_evaluation`, evaluationToBeCreated)
   return convertSnakeToCamelCase(response) as CreatedEvaluation
 }
@@ -40,4 +40,9 @@ async function addSubmissionToEvaluation(evaluationId: number, studentId: number
   return data;
 }
 
-export default { create, addSubmissionToEvaluation, fetchPresentSemesterEvaluations }
+async function notifyStudents(evaluationId: number): Promise<void> {
+  await post(`${domainUrl}/${evaluationId}/notify_grades`, {})
+  return;
+}
+
+export default { create, addSubmissionToEvaluation, fetchPresentSemesterEvaluations, notifyStudents }

@@ -38,10 +38,7 @@ const AddEvaluation: React.FC<Props> = () => {
   const [creating, setCreating] = useState(false);
 
   const navigation = useNavigation();
-  const route = useRoute();
-
   const semester: Semester = useAppSelector(selectSemesterData)!
-  console.log('Semester from addevaluation', semester);
 
   const onStartDateChange = (event: any, selectedDate: any) => {
     setShowStartDatePicker(false);
