@@ -4,16 +4,23 @@ import { RoundedButton } from '../../components'
 import { finalExamSubmissions as style } from '../../styles';
 import { Final, Student } from '../../models';
 import { finalRepository } from '../../repositories';
+import { useNavigation } from '@react-navigation/native';
+import FacePictureConfiguration from './face_recognition';
 
 interface Props {
   final: Final
 }
 
 const FinalExamSubmissionsListFooter = ({ final }: Props) => {
+  const navigation = useNavigation()
 
-  const closeAct = () => {
-    console.log("Closing act");
-    return finalRepository.sendAct(final.id, 'image')
+  const closeAct = async () => {
+    const configuration = new FacePictureConfiguration(final.id);
+
+    navigation.navigate('TakePicture', {
+      configuration: configuration.toObject(),
+    });
+
   }
 
   return (

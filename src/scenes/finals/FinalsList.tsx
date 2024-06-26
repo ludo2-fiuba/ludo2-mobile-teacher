@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, Alert, TouchableOpacity, StyleSheet } from 'react-native';
-import { Loading, RoundedButton } from '../../components';
+import { View, Text, FlatList, Alert, StyleSheet } from 'react-native';
+import { Loading } from '../../components';
 import { getStyleSheet as style } from '../../styles';
 import { finalRepository } from '../../repositories';
 import { Final } from '../../models';
@@ -9,6 +9,9 @@ import { makeRequest } from '../../networking/makeRequest';
 import FinalsListItem from './FinalsListItem';
 import { FinalsListHeaderRight } from './FinalsListHeaderRight';
 import { FontAwesome } from '@expo/vector-icons';
+import { useAppSelector } from '../../hooks';
+import { selectUserData } from '../../features/userDataSlice';
+import { selectSemesterData } from '../../features/semesterSlice';
 
 interface FinalsListRouteParams {
   subjectId: number;
@@ -19,18 +22,24 @@ const FinalsList: React.FC = () => {
   const [hasDoneFirstLoad, setHasDoneFirstLoad] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [finals, setFinals] = useState<Final[]>([]);
+  const [myFinals, setMyFinals] = useState<Final[]>([]);
+  const [otherTeachersFinals, setOtherTeachersFinals] = useState<Final[]>([]);
 
   const route = useRoute();
   const subjectId = (route.params as FinalsListRouteParams).subjectId;
   const subjectName = (route.params as FinalsListRouteParams).subjectName;
+
+  const userData = useAppSelector(selectUserData);
+  const semesterData = useAppSelector(selectSemesterData);
+
+  const isActualUserChiefTeacher = semesterData?.commission.chiefTeacher.id === userData?.id;
 
   const navigation = useNavigation();
 
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
       title: 'Finales',
-      headerRight: () => <FinalsListHeaderRight subjectId={subjectId} subjectName={subjectName} />,
+      headerRight: () => isActualUserChiefTeacher ? <FinalsListHeaderRight subjectId={subjectId} subjectName={subjectName} /> : null,
     });
   }, [navigation]);
 
@@ -50,10 +59,12 @@ const FinalsList: React.FC = () => {
     setHasDoneFirstLoad(true);
 
     try {
-      const retrievedFinals = await makeRequest(() => finalRepository.fetchFromSubject(subjectId), navigation);
+      let retrievedFinals = await makeRequest(() => finalRepository.fetchFromSubject(subjectId), navigation);
       console.log("Retrieved finals", retrievedFinals);
-      const orderedFinals = retrievedFinals.sort((a: any, b: any) => (a.date < b.date ? 1 : -1));
-      setFinals(orderedFinals);
+      const myFinals = retrievedFinals.filter((final: Final) => final.teacher === userData?.id);
+      const otherTeachersFinals = retrievedFinals.filter((final: Final) => final.teacher !== userData?.id);
+      setMyFinals(myFinals);
+      setOtherTeachersFinals(otherTeachersFinals);
     } catch (error) {
       Alert.alert(
         'Te fallamos',
@@ -70,24 +81,42 @@ const FinalsList: React.FC = () => {
   return (
     <View style={styles.view}>
       {(loading || !hasDoneFirstLoad) && <Loading />}
-      {hasDoneFirstLoad && !loading && !finals.length && (
+      {hasDoneFirstLoad && !loading && !myFinals.length && !otherTeachersFinals.length && (
         <View style={styles.emptyEvaluationsContainer}>
           <FontAwesome name="folder-open" size={50} color="#6c757d" style={styles.emptyEvaluationsIcon} />
           <Text style={styles.emptyEvaluationsText}>Esta comisión no tiene finales aún.</Text>
           <Text style={styles.emptyEvaluationsSecondText}>Podés agregar uno pulsando el '+' en la esquina superior derecha</Text>
         </View>
       )}
-      {hasDoneFirstLoad && !loading && !!finals.length && (
-        <FlatList
-          contentContainerStyle={{ marginTop: 5 }}
-          data={finals}
-          onRefresh={() => fetchData(true)}
-          refreshing={refreshing}
-          keyExtractor={final => final.id.toString()}
-          renderItem={({ item }) => (
-            <FinalsListItem final={item} subjectId={subjectId} />
-          )}
-        />
+      {hasDoneFirstLoad && !loading && !!myFinals.length && (
+        <View style={styles.listView}>
+          <Text style={styles.listTitle}>Tus finales</Text>
+          <FlatList
+            contentContainerStyle={{ marginTop: 5 }}
+            data={myFinals}
+            onRefresh={() => fetchData(true)}
+            refreshing={refreshing}
+            keyExtractor={final => final.id.toString()}
+            renderItem={({ item }) => (
+              <FinalsListItem final={item} subjectId={subjectId} />
+            )}
+          />
+        </View>
+      )}
+      {hasDoneFirstLoad && !loading && !!otherTeachersFinals.length && (
+        <View style={styles.listView}>
+          <Text style={styles.listTitle}>Finales de otros docentes</Text>
+          <FlatList
+            contentContainerStyle={{ marginTop: 5 }}
+            data={otherTeachersFinals}
+            onRefresh={() => fetchData(true)}
+            refreshing={refreshing}
+            keyExtractor={final => final.id.toString()}
+            renderItem={({ item }) => (
+              <FinalsListItem final={item} subjectId={subjectId} />
+            )}
+          />
+        </View>
       )}
     </View>
   );
@@ -123,16 +152,10 @@ const styles = StyleSheet.create({
   emptyEvaluationsIcon: {
     marginBottom: 16,
   },
-  reloadButton: {
-    marginTop: 16,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-  },
-  reloadButtonText: {
-    color: 'white',
-    fontSize: 16,
+  listTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 10,
   },
 });
 

@@ -109,12 +109,12 @@ const FinalExamSubmissions: React.FC = () => {
     </View>
   );
 
-  const editingCondition = (exam: FinalExam): boolean => {
-    return isActualUserChiefTeacher;
+  const editingCondition = (): boolean => {
+    return final.teacher === userData?.id;
   };
 
   const handleEditGrade = (exam: FinalExam) => {
-    if (editingCondition(exam)) {
+    if (editingCondition()) {
       setEditingGrade(exam.student.id);
       setGradeText(exam.grade?.toString() || '');
     }
@@ -126,7 +126,7 @@ const FinalExamSubmissions: React.FC = () => {
   };
 
   const renderItem = ({ item: exam }: { item: FinalExam }) => {
-    const isEditable = editingCondition(exam);
+    const isEditable = editingCondition();
     return (
       <View style={[styles.row, !isEditable && styles.nonEditableRow]}>
         <Text style={styles.cell}>{`${exam.student.firstName} ${exam.student.lastName}`}</Text>
