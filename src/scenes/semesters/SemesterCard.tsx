@@ -102,7 +102,7 @@ export function SemesterCard({ route }: Props) {
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <SemesterHeaderRight />,
+      headerRight: () => <SemesterHeaderRight />, // TODO: disable when user is not chiefteacher
     });
   }, [navigation]);
 
