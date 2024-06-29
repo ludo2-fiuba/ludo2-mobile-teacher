@@ -7,7 +7,7 @@ export interface Final {
   subject: Subject;
   date: string;
   qrid: string;
-  status: string;
+  status: FinalStatus;
   siuId: number;
   act: null;
   finalExams: FinalExam[];

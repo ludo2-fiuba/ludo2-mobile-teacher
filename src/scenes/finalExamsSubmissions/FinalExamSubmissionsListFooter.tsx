@@ -1,11 +1,11 @@
 import { View, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { RoundedButton } from '../../components'
 import { finalExamSubmissions as style } from '../../styles';
-import { Final, Student } from '../../models';
-import { finalRepository } from '../../repositories';
+import { Final } from '../../models';
 import { useNavigation } from '@react-navigation/native';
 import FacePictureConfiguration from './face_recognition';
+import { FinalStatus } from '../../models/FinalStatus';
 
 interface Props {
   final: Final
@@ -20,18 +20,18 @@ const FinalExamSubmissionsListFooter = ({ final }: Props) => {
     navigation.navigate('TakePicture', {
       configuration: configuration.toObject(),
     });
-
   }
 
   return (
     <View style={style().listHeaderFooter}>
-
       <View style={{ marginTop: 10 }}>
-        <RoundedButton 
-          onPress={closeAct}
-          text="Cerrar el Acta"
-          style={style().button}
-        />
+        { final.status === FinalStatus.Grading &&
+          <RoundedButton 
+            onPress={closeAct}
+            text="Cerrar el Acta"
+            style={style().button}
+          />
+        }
       </View>
     </View>
   )

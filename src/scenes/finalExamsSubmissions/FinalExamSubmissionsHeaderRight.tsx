@@ -9,26 +9,26 @@ import { Final, Student } from '../../models';
 import { set } from 'lodash';
 
 interface Props {
-	final: Final
-	fetchData: () => void
+  final: Final
+  fetchData: () => void
 }
 
 export function FinalExamSubmissionsHeaderRight({ final, fetchData }: Props) {
-	const navigation = useNavigation()
-	const [studentToAdd, setStudentToAdd] = useState<Student | null>(null)
-	
-	const [studentPadron, setStudentPadron] = useState<string>('');
+  const navigation = useNavigation()
+  const [studentToAdd, setStudentToAdd] = useState<Student | null>(null)
 
-	const [modalPadronInputVisible, setModalPadronInputVisible] = useState(false)
-	const [confirmationModalVisible, setConfirmationModalVisible] = useState(false)
+  const [studentPadron, setStudentPadron] = useState<string>('');
 
-	const fetchStudent = async () => {
+  const [modalPadronInputVisible, setModalPadronInputVisible] = useState(false)
+  const [confirmationModalVisible, setConfirmationModalVisible] = useState(false)
+
+  const fetchStudent = async () => {
     try {
       const student = await studentsRepository.getStudentByPadron(studentPadron);
-      
-			setStudentToAdd(student);
-			setStudentPadron('')
-			setModalPadronInputVisible(false)
+
+      setStudentToAdd(student);
+      setStudentPadron('')
+      setModalPadronInputVisible(false)
       setConfirmationModalVisible(true);
     } catch (error) {
       console.error("Failed to fetch student", error);
@@ -38,8 +38,8 @@ export function FinalExamSubmissionsHeaderRight({ final, fetchData }: Props) {
     }
   }
 
-	const cancelStudentAddition = () => {
-		setStudentPadron('');
+  const cancelStudentAddition = () => {
+    setStudentPadron('');
     setModalPadronInputVisible(false);
   }
 
@@ -48,43 +48,63 @@ export function FinalExamSubmissionsHeaderRight({ final, fetchData }: Props) {
     const response = await finalRepository.addStudent(final.id, padron)
     setStudentToAdd(null);
     setConfirmationModalVisible(false);
-		fetchData()	
+    fetchData()
     return response;
   }
 
-	const addFinalExamSubmission = () => {
-		setModalPadronInputVisible(true);
-	}
+  const addFinalExamSubmission = () => {
+    setModalPadronInputVisible(true);
+  }
 
-	return (
-		<View style={styles.navButtonsContainer}>
-			<TouchableOpacity style={styles.navButton} onPress={addFinalExamSubmission}>
-				<MaterialIcon name="plus" fontSize={24} color='gray' />
-			</TouchableOpacity>
+  const showConfirmNotifyStudents = () => {
+    Alert.alert(
+      'Notificar estudiantes',
+      `¿Está seguro de que desea notificar a los estudiantes de sus notas? Se enviará una notificación a todos los estudiantes que hayan recibido una nota`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: async () => finalRepository.notifyGrades(final.id)
+        },
+      ]
+    );
+  };
 
-			<Modal
-				animationType="slide"
-				transparent={true}
-				visible={modalPadronInputVisible}
-				onRequestClose={() => setModalPadronInputVisible(false)}
-			>
-				<View style={styles.modalContainer}>
-					<View style={styles.modalView}>
-						<TextInput
-							style={styles.input}
-							placeholder="Ingresar padrón del estudiante"
-							value={studentPadron}
-							onChangeText={setStudentPadron}
-						/>
-						<View style={styles.buttonContainer}>
-							<SquaredButton text="Cancelar" onPress={cancelStudentAddition} color={lightModeColors.institutional} />
-							<SquaredButton text="Confirmar" onPress={fetchStudent} color={lightModeColors.institutional} />
-						</View>
-					</View>
-				</View>
-			</Modal>
+  return (
+    <View style={styles.navButtonsContainer}>
+      <TouchableOpacity style={{...styles.navButton, marginRight: 15 }} onPress={showConfirmNotifyStudents}>
+        <MaterialIcon name="bell-ring" fontSize={24} color="gray" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.navButton} onPress={addFinalExamSubmission}>
+        <MaterialIcon name="plus" fontSize={24} color='gray' />
+      </TouchableOpacity>
 
-			<Modal
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalPadronInputVisible}
+        onRequestClose={() => setModalPadronInputVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingresar padrón del estudiante"
+              value={studentPadron}
+              onChangeText={setStudentPadron}
+            />
+            <View style={styles.buttonContainer}>
+              <SquaredButton text="Cancelar" onPress={cancelStudentAddition} color={lightModeColors.institutional} />
+              <SquaredButton text="Confirmar" onPress={fetchStudent} color={lightModeColors.institutional} />
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
         animationType="slide"
         transparent={true}
         visible={confirmationModalVisible}
@@ -95,11 +115,11 @@ export function FinalExamSubmissionsHeaderRight({ final, fetchData }: Props) {
             {studentToAdd && (
               <>
                 <Text style={styles.studentName}>¿Está seguro de agregar este estudiante al final? </Text>
-                <Text style={{...styles.studentText, marginTop: 10 }}>Nombre completo: {studentToAdd.firstName} {studentToAdd.lastName} </Text>
-                <Text style={{...styles.studentText}}>DNI: {studentToAdd.dni}</Text>
+                <Text style={{ ...styles.studentText, marginTop: 10 }}>Nombre completo: {studentToAdd.firstName} {studentToAdd.lastName} </Text>
+                <Text style={{ ...styles.studentText }}>DNI: {studentToAdd.dni}</Text>
                 <Text style={styles.studentText}>Email: {studentToAdd.email}</Text>
                 <Text style={styles.studentText}>Padron: {studentToAdd.padron}</Text>
-                <View style={{...styles.buttonContainer, marginTop: 10}}>
+                <View style={{ ...styles.buttonContainer, marginTop: 10 }}>
                   <SquaredButton text="Cancelar" onPress={() => setConfirmationModalVisible(false)} />
                   <SquaredButton text="Agregar" onPress={confirmStudentAddition} />
                 </View>
@@ -108,21 +128,21 @@ export function FinalExamSubmissionsHeaderRight({ final, fetchData }: Props) {
           </View>
         </View>
       </Modal>
-		</View>
-	);
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-	navButtonsContainer: {
-		flexDirection: 'row',
-		marginRight: 15,
-	},
-	navButton: {
-		backgroundColor: 'transparent',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	modalContainer: {
+  navButtonsContainer: {
+    flexDirection: 'row',
+    marginRight: 15,
+  },
+  navButton: {
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -135,7 +155,7 @@ const styles = StyleSheet.create({
     width: '80%',
     alignItems: 'center',
   },
-	input: {
+  input: {
     height: 55,
     fontSize: 16,
     borderRadius: 8,
@@ -145,7 +165,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: '100%',
   },
-	buttonContainer: {
+  buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',

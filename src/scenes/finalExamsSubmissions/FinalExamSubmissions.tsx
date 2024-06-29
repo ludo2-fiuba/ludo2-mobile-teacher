@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet, TextInput, ToastAndroid } from 'react-native';
+import { View, Text, FlatList, Alert, StyleSheet, TextInput, ToastAndroid } from 'react-native';
 import { Loading } from '../../components';
 import { finalRepository } from '../../repositories';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -10,7 +10,8 @@ import { useAppSelector } from '../../hooks';
 import { selectUserData } from '../../features/userDataSlice';
 import FinalExamSubmissionsListFooter from './FinalExamSubmissionsListFooter';
 import { selectSemesterData } from '../../features/semesterSlice';
-import * as Yup from 'yup';
+import MaterialIcon from '../../components/MaterialIcon';
+import { FinalStatus } from '../../models/FinalStatus';
 
 interface FinalExamSubmissionsRouteParams {
   final: Final;
@@ -27,7 +28,6 @@ const FinalExamSubmissions: React.FC = () => {
 
   const userData = useAppSelector(selectUserData);
   const semesterData = useAppSelector(selectSemesterData);
-  const isActualUserChiefTeacher = userData?.id === semesterData?.commission.chiefTeacher.id;
 
   const fetchData = useCallback(async () => {
     if (loading) return;
@@ -55,7 +55,7 @@ const FinalExamSubmissions: React.FC = () => {
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
       title: 'Entregas del final',
-      headerRight: () => <FinalExamSubmissionsHeaderRight final={final} fetchData={fetchData} />,
+      headerRight: () => final.status === FinalStatus.Grading ? <FinalExamSubmissionsHeaderRight final={final} fetchData={fetchData} />: null,
     });
   }, [navigation, fetchData, final]);
 
@@ -70,15 +70,6 @@ const FinalExamSubmissions: React.FC = () => {
     setNavOptions();
   }, [setNavOptions]);
 
-  const validationSchema = Yup.object().shape({
-    grade: Yup.number()
-      .typeError('Grade must be a number')
-      .integer('Grade must be an integer')
-      .min(1, 'Grade must be greater than or equal to 1')
-      .max(10, 'Grade must be less than or equal to 10')
-      .required('Grade is required'),
-  });
-
   const updateFinalExamGrade = async (exam: FinalExam, newGrade: string) => {
     const grade = Number(newGrade);
 
@@ -89,7 +80,7 @@ const FinalExamSubmissions: React.FC = () => {
     if (isNaN(grade) || grade < 1 || grade > 10) {
       Alert.alert('Error', 'La nota debe ser un número entre 1 y 10.');
       return;
-    }
+    } 
 
     try {
       const response = await finalRepository.grade(final.id, [{ finalExamSubmissionId: exam.id, grade }]);
@@ -110,7 +101,8 @@ const FinalExamSubmissions: React.FC = () => {
   );
 
   const editingCondition = (): boolean => {
-    return final.teacher === userData?.id;
+    if (final.status === FinalStatus.Closed) return false;
+    else return final.teacher === userData?.id;
   };
 
   const handleEditGrade = (exam: FinalExam) => {
@@ -152,23 +144,28 @@ const FinalExamSubmissions: React.FC = () => {
     );
   };
 
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <View style={{ display: 'flex', flexDirection: 'row'}}>
+        <MaterialIcon name="face-man" fontSize={30} color="gray" style={styles.emptyIcon} />
+        <MaterialIcon name="face-woman" fontSize={30} color="gray" style={styles.emptyIcon} />
+      </View>
+      <Text style={styles.emptyText}>Aún no hay entregas para este final.</Text>
+      <Text style={styles.emptySubText}>Podés agregar manualmente una entrega usando el botón localizado en la esquina superior derecha.</Text>
+    </View>
+  );
+
   return (
     <View style={styles.view}>
       {loading && <Loading />}
-      {!loading && !finalExams.length && (
-        <View style={styles.containerView}>
-          <Text style={styles.text}>No se han registrado alumnos que hayan rendido.</Text>
-        </View>
-      )}
-      {!loading && (
-        <FlatList
-          data={finalExams}
-          keyExtractor={(exam) => exam.id.toString()}
-          ListHeaderComponent={renderHeader}
-          renderItem={renderItem}
-          ListFooterComponent={<FinalExamSubmissionsListFooter final={final} />}
-        />
-      )}
+      {renderHeader()}
+      <FlatList
+        data={finalExams}
+        keyExtractor={(exam) => exam.id.toString()}
+        renderItem={renderItem}
+        ListEmptyComponent={renderEmptyComponent}
+        ListFooterComponent={<FinalExamSubmissionsListFooter final={final} />}
+      />
     </View>
   );
 };
@@ -178,15 +175,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f0f0f0',
   },
-  containerView: {
+  emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 20,
   },
-  text: {
-    fontSize: 16,
+  emptyIcon: {
+    marginBottom: 20,
+    marginHorizontal: 5,
+  },
+  emptyText: {
+    fontSize: 18,
     color: '#333',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  emptySubText: {
+    fontSize: 14,
+    color: '#666',
     textAlign: 'center',
   },
   header: {
@@ -222,7 +229,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nonEditableRow: {
-    backgroundColor: '#e0e0e0', // Light gray color for non-editable rows
+    backgroundColor: '#e0e0e0',
   },
   cell: {
     flex: 1,
@@ -247,7 +254,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 4,
     textAlign: 'center',
-    backgroundColor: '#fff', // Make the input visible
+    backgroundColor: '#fff',
   },
 });
 

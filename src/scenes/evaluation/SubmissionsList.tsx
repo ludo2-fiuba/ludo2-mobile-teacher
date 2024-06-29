@@ -14,6 +14,7 @@ import EntitySelectionModal from './EntitySelectionModal';
 import { selectStaffTeachers } from '../../features/teachersSlice';
 import { selectUserData } from '../../features/userDataSlice';
 import EditableText from '../../components/EditableText';
+import MaterialIcon from '../../components/MaterialIcon';
 
 interface Props {
   route: any;
@@ -142,6 +143,19 @@ export default function SubmissionsList({ route }: Props) {
     return isActualUserChiefTeacher || submission.grader?.id === userData?.id || !submission.grader;
   };
 
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <View style={{ display: 'flex', flexDirection: 'row'}}>
+        <MaterialIcon name="face-man" fontSize={30} color="gray" style={styles.emptyIcon} />
+        <MaterialIcon name="face-woman" fontSize={30} color="gray" style={styles.emptyIcon} />
+      </View>
+      <Text style={styles.emptyText}>Aún no hay entregas para esta evaluación.</Text>
+      <Text style={styles.emptySubText}>Podés agregar entregas manualmente o compartir </Text>
+      <Text style={styles.emptySubText}> el QR con tus alumnos localizado en </Text>
+      <Text style={styles.emptySubText}> la esquina superior derecha.</Text>
+    </View>
+  );
+
   return (
     <View style={styles.view}>
       {isLoading && <Loading />}
@@ -172,16 +186,7 @@ export default function SubmissionsList({ route }: Props) {
               </View>
             );
           }}
-          ListEmptyComponent={() => (
-            <View style={styles.containerView}>
-              <Text style={styles.text}>
-                Aún no hay entregas para esta evaluación.
-              </Text>
-              <Text style={styles.text}>
-                Podés agregar entregas manualmente o compartir el QR con tus alumnos localizado en la esquina superior derecha.
-              </Text>
-            </View>
-          )}
+          ListEmptyComponent={renderEmptyComponent}
         />
       )}
       <EntitySelectionModal
@@ -270,5 +275,26 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     textAlign: 'center',
     backgroundColor: '#fff', // Make the input visible
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
+  },
+  emptyIcon: {
+    marginBottom: 20,
+    marginHorizontal: 5,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  emptySubText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
   },
 });
