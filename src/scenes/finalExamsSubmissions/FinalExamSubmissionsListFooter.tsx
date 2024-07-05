@@ -8,10 +8,11 @@ import FacePictureConfiguration from './face_recognition';
 import { FinalStatus } from '../../models/FinalStatus';
 
 interface Props {
-  final: Final
+  final: Final;
+  canCloseAct: boolean;
 }
 
-const FinalExamSubmissionsListFooter = ({ final }: Props) => {
+const FinalExamSubmissionsListFooter = ({ final, canCloseAct }: Props) => {
   const navigation = useNavigation()
 
   const closeAct = async () => {
@@ -27,6 +28,7 @@ const FinalExamSubmissionsListFooter = ({ final }: Props) => {
       <View style={{ marginTop: 10 }}>
         { final.status === FinalStatus.Grading &&
           <RoundedButton 
+            enabled={canCloseAct}
             onPress={closeAct}
             text="Cerrar el Acta"
             style={style().button}

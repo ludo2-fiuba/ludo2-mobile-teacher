@@ -55,7 +55,7 @@ const FinalExamSubmissions: React.FC = () => {
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
       title: 'Entregas del final',
-      headerRight: () => final.status === FinalStatus.Grading ? <FinalExamSubmissionsHeaderRight final={final} fetchData={fetchData} />: null,
+      headerRight: () => final.status === FinalStatus.Grading ? <FinalExamSubmissionsHeaderRight final={final} fetchData={fetchData} /> : null,
     });
   }, [navigation, fetchData, final]);
 
@@ -80,13 +80,13 @@ const FinalExamSubmissions: React.FC = () => {
     if (isNaN(grade) || grade < 1 || grade > 10) {
       Alert.alert('Error', 'La nota debe ser un número entre 1 y 10.');
       return;
-    } 
+    }
 
     try {
       const response = await finalRepository.grade(final.id, [{ finalExamSubmissionId: exam.id, grade }]);
       ToastAndroid.show(`La calificación de ${exam.student.firstName} ${exam.student.lastName} ha sido guardada exitosamente`, ToastAndroid.LONG);
       console.log("Response after grading", response);
-      
+
       fetchData();
     } catch (error) {
       Alert.alert("Error", "Hubo un error al guardar la calificación");
@@ -146,7 +146,7 @@ const FinalExamSubmissions: React.FC = () => {
 
   const renderEmptyComponent = () => (
     <View style={styles.emptyContainer}>
-      <View style={{ display: 'flex', flexDirection: 'row'}}>
+      <View style={{ display: 'flex', flexDirection: 'row' }}>
         <MaterialIcon name="face-man" fontSize={30} color="gray" style={styles.emptyIcon} />
         <MaterialIcon name="face-woman" fontSize={30} color="gray" style={styles.emptyIcon} />
       </View>
@@ -164,11 +164,15 @@ const FinalExamSubmissions: React.FC = () => {
         keyExtractor={(exam) => exam.id.toString()}
         renderItem={renderItem}
         ListEmptyComponent={renderEmptyComponent}
-        ListFooterComponent={<FinalExamSubmissionsListFooter final={final} />}
+        ListFooterComponent={<FinalExamSubmissionsListFooter canCloseAct={canCloseAct(finalExams)} final={final} />}
       />
     </View>
   );
 };
+
+function canCloseAct(finalExams: FinalExam[]) {
+  return finalExams.reduce((canUntilNow, exam) => canUntilNow && exam.grade != null, true);
+}
 
 const styles = StyleSheet.create({
   view: {
