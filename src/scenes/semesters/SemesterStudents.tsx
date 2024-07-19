@@ -13,7 +13,7 @@ const SemesterStudents: React.FC = () => {
 
   const setNavOptions = useCallback(() => {
     navigation.setOptions({
-      title: 'Alumnos del semestre',
+      title: 'Alumnos del cuatrimestre',
       headerRight: () => <SemesterStudentsHeaderRight />,
     });
   }, [navigation]);

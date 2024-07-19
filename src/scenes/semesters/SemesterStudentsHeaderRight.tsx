@@ -34,7 +34,7 @@ export function SemesterStudentsHeaderRight({ }: Props) {
         // Check that student is not already part of the semester
         const foundStudentByPadron = semesterData.students.find(actual => actual.padron === studentPadron)
         if (foundStudentByPadron) {
-          Alert.alert('Ocurrió un error', `${foundStudentByPadron.firstName} ${foundStudentByPadron.lastName} con padrón ${foundStudentByPadron.padron} ya es parte del semestre actual.`)
+          Alert.alert('Ocurrió un error', `${foundStudentByPadron.firstName} ${foundStudentByPadron.lastName} con padrón ${foundStudentByPadron.padron} ya es parte del cuatrimestre actual.`)
         } else {
           const studentData: Student = await studentsRepository.getStudentByPadron(studentPadron);
           setStudent(studentData);
@@ -104,7 +104,7 @@ export function SemesterStudentsHeaderRight({ }: Props) {
           <View style={styles.confirmModalView}>
             {student && (
               <>
-                <Text style={styles.studentName}>¿Está seguro de agregar este estudiante al semestre? </Text>
+                <Text style={styles.studentName}>¿Está seguro de agregar este estudiante al cuatrimestre? </Text>
                 <Text style={{...styles.studentText, marginTop: 10 }}>Nombre completo: {student.firstName} {student.lastName} </Text>
                 <Text style={{...styles.studentText}}>DNI: {student.dni}</Text>
                 <Text style={styles.studentText}>Email: {student.email}</Text>

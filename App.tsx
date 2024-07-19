@@ -97,19 +97,19 @@ const AllComponents: React.FC = () => {
           <Stack.Screen
             name='SemesterCard'
             component={SemesterCard}
-            options={({ route }) => ({ title: 'Semestre Actual' })}
+            options={({ route }) => ({ title: 'Cuatrimestre Actual' })}
           />
 
           <Stack.Screen
             name='SemesterStudents'
             component={SemesterStudents}
-            options={({ route }) => ({ title: 'Estudiantes del semestre' })}
+            options={({ route }) => ({ title: 'Estudiantes del cuatrimestre' })}
           />
 
           <Stack.Screen
             name='SemesterEditScreen'
             component={SemesterEditScreen}
-            options={({ route }) => ({ title: 'Editar semestre' })}
+            options={({ route }) => ({ title: 'Editar cuatrimestre' })}
           />
 
 
@@ -182,7 +182,7 @@ const AllComponents: React.FC = () => {
           <Stack.Screen
             name="TeachersConfiguration"
             component={TeachersConfiguration}
-            options={({ route }) => ({ title: 'Configuracion de Semestre' })}
+            options={({ route }) => ({ title: 'Configuracion de Cuatrimestre' })}
           />
 
           <Stack.Screen
@@ -209,7 +209,7 @@ const AllComponents: React.FC = () => {
             component={SemesterAttendances}
             options={({ route }) => ({
               headerShown: true,
-              title: 'Asistencias del semestre',
+              title: 'Asistencias del cuatrimestre',
             })}
           />
 

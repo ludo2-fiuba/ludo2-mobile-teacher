@@ -19,7 +19,7 @@ const SemesterAttendances: React.FC = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Asistencias del semestre',
+      title: 'Asistencias del cuatrimestre',
       headerRight: () => (
         <TouchableOpacity style={styles.navButton} onPress={onPressAddNewClass}>
           <MaterialIcon name="plus" fontSize={24} color='gray' />
@@ -51,7 +51,7 @@ const SemesterAttendances: React.FC = () => {
         data={attendances}
         renderItem={renderClassAttendance}
         keyExtractor={(_, index) => index.toString()}
-        ListEmptyComponent={() => <Text style={styles.noDataText}>No hay clases para este semestre</Text>}
+        ListEmptyComponent={() => <Text style={styles.noDataText}>No hay clases para este cuatrimestre</Text>}
       />
     </View>
   );

@@ -62,7 +62,7 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Métricas del semestre actual</Text>
+      <Text style={styles.header}>Métricas del cuatrimestre actual</Text>
       <Text style={styles.header2}>{semester.commission.subjectName}</Text>
 
       {loading && <Loading />}
@@ -73,7 +73,7 @@ const Stats: React.FC<StatsProps> = ({ route }) => {
               <MaterialIcon name="chart-line" fontSize={24} color={lightModeColors.institutional} style={{ marginRight: 10 }} />
               <View>
                 <Text style={styles.passingGradeText}>Promedio del curso</Text>
-                <Text style={styles.passingGradeLabel}>Basado en las notas de evaluaciones {`\n`}parciales de los últimos semestres</Text>
+                <Text style={styles.passingGradeLabel}>Basado en las notas de evaluaciones {`\n`}parciales de los últimos cuatrimestres</Text>
               </View>
             </View>
             {semesterStats?.semester_average.length ? <LineChart

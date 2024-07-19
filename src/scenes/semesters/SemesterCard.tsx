@@ -95,7 +95,7 @@ export function SemesterCard({ route }: Props) {
     if (error) {
       Alert.alert(
         'Error',
-        'No se pudo cargar la información del semestre. Intente nuevamente más tarde.'
+        'No se pudo cargar la información del cuatrimestre. Intente nuevamente más tarde.'
       );
     }
   }, [error]);

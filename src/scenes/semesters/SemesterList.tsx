@@ -47,7 +47,7 @@
 //         isRefreshing ? setRefreshing(false) : setLoading(false);
 //         Alert.alert(
 //           '¿Qué pasó?',
-//           'No sabemos pero no pudimos buscar tus semestres. ' +
+//           'No sabemos pero no pudimos buscar tus cuatrimestres. ' +
 //             'Volvé a intentar en unos minutos.',
 //         );
 //       }

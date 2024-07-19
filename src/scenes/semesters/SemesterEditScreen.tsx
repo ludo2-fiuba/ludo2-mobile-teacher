@@ -41,11 +41,11 @@ const SemesterEditScreen: React.FC = () => {
             );
 
             dispatch(modifySemesterDetails({ classesAmount: response.classesAmount, minimumAttendance: response.minimumAttendance }));
-            Alert.alert('Éxito', 'Semestre actualizado correctamente', [
+            Alert.alert('Éxito', 'Cuatrimestre actualizado correctamente', [
                 { text: 'OK', onPress: () => navigation.navigate("SemesterCard") },
             ]);
         } catch (error) {
-            Alert.alert('Error', 'Hubo un error al actualizar los datos del semestre. Por favor intente de nuevo.');
+            Alert.alert('Error', 'Hubo un error al actualizar los datos del cuatrimestre. Por favor intente de nuevo.');
         }
     };
 

@@ -56,7 +56,7 @@ const RootDrawer = () => {
       <Drawer.Screen
         name="CreateSemester"
         component={CreateSemester}
-        options={{ headerShown: true, title: 'Crear Semestre', drawerIcon: makeDrawerIcon('chart-box', 'chart-box-outline') }}
+        options={{ headerShown: true, title: 'Crear Cuatrimestre', drawerIcon: makeDrawerIcon('chart-box', 'chart-box-outline') }}
       />
     </Drawer.Navigator>
   )

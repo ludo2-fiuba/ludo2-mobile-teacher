@@ -36,7 +36,7 @@ const CreateSemester = () => {
   const [yearMoment, setYearMoment] = useState('FS');
   const [openYearMomentPicker, setOpenYearMomentPicker] = useState(false);
   const [itemsToShowInYearMomentPicker, setItemsToShowInYearMomentPicker] = useState(
-    [{ label: 'Primer Semestre', value: 'FS' }, { label: 'Segundo Semestre', value: 'SS' }])
+    [{ label: 'Primer Cuatrimestre', value: 'FS' }, { label: 'Segundo Cuatrimestre', value: 'SS' }])
 
   // Reset the values when navigation switches
   useFocusEffect(
@@ -99,7 +99,7 @@ const CreateSemester = () => {
           open={openCommissionPicker}
           style={{ borderColor: 'gray' }}
           value={chosenCommission}
-          placeholder='Elija una comisión a la qué agregar el semestre'
+          placeholder='Elija una comisión a la qué agregar el cuatrimestre'
           items={itemsToShowInCommissionPicker}
           setOpen={setOpenCommissionPicker}
           setValue={setChosenCommission}
@@ -202,7 +202,7 @@ const CreateSemester = () => {
           style={{ marginTop: 15 }}
         >
           <RoundedButton
-            text="Crear semestre"
+            text="Crear cuatrimestre"
             enabled={(startDate !== null) && (startTime !== null)}
             onPress={createSemester}
           />

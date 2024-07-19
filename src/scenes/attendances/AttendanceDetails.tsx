@@ -172,7 +172,7 @@ const AttendanceDetails: React.FC = () => {
                     keyExtractor={(item) => item.key}
                 />
             ) : (
-                <Text style={styles.noAttendanceText}>No hay estudiantes para este semestre</Text>
+                <Text style={styles.noAttendanceText}>No hay estudiantes para este cuatrimestre</Text>
             )}
         </View>
     );
